@@ -7,7 +7,7 @@ import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
- * DTOMapper
+ * DTOMapper.
  * This class is responsible for generating classes that will automatically
  * transform/map the internal representation
  * of an entity (e.g., the User) to the external/API representation (e.g.,
