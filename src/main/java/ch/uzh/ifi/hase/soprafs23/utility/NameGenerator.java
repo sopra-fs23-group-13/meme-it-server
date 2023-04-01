@@ -5,10 +5,11 @@ import java.util.List;
 import java.util.Random;
 
 public class NameGenerator {
+    private Random random = new Random();
 
     public String getReadableId() {
-        Random random = new Random();
-        return nouns.get(random.nextInt(nouns.size())) + "-" + adjectives.get(random.nextInt(adjectives.size()));
+        return adjectives.get(random.nextInt(adjectives.size())) + "-"
+                + nouns.get(random.nextInt(nouns.size()));
     }
 
     private List<String> adjectives = Arrays.asList(new String[] {
