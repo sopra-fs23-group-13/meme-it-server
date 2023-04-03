@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
 
 
 
@@ -99,14 +97,24 @@ public class Lobby implements Serializable {
         this.players = players;
     }
 
+    // Help-function to check if a user exists in a list of users
+    public boolean containsUser(Iterable<User> users, User user) {
+        for (User u : users) {
+            if (u.equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addPlayer(User player, String username) {
         // check if player is already in lobby
-        if(this.players.getUsers().contains(player)) {
+        if(containsUser(this.players.getUsers(), player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
         }
     
         // check if player is kicked
-        if(this.kickedPlayers.getUsers().contains(player)) {
+        if(containsUser(this.kickedPlayers.getUsers(), player)) {
             throw new IllegalArgumentException("Player is kicked and therefore not allowed to join");
         }
     
