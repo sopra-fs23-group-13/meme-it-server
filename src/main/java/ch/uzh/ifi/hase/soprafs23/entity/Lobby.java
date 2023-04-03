@@ -1,66 +1,114 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "LOBBY")
 public class Lobby implements Serializable {
-
     private static final long serialVersionUID = 1L;
-
-    /** Creates default lobby */
-    // public Lobby(String name, String owner, LobbySetting lobbySetting) {
-    // this.owner = owner;
-    // this.lobbySetting = new LobbySetting();
-    // this.players = new Users();
-    // this.kickedPlayers = new Users();
-    // this.messages = new Messages();
-    // this.isJoinable = true;
-    // }
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String code;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String owner;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "lobby_players",
+            joinColumns = @JoinColumn(
+                    name = "lobby_id", referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"
+            )
+    )
+    private Set<User> players = new HashSet<>();
 
-    @Column(nullable = false)
-    private LobbySetting lobbySetting;
 
-    @Column(nullable = false)
-    private Users players;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "lobby_kicked_players",
+            joinColumns = @JoinColumn(
+                    name = "lobby_id", referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"
+            )
+    )
+    private Set<User> kickedPlayers = new HashSet<>();
 
-    @Column(nullable = false)
-    private Users kickedPlayers;
+    @OneToOne(cascade = CascadeType.ALL)
+    private LobbySetting settings;
 
-    @Column(nullable = false)
-    private Messages messages;
-
-    @Column(nullable = false)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "lobby_messages",
+            joinColumns = @JoinColumn(
+                    name = "lobby_id", referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "message_id", referencedColumnName = "id"
+            )
+    )
+    private List<Message> messages = new ArrayList<>();
     private boolean isJoinable;
+
+
+    public Lobby() {
+    }
+    public Lobby(User user, LobbySetting settings) {
+        this.user = user;
+        this.settings = settings;
+    }
+
+    public void join(User user){
+        this.players.add(user);
+    }
+
+    public void exit(User user){
+        this.players.remove(user);
+        this.setIsJoinable(true);
+    }
+
+    public Set<User> getKickedPlayers() {
+        return kickedPlayers;
+    }
+
+    public void kick(User user){
+        this.kickedPlayers.add(user);
+
+        // Also removes from players
+        this.exit(user);
+    }
+
+    public void closeLobby(){
+       this.isJoinable = false;
+    }
+
+    public void sendMessage(Message message){
+        this.messages.add(message);
+    }
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User getUser() {
+        return user;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
@@ -71,66 +119,40 @@ public class Lobby implements Serializable {
         this.name = name;
     }
 
-    public String getOwner() {
-        return owner;
+    public LobbySetting getLobbySettings() {
+        return settings;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setLobbySetting(LobbySetting settings) {
+        this.settings = settings;
     }
 
-    public LobbySetting getLobbySetting() {
-        return lobbySetting;
-    }
-
-    public void setLobbySetting(LobbySetting lobbySetting) {
-        this.lobbySetting = lobbySetting;
-    }
-
-    public Users getPlayers() {
-        return players;
-    }
-
-    public void setPlayers(Users players) {
-        this.players = players;
-    }
-
-    public void addPlayer(User player) {
-        // TODO: check if player is already in lobby
-        // TODO: check if player is kicked
-        this.players.addUser(player);
-    }
-
-    public Users getKickedPlayers() {
-        return kickedPlayers;
-    }
-
-    public void setKickedPlayers(Users kickedPlayers) {
-        this.kickedPlayers = kickedPlayers;
-    }
-
-    public void addKickedPlayer(User kickedPlayer) {
-        this.kickedPlayers.addUser(kickedPlayer);
-    }
-
-    public Messages getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void addMessage(Message message) {
-        this.messages.addMessage(message);
-    }
-
-    public void setMessages(Messages messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
-    public boolean isJoinable() {
+    public Set<User> getPlayers() {
+        return players;
+    }
+
+    public boolean getIsJoinable() {
         return isJoinable;
     }
 
     public void setIsJoinable(boolean isJoinable) {
         this.isJoinable = isJoinable;
     }
-
+    @JsonIgnore
+    public boolean isFull(){
+        return this.settings.getMaxPlayers() == this.players.size();
+    }
+    public void setCode(String code) {
+    }
+    public String getCode() {
+        return null;
+    }
 }

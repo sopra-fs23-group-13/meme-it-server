@@ -5,24 +5,34 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Embeddable
+@Entity
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    // Message(String message, LocalDateTime created_at, User user) {
-    // this.message = message;
-    // this.createdAt = created_at;
-    // this.user = user;
-    // }
-
-    @Column(nullable = false)
-    private String message;
-
-    @Column(nullable = false)
-    private LocalDateTime createdAt;
-
-    @Column(nullable = false)
+    @OneToOne(cascade = CascadeType.ALL)
     private User user;
+    private String message;
+    private LocalDateTime created_at;
+
+    public Message(User user, String message) {
+        this.user = user;
+        this.message = message;
+    }
+
+    public Message() {
+
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public String getMessage() {
         return message;
@@ -32,11 +42,11 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreated_at() {
+        return created_at;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreated_at(LocalDateTime created_at) {
+        this.created_at = created_at;
     }
 }

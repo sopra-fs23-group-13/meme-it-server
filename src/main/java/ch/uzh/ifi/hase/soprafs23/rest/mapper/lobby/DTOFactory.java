@@ -4,9 +4,9 @@ import org.mapstruct.ObjectFactory;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
-import ch.uzh.ifi.hase.soprafs23.entity.Messages;
-import ch.uzh.ifi.hase.soprafs23.entity.Users;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
+//import java.util.HashSet;
+import java.util.ArrayList;
 
 public class DTOFactory {
 
@@ -15,24 +15,24 @@ public class DTOFactory {
 
         Lobby lobby = new Lobby();
 
-        LobbySetting lobbySetting = new LobbySetting(
-                lobbyPostDTO.getIsPublic(),
-                lobbyPostDTO.getMaxPlayers(),
-                lobbyPostDTO.getMaxRounds(),
-                lobbyPostDTO.getMemeChangeLimit(),
-                lobbyPostDTO.getSuperLikeLimit(),
-                lobbyPostDTO.getSuperDislikeLimit(),
-                lobbyPostDTO.getTimeRoundLimit(),
-                lobbyPostDTO.getTimeVoteLimit());
+    LobbySetting lobbySetting = new LobbySetting();
+    lobbySetting.setIsPublic(lobbyPostDTO.getIsPublic());
+    lobbySetting.setMaxPlayers(lobbyPostDTO.getMaxPlayers());
+    lobbySetting.setMaxRounds(lobbyPostDTO.getMaxRounds());
+    lobbySetting.setMemeChangeLimit(lobbyPostDTO.getMemeChangeLimit());
+    lobbySetting.setSuperLikeLimit(lobbyPostDTO.getSuperLikeLimit());
+    lobbySetting.setSuperDislikeLimit(lobbyPostDTO.getSuperDislikeLimit());
+    lobbySetting.setTimeRoundLimit(lobbyPostDTO.getTimeRoundLimit());
+    lobbySetting.setTimeVoteLimit(lobbyPostDTO.getTimeVoteLimit());
 
-        lobby.setName(lobbyPostDTO.getName());
-        lobby.setOwner(lobbyPostDTO.getOwner());
-        lobby.setLobbySetting(lobbySetting);
-        lobby.setPlayers(new Users());
-        lobby.setKickedPlayers(new Users());
-        lobby.setMessages(new Messages());
-        lobby.setIsJoinable(true);
+    lobby.setName(lobbyPostDTO.getName());
+    //lobby.setOwner(lobbyPostDTO.getOwner());
+    lobby.setLobbySetting(lobbySetting);
+    //lobby.setPlayers(new HashSet<>());
+    //lobby.setKickedPlayers(new HashSet<>());
+    lobby.setMessages(new ArrayList<>());
+    lobby.setIsJoinable(true);
 
-        return lobby;
+    return lobby;
     }
 }

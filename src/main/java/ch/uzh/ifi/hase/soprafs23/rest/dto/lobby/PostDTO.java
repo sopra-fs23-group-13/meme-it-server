@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
 public class PostDTO {
+    private Long userId;
     private String owner;
     private String name;
     private boolean isPublic;
@@ -11,6 +12,14 @@ public class PostDTO {
     private Integer superDislikeLimit;
     private Integer timeRoundLimit;
     private Integer timeVoteLimit;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public String getOwner() {
         return owner;

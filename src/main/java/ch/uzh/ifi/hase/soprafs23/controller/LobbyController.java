@@ -82,4 +82,28 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(getLobby);
     }
 
+    @GetMapping("/lobby/{lobbyId}/join")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void joinLobby(@PathVariable("lobbyId") Long lobbyId,
+                          @RequestParam(name = "userId") Long userId) {
+        lobbyService.joinLobby(lobbyId, userId);
+    }
+
+
+    @GetMapping("/lobby/{lobbyId}/leave")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void leaveLobby(@PathVariable("lobbyId") Long lobbyId,
+                          @RequestParam(name = "userId") Long userId) {
+        lobbyService.leaveLobby(lobbyId, userId);
+    }
+
+    @GetMapping("/lobby/{lobbyId}/kick")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void kickFromLobby(@PathVariable("lobbyId") Long lobbyId,
+                           @RequestParam(name = "userId") Long userId) {
+        lobbyService.kickFromLobby(lobbyId, userId);
+    }
 }

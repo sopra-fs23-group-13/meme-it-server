@@ -36,8 +36,9 @@ public interface LobbyMapper {
   // @Mapping(source = "superDislikeLimit", target = "superDislikeLimit")
   // @Mapping(source = "timeRoundLimit", target = "timeRoundLimit")
   // @Mapping(source = "timeVoteLimit", target = "timeVoteLimit")
+  //@Mapping(source = "lobbyName", target = "name")
   // LobbySetting convertLobbyPutDTOtoEntity(PutDTO lobbyPutDTO);
 
-  GetDTO convertEntityToLobbyGetDTO(Lobby lobby);
+ GetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 
 }
