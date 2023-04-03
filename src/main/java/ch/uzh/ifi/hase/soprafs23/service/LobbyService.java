@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.utility.NameGenerator;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+
 
 import java.util.List;
 
@@ -57,6 +60,21 @@ public class LobbyService {
         log.debug("Created Information for Lobby: {}", newLobby);
         return newLobby;
     }
+
+    //Let User join by lobby code
+    public boolean joinLobby(String lobbyCode, User user) {
+        Lobby lobby = lobbyRepository.findByCode(lobbyCode);
+        if (lobby == null) {
+            new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid lobby code");
+        }
+        if (!lobby.isJoinable()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is already full");
+        }
+        lobby.addPlayer(user);
+        lobbyRepository.save(lobby);
+        return true;
+    }
+
 
     public Lobby updateLobby(String lobbyId, LobbySetting newSettings) {
         Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
