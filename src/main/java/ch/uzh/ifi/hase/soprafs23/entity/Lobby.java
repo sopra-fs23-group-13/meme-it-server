@@ -22,6 +22,8 @@ public class Lobby implements Serializable {
 
     private String name;
 
+    private String owner;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
             name = "lobby_players",
@@ -48,7 +50,7 @@ public class Lobby implements Serializable {
     private Set<User> kickedPlayers = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)
-    private LobbySetting settings;
+    private LobbySetting lobbySetting;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -66,9 +68,9 @@ public class Lobby implements Serializable {
 
     public Lobby() {
     }
-    public Lobby(User user, LobbySetting settings) {
+    public Lobby(User user, LobbySetting lobbySetting) {
         this.user = user;
-        this.settings = settings;
+        this.lobbySetting = lobbySetting;
     }
 
     public void join(User user){
@@ -119,12 +121,20 @@ public class Lobby implements Serializable {
         this.name = name;
     }
 
-    public LobbySetting getLobbySettings() {
-        return settings;
+    public String getOwner() {
+        return owner;
     }
 
-    public void setLobbySetting(LobbySetting settings) {
-        this.settings = settings;
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public LobbySetting getLobbySetting() {
+        return lobbySetting;
+    }
+
+    public void setLobbySetting(LobbySetting lobbySetting) {
+        this.lobbySetting = lobbySetting;
     }
 
     public List<Message> getMessages() {
@@ -148,7 +158,7 @@ public class Lobby implements Serializable {
     }
     @JsonIgnore
     public boolean isFull(){
-        return this.settings.getMaxPlayers() == this.players.size();
+        return this.lobbySetting.getMaxPlayers() == this.players.size();
     }
     public void setCode(String code) {
     }

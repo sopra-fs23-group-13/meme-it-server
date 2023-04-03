@@ -12,6 +12,7 @@ public class PostDTO {
     private Integer superDislikeLimit;
     private Integer timeRoundLimit;
     private Integer timeVoteLimit;
+    private String lobbyName;
 
     public Long getUserId() {
         return userId;
@@ -21,6 +22,14 @@ public class PostDTO {
         this.userId = userId;
     }
 
+    
+    public String getLobbyName() {
+        return lobbyName;
+    }
+    public void setLobbyName(String lobbyName) {
+        this.lobbyName = lobbyName;
+    }
+    
     public String getOwner() {
         return owner;
     }

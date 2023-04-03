@@ -24,6 +24,7 @@ public class DTOFactory {
     lobbySetting.setSuperDislikeLimit(lobbyPostDTO.getSuperDislikeLimit());
     lobbySetting.setTimeRoundLimit(lobbyPostDTO.getTimeRoundLimit());
     lobbySetting.setTimeVoteLimit(lobbyPostDTO.getTimeVoteLimit());
+    lobbySetting.setLobbyName(lobbyPostDTO.getLobbyName());
 
     lobby.setName(lobbyPostDTO.getName());
     //lobby.setOwner(lobbyPostDTO.getOwner());

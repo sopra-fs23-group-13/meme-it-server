@@ -33,11 +33,15 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
 
+    private final UserRepository userRepository;
+
     private final NameGenerator nameGenerator = new NameGenerator();
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository
+    , @Qualifier("userRepository") UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Lobby> getLobbies() {
@@ -124,7 +128,7 @@ public class LobbyService {
 
     //create UserRepository 
     private User checkUserExist(Long userId) {
-      return UserRepository.findById(userId)
+      return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.BAD_REQUEST, "User does not exist"));
     }

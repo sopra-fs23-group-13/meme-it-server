@@ -17,6 +17,7 @@ public class LobbySetting implements Serializable {
     private int superDislikeLimit;
     private int timeRoundLimit;
     private int timeVoteLimit;
+    private String lobbyName;
 
     @OneToOne(mappedBy = "settings")
     private Lobby lobby;
@@ -31,6 +32,14 @@ public class LobbySetting implements Serializable {
 
     public int getRounds() {
         return maxRounds;
+    }
+
+
+    public String getLobbyName() {
+        return lobbyName;
+    }
+    public void setLobbyName(String lobbyName) {
+        this.lobbyName = lobbyName;
     }
 
     public int getMemeChangeLimit() {
