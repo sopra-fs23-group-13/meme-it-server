@@ -2,6 +2,10 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+
+
 
 @Entity
 @Table(name = "LOBBY")
@@ -95,11 +99,26 @@ public class Lobby implements Serializable {
         this.players = players;
     }
 
-    public void addPlayer(User player) {
-        // TODO: check if player is already in lobby
-        // TODO: check if player is kicked
+    public void addPlayer(User player, String username) {
+        // check if player is already in lobby
+        if(this.players.getUsers().contains(player)) {
+            throw new IllegalArgumentException("Player is already in the lobby");
+        }
+    
+        // check if player is kicked
+        if(this.kickedPlayers.getUsers().contains(player)) {
+            throw new IllegalArgumentException("Player is kicked and therefore not allowed to join");
+        }
+    
+        // check if player has a name set
+        if(player.getName() == null || player.getName().isEmpty()) {
+            throw new IllegalArgumentException("Player has no name set yet");
+        }
+    
         this.players.addUser(player);
     }
+
+    
 
     public Users getKickedPlayers() {
         return kickedPlayers;

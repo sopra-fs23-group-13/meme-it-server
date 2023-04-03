@@ -48,4 +48,14 @@ public class Users implements Serializable {
         this.users = users;
     }
 
+    public boolean contains(User user) {
+        for (User u : this.users) {
+            if (u.equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
