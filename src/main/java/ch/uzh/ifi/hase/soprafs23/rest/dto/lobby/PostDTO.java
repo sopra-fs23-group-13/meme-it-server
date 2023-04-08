@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
 public class PostDTO {
+
     private String owner;
     private String name;
     private boolean isPublic;
