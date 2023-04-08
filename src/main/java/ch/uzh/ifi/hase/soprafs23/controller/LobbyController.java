@@ -3,8 +3,10 @@ package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby.LobbyMapper;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby.UserMapper;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.GetDTO;
 // import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
 
@@ -81,5 +83,20 @@ public class LobbyController {
         Lobby getLobby = lobbyService.getLobbyById(lobbyId);
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(getLobby);
     }
+    @PostMapping("/lobby/{lobbyId}/join")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public GetDTO joinLobby(@PathVariable("lobbyId") Long lobbyId, @RequestBody PostDTO userPostDTO) {
+        // convert API user to internal representation
+        User userInput = UserMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+
+        // join lobby
+        Lobby joinedLobby = lobbyService.joinLobby(lobbyId, userInput);
+
+        // convert internal representation of lobby back to API
+        return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(joinedLobby);
+    }
+
+
 
 }
