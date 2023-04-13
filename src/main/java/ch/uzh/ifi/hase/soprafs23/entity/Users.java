@@ -27,7 +27,7 @@ public class Users implements Serializable {
     // this.id = id;
     // }
 
-    public Iterable<User> getUsers() {
+    public List getUsers() {
         return users;
     }
 

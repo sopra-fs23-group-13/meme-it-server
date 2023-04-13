@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.stream.StreamSupport;
 
 
 
@@ -159,5 +160,15 @@ public class Lobby implements Serializable {
     public void setIsJoinable(boolean isJoinable) {
         this.isJoinable = isJoinable;
     }
+
+    public boolean isFull() {
+
+
+       Long totalUsers = StreamSupport.stream(this.players.getUsers().spliterator(), true).count();
+
+     return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
+
+    }
+
 
 }
