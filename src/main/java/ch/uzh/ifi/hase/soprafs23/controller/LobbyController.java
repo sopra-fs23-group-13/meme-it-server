@@ -37,7 +37,6 @@ public class LobbyController {
         // get all lobbies
         List<Lobby> createdLobby = lobbyService.getLobbies();
 
-        System.out.println(createdLobby);
         // convert internal representation of lobby back to API
         List<GetDTO> getDTOs = new ArrayList<GetDTO>();
         for (Lobby lobby : createdLobby) {
@@ -73,6 +72,16 @@ public class LobbyController {
     // // update lobby
     // lobbyService.updateLobby(lobbyId, lobbySettingInput);
     // }
+
+    @PutMapping("/lobby/{lobbyId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateLobby(@PathVariable String lobbyId, @RequestBody PostDTO lobbyPostDTO) {
+        // convert API user to internal representation
+        Lobby lobbyInput = LobbyMapper.INSTANCE.convertLobbyPostDTOtoEntity(lobbyPostDTO);
+        // update lobby
+        lobbyService.updateLobby(lobbyId, lobbyInput);
+    }
+
 
     @GetMapping("/lobby/{lobbyId}")
     @ResponseStatus(HttpStatus.OK)

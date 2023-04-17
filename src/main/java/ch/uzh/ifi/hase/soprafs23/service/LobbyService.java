@@ -58,8 +58,53 @@ public class LobbyService {
         return newLobby;
     }
 
-    public Lobby updateLobby(String lobbyId, LobbySetting newSettings) {
+    public Lobby updateLobby(String lobbyId, Lobby newLobby) {
         Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
+
+        newLobby.getLobbySetting();
+        LobbySetting newSettings = newLobby.getLobbySetting();
+
+        if(newSettings.getIsPublic() == true){
+            newSettings.setIsPublic(true);
+        }
+        else if(newSettings.getIsPublic() == false){
+            newSettings.setIsPublic(false);
+        }
+        else {
+            newSettings.setIsPublic(lobbyToUpdate.getLobbySetting().getIsPublic());
+        }
+
+        if(newSettings.getMaxPlayers() == null){
+            newSettings.setMaxPlayers(lobbyToUpdate.getLobbySetting().getMaxPlayers());
+        }
+
+        if(newSettings.getMaxRounds() == null){
+            newSettings.setMaxRounds((lobbyToUpdate.getLobbySetting().getMaxRounds()));
+        }
+
+        if(newSettings.getMemeChangeLimit() == null){
+            newSettings.setMemeChangeLimit((lobbyToUpdate.getLobbySetting().getMemeChangeLimit()));
+        }
+
+        if(newSettings.getSuperLikeLimit() == null){
+            newSettings.setSuperLikeLimit((lobbyToUpdate.getLobbySetting().getSuperLikeLimit()));
+        }
+
+        if(newSettings.getSuperDislikeLimit() == null){
+            newSettings.setSuperDislikeLimit((lobbyToUpdate.getLobbySetting().getSuperDislikeLimit()));
+        }
+
+        if(newSettings.getTimeRoundLimit() == null){
+            newSettings.setTimeRoundLimit((lobbyToUpdate.getLobbySetting().getTimeRoundLimit()));
+        }
+
+        if(newSettings.getTimeVoteLimit() == null){
+            newSettings.setTimeVoteLimit((lobbyToUpdate.getLobbySetting().getTimeVoteLimit()));
+        }
+
+        if(newLobby.getName() != null && !newLobby.getName().equals("")){
+            lobbyToUpdate.setName(newLobby.getName());
+        }
         lobbyToUpdate.setLobbySetting(newSettings);
         lobbyRepository.save(lobbyToUpdate);
         return lobbyToUpdate;
