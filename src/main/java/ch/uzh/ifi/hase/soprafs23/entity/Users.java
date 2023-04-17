@@ -11,7 +11,7 @@ public class Users implements Serializable {
 
     // @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval =
     // true)
-    // @Column(nullable = false)
+    @Column(nullable = false)
     @ElementCollection
     private List<User> users;
 
@@ -27,7 +27,7 @@ public class Users implements Serializable {
     // this.id = id;
     // }
 
-    public List getUsers() {
+    public List<User> getUsers() {
         return users;
     }
 
@@ -56,6 +56,5 @@ public class Users implements Serializable {
         }
         return false;
     }
-
 
 }

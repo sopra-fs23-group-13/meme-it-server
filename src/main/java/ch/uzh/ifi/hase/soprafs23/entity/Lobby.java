@@ -4,23 +4,11 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.stream.StreamSupport;
 
-
-
 @Entity
 @Table(name = "LOBBY")
 public class Lobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /** Creates default lobby */
-    // public Lobby(String name, String owner, LobbySetting lobbySetting) {
-    // this.owner = owner;
-    // this.lobbySetting = new LobbySetting();
-    // this.players = new Users();
-    // this.kickedPlayers = new Users();
-    // this.messages = new Messages();
-    // this.isJoinable = true;
-    // }
 
     @Id
     @GeneratedValue
@@ -108,26 +96,24 @@ public class Lobby implements Serializable {
         return false;
     }
 
-    public void addPlayer(User player, String username) {
+    public void addPlayer(User player) {
         // check if player is already in lobby
-        if(containsUser(this.players.getUsers(), player)) {
+        if (containsUser(this.players.getUsers(), player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
         }
-    
+
         // check if player is kicked
-        if(containsUser(this.kickedPlayers.getUsers(), player)) {
+        if (containsUser(this.kickedPlayers.getUsers(), player)) {
             throw new IllegalArgumentException("Player is kicked and therefore not allowed to join");
         }
-    
+
         // check if player has a name set
-        if(player.getName() == null || player.getName().isEmpty()) {
+        if (player.getName() == null || player.getName().isEmpty()) {
             throw new IllegalArgumentException("Player has no name set yet");
         }
-    
+
         this.players.addUser(player);
     }
-
-    
 
     public Users getKickedPlayers() {
         return kickedPlayers;
@@ -163,12 +149,10 @@ public class Lobby implements Serializable {
 
     public boolean isFull() {
 
+        Long totalUsers = StreamSupport.stream(this.players.getUsers().spliterator(), true).count();
 
-       Long totalUsers = StreamSupport.stream(this.players.getUsers().spliterator(), true).count();
-
-     return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
+        return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
 
     }
-
 
 }

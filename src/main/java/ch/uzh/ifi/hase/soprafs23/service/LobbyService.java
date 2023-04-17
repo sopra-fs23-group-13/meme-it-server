@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-
-
 import java.util.List;
 import java.util.Optional;
 
@@ -37,16 +35,16 @@ public class LobbyService {
     private final Logger log = LoggerFactory.getLogger(LobbyService.class);
 
     private final LobbyRepository lobbyRepository;
+    private final UserRepository usersRepository;
 
     private final NameGenerator nameGenerator = new NameGenerator();
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository,
+            @Qualifier("userRepository") UserRepository usersRepository) {
         this.lobbyRepository = lobbyRepository;
+        this.usersRepository = usersRepository;
     }
-
-    @Autowired
-    private UserRepository usersRepository;
 
     public List<Lobby> getLobbies() {
         return this.lobbyRepository.findAll();
@@ -68,7 +66,7 @@ public class LobbyService {
         return newLobby;
     }
 
-    //Let User join by lobby code
+    // Let User join by lobby code
     public boolean joinLobby(String lobbyCode, User user) {
         Lobby lobby = lobbyRepository.findByCode(lobbyCode);
         if (lobby == null) {
@@ -81,7 +79,6 @@ public class LobbyService {
         lobbyRepository.save(lobby);
         return true;
     }
-
 
     public Lobby updateLobby(String lobbyId, LobbySetting newSettings) {
         Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
@@ -111,13 +108,13 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is full.");
         }
 
-        if (lobby.getKickedPlayers().getUsers().stream().anyMatch(user1-> user1.equals(user))){
+        if (lobby.getKickedPlayers().getUsers().stream().anyMatch(user1 -> user1.equals(user))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join again, you've been kicked.");
         }
 
         lobby.addPlayer(user);
 
-        if (lobby.isFull()){
+        if (lobby.isFull()) {
             lobby.setIsJoinable(false);
             lobbyRepository.save(lobby);
         }
