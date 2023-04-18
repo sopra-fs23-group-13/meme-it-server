@@ -3,8 +3,9 @@ package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 // import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 
-import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.GetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPutDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyGetDTO;
 // import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
 
 import org.mapstruct.*;
@@ -26,7 +27,9 @@ public interface LobbyMapper {
 
   LobbyMapper INSTANCE = Mappers.getMapper(LobbyMapper.class);
 
-  Lobby convertLobbyPostDTOtoEntity(PostDTO lobbyPostDTO);
+  Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
+
+  Lobby convertLobbyPutDTOtoEntity(LobbyPutDTO lobbyPutDTO);
 
   // @Mapping(source = "isPublic", target = "isPublic")
   // @Mapping(source = "maxPlayers", target = "maxPlayers")
@@ -38,6 +41,6 @@ public interface LobbyMapper {
   // @Mapping(source = "timeVoteLimit", target = "timeVoteLimit")
   // LobbySetting convertLobbyPutDTOtoEntity(PutDTO lobbyPutDTO);
 
-  GetDTO convertEntityToLobbyGetDTO(Lobby lobby);
+  LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 
 }

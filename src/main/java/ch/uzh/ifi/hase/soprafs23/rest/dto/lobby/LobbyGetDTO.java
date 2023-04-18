@@ -4,18 +4,18 @@ import java.util.List;
 
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 import ch.uzh.ifi.hase.soprafs23.entity.Message;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserGetDTO;
 
-public class GetDTO {
+public class LobbyGetDTO {
     private String code;
 
     private String name;
 
-    private String owner;
+    private UserGetDTO owner;
 
     private LobbySetting lobbySetting;
 
-    private List<User> players;
+    private List<UserGetDTO> players;
 
     private List<Message> messages;
 
@@ -35,11 +35,11 @@ public class GetDTO {
         this.name = name;
     }
 
-    public String getOwner() {
+    public UserGetDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(UserGetDTO owner) {
         this.owner = owner;
     }
 
@@ -51,11 +51,11 @@ public class GetDTO {
         this.lobbySetting = lobbySetting;
     }
 
-    public List<User> getPlayers() {
+    public List<UserGetDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<User> players) {
+    public void setPlayers(List<UserGetDTO> players) {
         this.players = players;
     }
 
