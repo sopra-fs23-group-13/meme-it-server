@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.stream.StreamSupport;
 
 @Entity
@@ -37,13 +38,16 @@ public class Lobby implements Serializable {
     private LobbySetting lobbySetting;
 
     @Column(nullable = false)
-    private Users players;
+    @ElementCollection
+    private List<User> players;
 
     @Column(nullable = false)
-    private Users kickedPlayers;
+    @ElementCollection
+    private List<User> kickedPlayers;
 
     @Column(nullable = false)
-    private Messages messages;
+    @ElementCollection
+    private List<Message> messages;
 
     @Column(nullable = false)
     private boolean isJoinable;
@@ -88,11 +92,11 @@ public class Lobby implements Serializable {
         this.lobbySetting = lobbySetting;
     }
 
-    public Users getPlayers() {
+    public List<User> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Users players) {
+    public void setPlayers(List<User> players) {
         this.players = players;
     }
 
@@ -108,12 +112,12 @@ public class Lobby implements Serializable {
 
     public void addPlayer(User player) {
         // check if player is already in lobby
-        if (containsUser(this.players.getUsers(), player)) {
+        if (containsUser(this.players, player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
         }
 
         // check if player is kicked
-        if (containsUser(this.kickedPlayers.getUsers(), player)) {
+        if (containsUser(this.kickedPlayers, player)) {
             throw new IllegalArgumentException("Player is kicked and therefore not allowed to join");
         }
 
@@ -122,30 +126,30 @@ public class Lobby implements Serializable {
             throw new IllegalArgumentException("Player has no name set yet");
         }
 
-        this.players.addUser(player);
+        this.players.add(player);
     }
 
-    public Users getKickedPlayers() {
+    public List<User> getKickedPlayers() {
         return kickedPlayers;
     }
 
-    public void setKickedPlayers(Users kickedPlayers) {
+    public void setKickedPlayers(List<User> kickedPlayers) {
         this.kickedPlayers = kickedPlayers;
     }
 
     public void addKickedPlayer(User kickedPlayer) {
-        this.kickedPlayers.addUser(kickedPlayer);
+        this.kickedPlayers.add(kickedPlayer);
     }
 
-    public Messages getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
     public void addMessage(Message message) {
-        this.messages.addMessage(message);
+        this.messages.add(message);
     }
 
-    public void setMessages(Messages messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
@@ -159,7 +163,7 @@ public class Lobby implements Serializable {
 
     public boolean isFull() {
 
-        Long totalUsers = StreamSupport.stream(this.players.getUsers().spliterator(), true).count();
+        Long totalUsers = StreamSupport.stream(this.players.spliterator(), true).count();
 
         return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
 

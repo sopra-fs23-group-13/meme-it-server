@@ -111,7 +111,7 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is full.");
         }
 
-        if (lobby.getKickedPlayers().getUsers().stream().anyMatch(user1-> user1.equals(user))){
+        if (lobby.getKickedPlayers().stream().anyMatch(user1 -> user1.equals(user))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join again, you've been kicked.");
         }
 
