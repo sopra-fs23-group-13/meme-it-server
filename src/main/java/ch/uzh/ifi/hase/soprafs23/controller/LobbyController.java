@@ -36,9 +36,10 @@ public class LobbyController {
         this.lobbyService = lobbyService;
     }
 
-    // If the user is not in a lobby, they can join a lobby by entering the lobby code
+    // If the user is not in a lobby, they can join a lobby by entering the lobby
+    // code
     // If the code provided is incorrect an error message gets displayed
-    @PostMapping("/{code}/players")
+    @PostMapping("/lobbies/{code}/players")
     public ResponseEntity<Object> joinLobby(@PathVariable String code, @RequestBody User user) {
         Lobby lobby = lobbyRepository.findByCode(code);
 
@@ -56,8 +57,7 @@ public class LobbyController {
         return ResponseEntity.ok().build();
     }
 
-
-    @GetMapping("/lobby")
+    @GetMapping("/lobbies")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<GetDTO> getLobbies() {
@@ -74,7 +74,7 @@ public class LobbyController {
         return getDTOs;
     }
 
-    @PostMapping("/lobby")
+    @PostMapping("/lobbies")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GetDTO createLobby(@RequestBody PostDTO lobbyPostDTO) {
@@ -101,14 +101,15 @@ public class LobbyController {
     // lobbyService.updateLobby(lobbyId, lobbySettingInput);
     // }
 
-    @GetMapping("/lobby/{lobbyId}")
+    @GetMapping("/lobbies/{lobbyId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GetDTO getLobby(@PathVariable Long lobbyId) {
         Lobby getLobby = lobbyService.getLobbyById(lobbyId);
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(getLobby);
     }
-    @PostMapping("/lobby/{lobbyId}/join")
+
+    @PostMapping("/lobbies/{lobbyId}/join")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GetDTO joinLobby(@PathVariable("lobbyId") Long lobbyId, @RequestBody PostDTO userPostDTO) {
@@ -121,7 +122,5 @@ public class LobbyController {
         // convert internal representation of lobby back to API
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(joinedLobby);
     }
-
-
 
 }
