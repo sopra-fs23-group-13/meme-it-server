@@ -108,7 +108,7 @@ public class Lobby implements Serializable {
         return false;
     }
 
-    public void addPlayer(User player, String username) {
+    public void addPlayer(User player) {
         // check if player is already in lobby
         if(containsUser(this.players.getUsers(), player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
