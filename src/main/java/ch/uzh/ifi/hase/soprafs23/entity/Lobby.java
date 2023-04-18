@@ -37,16 +37,16 @@ public class Lobby implements Serializable {
     @Column(nullable = false)
     private LobbySetting lobbySetting;
 
-    @Column(nullable = false)
-    @ElementCollection
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
     private List<User> players;
 
-    @Column(nullable = false)
-    @ElementCollection
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
     private List<User> kickedPlayers;
 
-    @Column(nullable = false)
-    @ElementCollection
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
     private List<Message> messages;
 
     @Column(nullable = false)
