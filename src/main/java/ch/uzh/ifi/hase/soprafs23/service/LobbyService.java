@@ -3,11 +3,8 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.entity.Users;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
-import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.utility.NameGenerator;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-
-
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Lobby Service
@@ -38,15 +32,20 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
 
+    // private final UserRepository usersRepository;
+
     private final NameGenerator nameGenerator = new NameGenerator();
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository/*
+                                                                                      * ,
+                                                                                      * 
+                                                                                      * @Qualifier("userRepository")
+                                                                                      * UserRepository usersRepository
+                                                                                      */) {
         this.lobbyRepository = lobbyRepository;
+        // this.usersRepository = usersRepository;
     }
-
-    @Autowired
-    private UserRepository usersRepository;
 
     public List<Lobby> getLobbies() {
         return this.lobbyRepository.findAll();
@@ -68,7 +67,7 @@ public class LobbyService {
         return newLobby;
     }
 
-    //Let User join by lobby code
+    // Let User join by lobby code
     public boolean joinLobby(String lobbyCode, User user) {
         Lobby lobby = lobbyRepository.findByCode(lobbyCode);
         if (lobby == null) {
@@ -81,7 +80,6 @@ public class LobbyService {
         lobbyRepository.save(lobby);
         return true;
     }
-
 
     public Lobby updateLobby(String lobbyId, LobbySetting newSettings) {
         Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
@@ -104,8 +102,9 @@ public class LobbyService {
     public Lobby joinLobby(Long lobbyId, User user) {
         Lobby lobby = getLobbyById(lobbyId);
 
-        User foundUser = usersRepository.findById(user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        // User foundUser = usersRepository.findById(user.getId())
+        // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User
+        // not found"));
 
         if (lobby.isFull()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is full.");
@@ -117,7 +116,7 @@ public class LobbyService {
 
         lobby.addPlayer(user);
 
-        if (lobby.isFull()){
+        if (lobby.isFull()) {
             lobby.setIsJoinable(false);
             lobbyRepository.save(lobby);
         }
