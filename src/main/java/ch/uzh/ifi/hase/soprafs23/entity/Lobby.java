@@ -31,8 +31,8 @@ public class Lobby implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String owner;
+    @OneToOne
+    private User owner;
 
     @Column(nullable = false)
     private LobbySetting lobbySetting;
@@ -76,11 +76,11 @@ public class Lobby implements Serializable {
         this.name = name;
     }
 
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
@@ -127,6 +127,10 @@ public class Lobby implements Serializable {
         }
 
         this.players.add(player);
+    }
+
+    public void removePlayer(User player) {
+        this.players.remove(player);
     }
 
     public List<User> getKickedPlayers() {

@@ -30,7 +30,7 @@ public class User implements Serializable {
   private String name;
 
   @Column(nullable = false)
-  private String token;
+  private String uuid;
 
   public Long getId() {
     return id;
@@ -48,18 +48,16 @@ public class User implements Serializable {
     this.name = name;
   }
 
-  public String getToken() {
-    return token;
+  public String getUuid() {
+    return uuid;
   }
 
-  public void setToken(String token) {
-    this.token = token;
+  public void setUuid(String token) {
+    this.uuid = token;
   }
 
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
     if (o == null || getClass() != o.getClass())
       return false;
     User user = (User) o;

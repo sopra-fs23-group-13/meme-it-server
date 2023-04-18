@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.user.PostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,14 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -51,9 +44,9 @@ public class UserControllerTest {
         User user = new User();
         user.setId(1L);
         user.setName("Test User");
-        user.setToken("1");
+        user.setUuid("1");
 
-        PostDTO userPostDTO = new PostDTO();
+        UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setName("Test User");
 
         given(userService.createUser(Mockito.any())).willReturn(user);
@@ -67,7 +60,7 @@ public class UserControllerTest {
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(user.getName())))
-                .andExpect(jsonPath("$.token", is(user.getToken())));
+                .andExpect(jsonPath("$.token", is(user.getUuid())));
     }
 
     /**

@@ -2,8 +2,8 @@ package ch.uzh.ifi.hase.soprafs23.rest.mapper.user;
 
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 
-import ch.uzh.ifi.hase.soprafs23.rest.dto.user.PostDTO;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.user.GetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserGetDTO;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -24,8 +24,8 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    User convertUserPostDTOtoEntity(PostDTO lobbyPostDTO);
+    User convertUserPostDTOtoEntity(UserPostDTO lobbyPostDTO);
 
-    GetDTO convertEntityToUserGetDTO(User user);
+    UserGetDTO convertEntityToUserGetDTO(User user);
 
 }

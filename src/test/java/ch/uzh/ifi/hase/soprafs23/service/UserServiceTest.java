@@ -8,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +28,7 @@ public class UserServiceTest {
         // given
         testUser = new User();
         testUser.setName("testName");
-        testUser.setToken("1");
+        testUser.setUuid("1");
 
         // when -> any object is being save in the userRepository -> return the dummy
         // testUser
@@ -46,7 +45,7 @@ public class UserServiceTest {
         Mockito.verify(userRepository, Mockito.times(1)).save(Mockito.any());
 
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getToken(), createdUser.getToken());
+        assertEquals(testUser.getUuid(), createdUser.getUuid());
 
     }
 
@@ -79,10 +78,10 @@ public class UserServiceTest {
         Mockito.verify(userRepository, Mockito.times(2)).save(Mockito.any());
 
         assertEquals(testUser.getName(), createdUser.getName());
-        assertNotNull(createdUser.getToken());
+        assertNotNull(createdUser.getUuid());
 
         assertEquals(testUser2.getName(), createdUser2.getName());
-        assertNotNull(createdUser2.getToken());
+        assertNotNull(createdUser2.getUuid());
     }
 
 }

@@ -35,43 +35,43 @@ public class UserServiceIntegrationTest {
     @Test
     public void createUser_validInputs_success() {
         // given
-        assertNull(userRepository.findBytoken("1"));
+        assertNull(userRepository.findByUuid("1"));
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setToken("1");
+        testUser.setUuid("1");
 
         // when
         User createdUser = userService.createUser(testUser);
 
         // then
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getToken(), createdUser.getToken());
-        assertNotNull(createdUser.getToken());
+        assertEquals(testUser.getUuid(), createdUser.getUuid());
+        assertNotNull(createdUser.getUuid());
     }
 
     @Test
     public void createUser_duplicateUsername_success() {
-        assertNull(userRepository.findBytoken("1"));
+        assertNull(userRepository.findByUuid("1"));
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setToken("1");
+        testUser.setUuid("1");
         User createdUser = userService.createUser(testUser);
 
         // create second user with same username
         User testUser2 = new User();
         testUser2.setName("testName2");
-        testUser2.setToken("2");
+        testUser2.setUuid("2");
         User createdUser2 = userService.createUser(testUser2);
 
         // check that an error is thrown
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getToken(), createdUser.getToken());
-        assertNotNull(createdUser.getToken());
+        assertEquals(testUser.getUuid(), createdUser.getUuid());
+        assertNotNull(createdUser.getUuid());
 
         assertEquals(testUser2.getName(), createdUser2.getName());
-        assertEquals(testUser2.getToken(), createdUser2.getToken());
-        assertNotNull(createdUser2.getToken());
+        assertEquals(testUser2.getUuid(), createdUser2.getUuid());
+        assertNotNull(createdUser2.getUuid());
     }
 }
