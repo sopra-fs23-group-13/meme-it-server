@@ -6,7 +6,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby.LobbyMapper;
-import ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby.UserMapper;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.GetDTO;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
@@ -34,27 +33,6 @@ public class LobbyController {
 
     public LobbyController(LobbyService lobbyService) {
         this.lobbyService = lobbyService;
-    }
-
-    // If the user is not in a lobby, they can join a lobby by entering the lobby
-    // code
-    // If the code provided is incorrect an error message gets displayed
-    @PostMapping("/lobbies/{code}/players")
-    public ResponseEntity<Object> joinLobby(@PathVariable String code, @RequestBody User user) {
-        Lobby lobby = lobbyRepository.findByCode(code);
-
-        if (lobby == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Add the player to the lobby
-        boolean success = lobbyService.joinLobby(code, user);
-
-        if (!success) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-
-        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/lobbies")
@@ -109,18 +87,27 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(getLobby);
     }
 
-    @PostMapping("/lobbies/{lobbyId}/join")
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public GetDTO joinLobby(@PathVariable("lobbyId") Long lobbyId, @RequestBody PostDTO userPostDTO) {
-        // convert API user to internal representation
-        User userInput = UserMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
+    // If the user is not in a lobby, they can join a lobby by entering the lobby
+    // code
+    // If the code provided is incorrect an error message gets displayed
+    public ResponseEntity<Object> joinLobby(@PathVariable String code,
+            @RequestBody User user) {
+        // TODO: change user is not sent in body but in header (but only user token
+        // sent)
+        Lobby lobby = lobbyRepository.findByCode(code);
 
-        // join lobby
-        Lobby joinedLobby = lobbyService.joinLobby(lobbyId, userInput);
+        if (lobby == null) {
+            return ResponseEntity.notFound().build();
+        }
 
-        // convert internal representation of lobby back to API
-        return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(joinedLobby);
+        // Add the player to the lobby
+        boolean success = lobbyService.joinLobby(code, user);
+
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+        return ResponseEntity.ok().build();
     }
 
 }
