@@ -5,7 +5,8 @@ import java.time.LocalDateTime;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Embeddable
+@Entity
+@Table(name = "MESSAGE")
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -15,14 +16,27 @@ public class Message implements Serializable {
     // this.user = user;
     // }
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
     @Column(nullable = false)
     private String message;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToOne
     private User user;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getMessage() {
         return message;

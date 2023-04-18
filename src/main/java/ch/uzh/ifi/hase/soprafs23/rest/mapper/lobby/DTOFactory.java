@@ -1,11 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 
+import java.util.ArrayList;
+
 import org.mapstruct.ObjectFactory;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
-import ch.uzh.ifi.hase.soprafs23.entity.Messages;
-import ch.uzh.ifi.hase.soprafs23.entity.Users;
+import ch.uzh.ifi.hase.soprafs23.entity.Message;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
 
 public class DTOFactory {
@@ -28,9 +30,9 @@ public class DTOFactory {
         lobby.setName(lobbyPostDTO.getName());
         lobby.setOwner(lobbyPostDTO.getOwner());
         lobby.setLobbySetting(lobbySetting);
-        lobby.setPlayers(new Users());
-        lobby.setKickedPlayers(new Users());
-        lobby.setMessages(new Messages());
+        lobby.setPlayers(new ArrayList<User>());
+        lobby.setKickedPlayers(new ArrayList<User>());
+        lobby.setMessages(new ArrayList<Message>());
         lobby.setIsJoinable(true);
 
         return lobby;

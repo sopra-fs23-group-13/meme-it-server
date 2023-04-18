@@ -1,8 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
+import java.util.List;
+
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
-import ch.uzh.ifi.hase.soprafs23.entity.Messages;
-import ch.uzh.ifi.hase.soprafs23.entity.Users;
+import ch.uzh.ifi.hase.soprafs23.entity.Message;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 public class GetDTO {
     private String code;
@@ -13,9 +15,9 @@ public class GetDTO {
 
     private LobbySetting lobbySetting;
 
-    private Users players;
+    private List<User> players;
 
-    private Messages messages;
+    private List<Message> messages;
 
     public String getCode() {
         return code;
@@ -49,19 +51,19 @@ public class GetDTO {
         this.lobbySetting = lobbySetting;
     }
 
-    public Users getPlayers() {
+    public List<User> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Users players) {
+    public void setPlayers(List<User> players) {
         this.players = players;
     }
 
-    public Messages getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(Messages messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 

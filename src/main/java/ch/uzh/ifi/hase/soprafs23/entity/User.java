@@ -14,18 +14,31 @@ import java.util.Objects;
  * - unique = true -> this value must be unqiue across the database -> composes
  * the primary key
  */
-@Embeddable
+@Entity
+@Table(name = "USERS")
 public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  // ! this caused the problem when the User entity was @embeddable (now its an
+  // entity so should be ok)
   @Id
+  @GeneratedValue
   private Long id;
 
   @Column(nullable = false)
   private String name;
 
+  @Column(nullable = false)
+  private String token;
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   public String getName() {
     return name;
@@ -35,26 +48,26 @@ public class User implements Serializable {
     this.name = name;
   }
 
-  public Long getId(){
-      return id;
+  public String getToken() {
+    return token;
   }
 
-  public void setId(Long id){
-      this.id = id;
+  public void setToken(String token) {
+    this.token = token;
   }
-  //add setId, setUsername
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    User user = (User) o;
+    return Objects.equals(id, user.id) && Objects.equals(name, user.name);
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name);
+  }
 }
