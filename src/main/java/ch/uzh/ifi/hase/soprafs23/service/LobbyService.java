@@ -64,8 +64,12 @@ public class LobbyService {
     }
 
 
-    public Lobby updateLobby(String lobbyCode, Lobby newLobby) {
+    public Lobby updateLobby(String lobbyCode, Lobby newLobby, User owner) {
         Lobby lobbyToUpdate = getLobbyByCode(lobbyCode);
+
+        if (!lobbyToUpdate.getOwner().equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this lobby.");
+        }
 
         newLobby.getLobbySetting();
         LobbySetting newSettings = newLobby.getLobbySetting();

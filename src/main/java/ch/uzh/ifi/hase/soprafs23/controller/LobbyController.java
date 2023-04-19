@@ -87,11 +87,13 @@ public class LobbyController {
     @PutMapping("/lobbies/{lobbyCode}")
     @ResponseStatus(HttpStatus.OK)
     public void updateLobby(@PathVariable String lobbyCode, @RequestBody LobbyPutDTO lobbyPutDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
         // convert API user to internal representation
         Lobby lobbyInput = LobbyMapper.INSTANCE.convertLobbyPutDTOtoEntity(lobbyPutDTO);
-        System.out.println(lobbyInput);
         // update lobby
-        lobbyService.updateLobby(lobbyCode, lobbyInput);
+        lobbyService.updateLobby(lobbyCode, lobbyInput, user);
     }
 
     @GetMapping("/lobbies/{lobbyCode}")
