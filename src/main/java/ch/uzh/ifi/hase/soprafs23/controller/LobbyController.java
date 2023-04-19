@@ -1,6 +1,7 @@
 
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
@@ -82,6 +83,16 @@ public class LobbyController {
     // // update lobby
     // lobbyService.updateLobby(lobbyId, lobbySettingInput);
     // }
+
+    @PutMapping("/lobbies/{lobbyCode}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateLobby(@PathVariable String lobbyCode, @RequestBody LobbyPutDTO lobbyPutDTO) {
+        // convert API user to internal representation
+        Lobby lobbyInput = LobbyMapper.INSTANCE.convertLobbyPutDTOtoEntity(lobbyPutDTO);
+        System.out.println(lobbyInput);
+        // update lobby
+        lobbyService.updateLobby(lobbyCode, lobbyInput);
+    }
 
     @GetMapping("/lobbies/{lobbyCode}")
     @ResponseStatus(HttpStatus.OK)

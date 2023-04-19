@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.utility.NameGenerator;
 
@@ -31,20 +32,24 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
 
+    // private final UserRepository usersRepository;
+
     private final NameGenerator nameGenerator = new NameGenerator();
 
     @Autowired
     public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
+        // this.usersRepository = usersRepository;
     }
 
     public List<Lobby> getLobbies() {
         return this.lobbyRepository.findAll();
     }
 
-    public Lobby createLobby(Lobby newLobby) {
+    public Lobby createLobby(Lobby newLobby, User user) {
         String code = nameGenerator.getReadableId();
         newLobby.setCode(code);
+        newLobby.setOwner(user);
 
         checkIfLobbyExists(newLobby);
         // saves the given entity but data is only persisted in the database once
@@ -58,12 +63,15 @@ public class LobbyService {
         return newLobby;
     }
 
-    public Lobby updateLobby(String lobbyId, Lobby newLobby) {
-        Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
+
+    public Lobby updateLobby(String lobbyCode, Lobby newLobby) {
+        Lobby lobbyToUpdate = getLobbyByCode(lobbyCode);
 
         newLobby.getLobbySetting();
         LobbySetting newSettings = newLobby.getLobbySetting();
+        //Check which values are provided so that no null values are saved
 
+        //Weird checking for getIsPublic, because "if(getIsPublic == null)" throws error for some reason
         if(newSettings.getIsPublic() == true){
             newSettings.setIsPublic(true);
         }
@@ -105,14 +113,21 @@ public class LobbyService {
         if(newLobby.getName() != null && !newLobby.getName().equals("")){
             lobbyToUpdate.setName(newLobby.getName());
         }
+        if(newLobby.getOwner() != null){
+            lobbyToUpdate.setOwner(newLobby.getOwner());
+        }
         lobbyToUpdate.setLobbySetting(newSettings);
         lobbyRepository.save(lobbyToUpdate);
         return lobbyToUpdate;
     }
 
-    public Lobby getLobbyById(Long id) {
-        return lobbyRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby not found"));
+    public Lobby getLobbyByCode(String code) {
+        Lobby lobby = lobbyRepository.findByCode(code);
+
+        if (lobby == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby not found");
+        }
+        return lobby;
     }
 
     private void checkIfLobbyExists(Lobby lobby) {
@@ -120,4 +135,61 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby already exists");
         }
     }
+
+    public Lobby joinLobby(String lobbyCode, User user) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        // * joinable is set if game is started
+        if (!lobby.isJoinable()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is not joinable");
+        }
+
+        if (lobby.isFull()) {
+            lobby.setIsJoinable(false);
+            lobbyRepository.save(lobby);
+            lobbyRepository.flush();
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is full.");
+        }
+
+        if (lobby.getKickedPlayers().stream().anyMatch(user1 -> user1.equals(user))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join again, you've been kicked.");
+        }
+
+        // add user
+        lobby.addPlayer(user);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+
+        return lobby;
+    }
+
+    public void leaveLobby(String lobbyCode, User user) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        lobby.removePlayer(user);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+    }
+
+    public Lobby kickPlayer(String lobbyCode, User owner, User userKick) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        if (!lobby.getOwner().equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this lobby.");
+        }
+
+        lobby.removePlayer(userKick);
+        lobby.addKickedPlayer(userKick);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+
+        return lobby;
+    }
+
 }
