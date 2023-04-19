@@ -1,7 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
-public class PostDTO {
-    private String owner;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
+
+public class LobbyPostDTO {
+
     private String name;
     private boolean isPublic;
     private Integer maxPlayers;
@@ -11,14 +13,6 @@ public class PostDTO {
     private Integer superDislikeLimit;
     private Integer timeRoundLimit;
     private Integer timeVoteLimit;
-
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
 
     public String getName() {
         return name;

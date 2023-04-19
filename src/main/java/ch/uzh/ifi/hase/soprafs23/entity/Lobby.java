@@ -2,8 +2,8 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-
-
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 @Entity
 @Table(name = "LOBBY")
@@ -31,20 +31,23 @@ public class Lobby implements Serializable {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
-    private String owner;
+    @OneToOne
+    private User owner;
 
     @Column(nullable = false)
     private LobbySetting lobbySetting;
 
-    @Column(nullable = false)
-    private Users players;
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
+    private List<User> players;
 
-    @Column(nullable = false)
-    private Users kickedPlayers;
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
+    private List<User> kickedPlayers;
 
-    @Column(nullable = false)
-    private Messages messages;
+    // ! no "@Column(nullable = false)" for foreign keys!
+    @OneToMany
+    private List<Message> messages;
 
     @Column(nullable = false)
     private boolean isJoinable;
@@ -73,11 +76,11 @@ public class Lobby implements Serializable {
         this.name = name;
     }
 
-    public String getOwner() {
+    public User getOwner() {
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
     }
 
@@ -89,11 +92,11 @@ public class Lobby implements Serializable {
         this.lobbySetting = lobbySetting;
     }
 
-    public Users getPlayers() {
+    public List<User> getPlayers() {
         return players;
     }
 
-    public void setPlayers(Users players) {
+    public void setPlayers(List<User> players) {
         this.players = players;
     }
 
@@ -107,48 +110,50 @@ public class Lobby implements Serializable {
         return false;
     }
 
-    public void addPlayer(User player, String username) {
+    public void addPlayer(User player) {
         // check if player is already in lobby
-        if(containsUser(this.players.getUsers(), player)) {
+        if (containsUser(this.players, player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
         }
-    
+
         // check if player is kicked
-        if(containsUser(this.kickedPlayers.getUsers(), player)) {
+        if (containsUser(this.kickedPlayers, player)) {
             throw new IllegalArgumentException("Player is kicked and therefore not allowed to join");
         }
-    
+
         // check if player has a name set
-        if(player.getName() == null || player.getName().isEmpty()) {
+        if (player.getName() == null || player.getName().isEmpty()) {
             throw new IllegalArgumentException("Player has no name set yet");
         }
-    
-        this.players.addUser(player);
+
+        this.players.add(player);
     }
 
-    
+    public void removePlayer(User player) {
+        this.players.remove(player);
+    }
 
-    public Users getKickedPlayers() {
+    public List<User> getKickedPlayers() {
         return kickedPlayers;
     }
 
-    public void setKickedPlayers(Users kickedPlayers) {
+    public void setKickedPlayers(List<User> kickedPlayers) {
         this.kickedPlayers = kickedPlayers;
     }
 
     public void addKickedPlayer(User kickedPlayer) {
-        this.kickedPlayers.addUser(kickedPlayer);
+        this.kickedPlayers.add(kickedPlayer);
     }
 
-    public Messages getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
     public void addMessage(Message message) {
-        this.messages.addMessage(message);
+        this.messages.add(message);
     }
 
-    public void setMessages(Messages messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
@@ -158,6 +163,14 @@ public class Lobby implements Serializable {
 
     public void setIsJoinable(boolean isJoinable) {
         this.isJoinable = isJoinable;
+    }
+
+    public boolean isFull() {
+
+        Long totalUsers = StreamSupport.stream(this.players.spliterator(), true).count();
+
+        return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
+
     }
 
 }

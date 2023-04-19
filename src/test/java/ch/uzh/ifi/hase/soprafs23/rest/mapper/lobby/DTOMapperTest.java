@@ -1,4 +1,4 @@
-package ch.uzh.ifi.hase.soprafs23.rest.mapper;
+package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 
 // import ch.uzh.ifi.hase.soprafs23.constant.UserStatus;
 // import ch.uzh.ifi.hase.soprafs23.entity.User;
