@@ -90,6 +90,10 @@ public class LobbyController {
     // If the user is not in a lobby, they can join a lobby by entering the lobby
     // code
     // If the code provided is incorrect an error message gets displayed
+
+    @PostMapping("/join/lobbies/{code}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
     public ResponseEntity<Object> joinLobby(@PathVariable String code,
             @RequestBody User user) {
         // TODO: change user is not sent in body but in header (but only user token
