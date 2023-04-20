@@ -9,7 +9,7 @@ import ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby.LobbyMapper;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.GetDTO;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-// import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
+//import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class LobbyController {
     // lobbyService.updateLobby(lobbyId, lobbySettingInput);
     // }
 
-    @GetMapping("/lobbies/{lobbyId}")
+    @GetMapping("/lobbies/{lobbyCode}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public GetDTO getLobby(@PathVariable Long lobbyId) {
@@ -91,7 +91,7 @@ public class LobbyController {
     // code
     // If the code provided is incorrect an error message gets displayed
 
-    @PostMapping("/join/lobbies/{code}")
+    @PostMapping("/lobbies/{lobbyCode}/players")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public ResponseEntity<Object> joinLobby(@PathVariable String code,

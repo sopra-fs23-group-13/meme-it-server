@@ -263,7 +263,7 @@ public class LobbyControllerTest {
                 given(lobbyService.joinLobby(Mockito.anyString(), Mockito.any())).willReturn(true);
 
                 // when
-                MockHttpServletRequestBuilder postRequest = post("/join/lobbies/1")
+                MockHttpServletRequestBuilder postRequest = post("lobbies/1/players")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(asJsonString(userPostDTO));
 
