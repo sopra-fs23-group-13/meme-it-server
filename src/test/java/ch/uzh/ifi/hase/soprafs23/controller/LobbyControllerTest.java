@@ -1,11 +1,14 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.JwtRequestFilter;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 import ch.uzh.ifi.hase.soprafs23.entity.Message;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,6 +59,11 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenGetLobbies_thenReturnJsonArray() throws Exception {
                 // given
+
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
 
                 LobbySetting lobbySetting = new LobbySetting(
@@ -67,7 +77,7 @@ public class LobbyControllerTest {
                                 7);
 
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
@@ -112,6 +122,13 @@ public class LobbyControllerTest {
         @Test
         public void createLobby_validInput_userCreated() throws Exception {
                 // given
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
+                UserPostDTO userPostDTO = new UserPostDTO();
+                userPostDTO.setName("owner name");
+
                 Lobby lobby = new Lobby();
 
                 LobbySetting lobbySetting = new LobbySetting(
@@ -125,16 +142,15 @@ public class LobbyControllerTest {
                                 7);
 
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(true);
 
-                PostDTO lobbyPostDTO = new PostDTO();
+                LobbyPostDTO lobbyPostDTO = new LobbyPostDTO();
                 lobbyPostDTO.setName("lobby name");
-                lobbyPostDTO.setOwner("owner name");
                 lobbyPostDTO.setIsPublic(false);
                 lobbyPostDTO.setMaxPlayers(1);
                 lobbyPostDTO.setMaxRounds(2);
@@ -144,7 +160,7 @@ public class LobbyControllerTest {
                 lobbyPostDTO.setTimeRoundLimit(6);
                 lobbyPostDTO.setTimeVoteLimit(7);
 
-                given(lobbyService.createLobby(Mockito.any())).willReturn(lobby);
+                given(lobbyService.createLobby(Mockito.any(), Mockito.any())).willReturn(lobby);
 
                 // when/then -> do the request + validate the result
                 MockHttpServletRequestBuilder postRequest = post("/lobbies")
@@ -178,6 +194,10 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenGetLobby_thenReturnJsonArray() throws Exception {
                 // given
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
 
                 LobbySetting lobbySetting = new LobbySetting(
@@ -191,7 +211,7 @@ public class LobbyControllerTest {
                                 7);
                 lobby.setId(1L);
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
@@ -200,7 +220,7 @@ public class LobbyControllerTest {
 
                 // this mocks the UserService -> we define above what the userService should
                 // return when getUsers() is called
-                given(lobbyService.getLobbyById(Mockito.any())).willReturn(lobby);
+                given(lobbyService.getLobbyByCode(Mockito.any())).willReturn(lobby);
 
                 // when
                 MockHttpServletRequestBuilder getRequest = get("/lobbies/1").contentType(MediaType.APPLICATION_JSON);

@@ -37,12 +37,7 @@ public class LobbyService {
     private final NameGenerator nameGenerator = new NameGenerator();
 
     @Autowired
-    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository/*
-                                                                                      * ,
-                                                                                      * 
-                                                                                      * @Qualifier("userRepository")
-                                                                                      * UserRepository usersRepository
-                                                                                      */) {
+    public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
         // this.usersRepository = usersRepository;
     }
@@ -51,9 +46,10 @@ public class LobbyService {
         return this.lobbyRepository.findAll();
     }
 
-    public Lobby createLobby(Lobby newLobby) {
+    public Lobby createLobby(Lobby newLobby, User user) {
         String code = nameGenerator.getReadableId();
         newLobby.setCode(code);
+        newLobby.setOwner(user);
 
         checkIfLobbyExists(newLobby);
         // saves the given entity but data is only persisted in the database once
@@ -67,30 +63,75 @@ public class LobbyService {
         return newLobby;
     }
 
-    // Let User join by lobby code
-    public boolean joinLobby(String lobbyCode, User user) {
-        Lobby lobby = lobbyRepository.findByCode(lobbyCode);
-        if (lobby == null) {
-            new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid lobby code");
-        }
-        if (!lobby.isJoinable()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is already full");
-        }
-        lobby.addPlayer(user);
-        lobbyRepository.save(lobby);
-        return true;
-    }
 
-    public Lobby updateLobby(String lobbyId, LobbySetting newSettings) {
-        Lobby lobbyToUpdate = getLobbyById(Long.parseLong(lobbyId));
+    public Lobby updateLobby(String lobbyCode, Lobby newLobby, User owner) {
+        Lobby lobbyToUpdate = getLobbyByCode(lobbyCode);
+
+        if (!lobbyToUpdate.getOwner().equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this lobby.");
+        }
+
+        newLobby.getLobbySetting();
+        LobbySetting newSettings = newLobby.getLobbySetting();
+        //Check which values are provided so that no null values are saved
+
+        //Weird checking for getIsPublic, because "if(getIsPublic == null)" throws error for some reason
+        if(newSettings.getIsPublic() == true){
+            newSettings.setIsPublic(true);
+        }
+        else if(newSettings.getIsPublic() == false){
+            newSettings.setIsPublic(false);
+        }
+        else {
+            newSettings.setIsPublic(lobbyToUpdate.getLobbySetting().getIsPublic());
+        }
+
+        if(newSettings.getMaxPlayers() == null){
+            newSettings.setMaxPlayers(lobbyToUpdate.getLobbySetting().getMaxPlayers());
+        }
+
+        if(newSettings.getMaxRounds() == null){
+            newSettings.setMaxRounds((lobbyToUpdate.getLobbySetting().getMaxRounds()));
+        }
+
+        if(newSettings.getMemeChangeLimit() == null){
+            newSettings.setMemeChangeLimit((lobbyToUpdate.getLobbySetting().getMemeChangeLimit()));
+        }
+
+        if(newSettings.getSuperLikeLimit() == null){
+            newSettings.setSuperLikeLimit((lobbyToUpdate.getLobbySetting().getSuperLikeLimit()));
+        }
+
+        if(newSettings.getSuperDislikeLimit() == null){
+            newSettings.setSuperDislikeLimit((lobbyToUpdate.getLobbySetting().getSuperDislikeLimit()));
+        }
+
+        if(newSettings.getTimeRoundLimit() == null){
+            newSettings.setTimeRoundLimit((lobbyToUpdate.getLobbySetting().getTimeRoundLimit()));
+        }
+
+        if(newSettings.getTimeVoteLimit() == null){
+            newSettings.setTimeVoteLimit((lobbyToUpdate.getLobbySetting().getTimeVoteLimit()));
+        }
+
+        if(newLobby.getName() != null && !newLobby.getName().equals("")){
+            lobbyToUpdate.setName(newLobby.getName());
+        }
+        if(newLobby.getOwner() != null){
+            lobbyToUpdate.setOwner(newLobby.getOwner());
+        }
         lobbyToUpdate.setLobbySetting(newSettings);
         lobbyRepository.save(lobbyToUpdate);
         return lobbyToUpdate;
     }
 
-    public Lobby getLobbyById(Long id) {
-        return lobbyRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby not found"));
+    public Lobby getLobbyByCode(String code) {
+        Lobby lobby = lobbyRepository.findByCode(code);
+
+        if (lobby == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Lobby not found");
+        }
+        return lobby;
     }
 
     private void checkIfLobbyExists(Lobby lobby) {
@@ -99,14 +140,18 @@ public class LobbyService {
         }
     }
 
-    public Lobby joinLobby(Long lobbyId, User user) {
-        Lobby lobby = getLobbyById(lobbyId);
+    public Lobby joinLobby(String lobbyCode, User user) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
 
-        // User foundUser = usersRepository.findById(user.getId())
-        // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User
-        // not found"));
+        // * joinable is set if game is started
+        if (!lobby.isJoinable()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is not joinable");
+        }
 
         if (lobby.isFull()) {
+            lobby.setIsJoinable(false);
+            lobbyRepository.save(lobby);
+            lobbyRepository.flush();
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is full.");
         }
 
@@ -114,12 +159,40 @@ public class LobbyService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot join again, you've been kicked.");
         }
 
+        // add user
         lobby.addPlayer(user);
 
-        if (lobby.isFull()) {
-            lobby.setIsJoinable(false);
-            lobbyRepository.save(lobby);
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+
+        return lobby;
+    }
+
+    public void leaveLobby(String lobbyCode, User user) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        lobby.removePlayer(user);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+    }
+
+    public Lobby kickPlayer(String lobbyCode, User owner, User userKick) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        if (!lobby.getOwner().equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not the owner of this lobby.");
         }
+
+        lobby.removePlayer(userKick);
+        lobby.addKickedPlayer(userKick);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
+
         return lobby;
     }
 
