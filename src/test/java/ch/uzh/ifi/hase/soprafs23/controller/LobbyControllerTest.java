@@ -25,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
+import ch.uzh.ifi.hase.soprafs23.rest.mapper.user.UserMapper;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,10 +35,14 @@ import java.util.List;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 
 // /**
 // * LobbyControllerTest
@@ -289,8 +295,108 @@ public class LobbyControllerTest {
 
                 // then
                 mockMvc.perform(postRequest).andExpect(status().isOk());
+        
+        }
+
+
+
+        @Test
+        public void givenLobbies_whenLeaveLobby_thenReturnJsonArray() throws Exception {
+                // given
+                Lobby lobby = new Lobby();
+
+                LobbySetting lobbySetting = new LobbySetting(
+                                false,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7);
+                lobby.setId(1L);
+                lobby.setName("lobby name");
+                lobby.setOwner("owner name");
+                lobby.setLobbySetting(lobbySetting);
+                lobby.setPlayers(new ArrayList<User>());
+                lobby.setKickedPlayers(new ArrayList<User>());
+                lobby.setMessages(new ArrayList<Message>());
+                lobby.setIsJoinable(true);
+
+                User userPostDTO = new User();
+                userPostDTO.setId(1L);
+                userPostDTO.setName("example");
+                userPostDTO.setToken("123");
+
+                // this mocks the UserService -> we define above what the userService should
+                // return when getUsers() is called
+                given(lobbyRepository.findByCode(Mockito.anyString())).willReturn(lobby);
+                doNothing().when(lobbyService).leaveLobby(Mockito.anyString(), Mockito.any());
+
+
+                // when
+                MockHttpServletRequestBuilder deleteRequest = delete("/lobbies/1/players")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(userPostDTO));
+
+                // then
+                mockMvc.perform(deleteRequest).andExpect(status().isOk());
                         
         }
+
+
+        @Test
+        public void givenLobbies_whenKickLobby_thenReturnUpdatedLobby() throws Exception {
+                // given
+                Lobby lobby = new Lobby();
+            
+                LobbySetting lobbySetting = new LobbySetting(
+                                false,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7);
+                lobby.setId(1L);
+                lobby.setName("lobby name");
+                lobby.setOwner("owner name");
+                lobby.setLobbySetting(lobbySetting);
+                lobby.setPlayers(new ArrayList<User>());
+                lobby.setKickedPlayers(new ArrayList<User>());
+                lobby.setMessages(new ArrayList<Message>());
+                lobby.setIsJoinable(true);
+            
+                User user = new User();
+                user.setId(1L);
+                user.setName("example");
+                user.setToken("123");
+            
+                User userToKick = new User();
+                userToKick.setId(2L);
+                userToKick.setName("userToKick");
+                userToKick.setToken("456");
+            
+                UserPostDTO userPostDTO = UserMapper.INSTANCE.convertEntityToUserPostDTO(userToKick);
+            
+                given(lobbyRepository.findByCode(Mockito.anyString())).willReturn(lobby);
+                given(lobbyService.kickPlayer(Mockito.anyString(), Mockito.any(), Mockito.any())).willReturn(lobby);
+            
+                // when
+                MockHttpServletRequestBuilder putRequest = put("/lobbies/1/players")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(userPostDTO));
+            
+                // then
+                mockMvc.perform(putRequest)
+                       .andExpect(status().isOk())
+                       .andExpect(jsonPath("$.id", is(1)))
+                       .andExpect(jsonPath("$.name", is("lobby name")));
+            }
+
+
+        
 
         /**
          * Helper Method to convert userPostDTO into a JSON string such that the input
