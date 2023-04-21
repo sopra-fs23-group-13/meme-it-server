@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPutDTO;
 import org.mapstruct.ObjectFactory;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
@@ -38,6 +39,26 @@ public class DTOFactory {
         lobby.setMessages(new ArrayList<Message>());
         lobby.setIsJoinable(true);
 
+        return lobby;
+    }
+
+    @ObjectFactory
+    public Lobby convertLobbyPutDTOtoEntity(LobbyPutDTO lobbyPutDTO) {
+
+        Lobby lobby = new Lobby();
+
+        LobbySetting lobbySetting = new LobbySetting(
+                lobbyPutDTO.getIsPublic(),
+                lobbyPutDTO.getMaxPlayers(),
+                lobbyPutDTO.getMaxRounds(),
+                lobbyPutDTO.getMemeChangeLimit(),
+                lobbyPutDTO.getSuperLikeLimit(),
+                lobbyPutDTO.getSuperDislikeLimit(),
+                lobbyPutDTO.getTimeRoundLimit(),
+                lobbyPutDTO.getTimeVoteLimit());
+        lobby.setOwner(UserMapper.INSTANCE.convertUserPostDTOtoEntity(lobbyPutDTO.getOwner()));
+        lobby.setName(lobbyPutDTO.getName());
+        lobby.setLobbySetting(lobbySetting);
         return lobby;
     }
 
