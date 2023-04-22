@@ -3,8 +3,6 @@ package ch.uzh.ifi.hase.soprafs23.service;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 
-import java.util.UUID;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +30,6 @@ public class UserService {
 
     public User createUser(User newUser) {
         log.debug("To be created User: {}", newUser);
-        // generate UUID
-        String token = UUID.randomUUID().toString();
-        newUser.setUuid(token);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
         newUser = userRepository.save(newUser);
@@ -44,8 +39,8 @@ public class UserService {
         return newUser;
     }
 
-    public User getByUuid(String uuid) {
-        return userRepository.findByUuid(uuid);
+    public User getById(String id) {
+        return userRepository.findById(id);
         // return userRepository.findByUuid(uuid);
     }
 }

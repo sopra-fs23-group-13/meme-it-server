@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.game.GameGetDTO;
 
-@Mapper()
+@Mapper(uses = { DTOFactory.class, /* EntityFactory.class */ })
 public interface GameMapper {
 
     GameMapper INSTANCE = Mappers.getMapper(GameMapper.class);
