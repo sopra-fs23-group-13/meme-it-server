@@ -41,7 +41,7 @@ public class ChatService {
         Message m = new Message();
         m.setMessage(chatPostDTO.getMessage());
         m.setCreatedAt(LocalDateTime.now());
-        m.setUser(userRepository.findByUuid(chatPostDTO.getAuthor()));
+        m.setUser(userRepository.findById(chatPostDTO.getAuthor()));
 
         chatRepository.save(m);
         chatRepository.flush();
