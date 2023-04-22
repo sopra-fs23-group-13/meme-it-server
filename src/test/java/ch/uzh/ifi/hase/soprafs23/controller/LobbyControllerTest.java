@@ -301,6 +301,51 @@ public class LobbyControllerTest {
 
 
         @Test
+        public void givenLobbies_whenJoinLobbyFails_thenReturnForbidden() throws Exception {
+                // given
+                Lobby lobby = new Lobby();
+        
+                LobbySetting lobbySetting = new LobbySetting(
+                                false,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7);
+                lobby.setId(1L);
+                lobby.setName("lobby name");
+                lobby.setOwner("owner name");
+                lobby.setLobbySetting(lobbySetting);
+                lobby.setPlayers(new ArrayList<User>());
+                lobby.setKickedPlayers(new ArrayList<User>());
+                lobby.setMessages(new ArrayList<Message>());
+                lobby.setIsJoinable(false);  //false, Lobby not joinable
+        
+                User userPostDTO = new User();
+                userPostDTO.setId(1L);
+                userPostDTO.setName("example");
+                userPostDTO.setToken("123");
+        
+                // this mocks the UserService -> we define above what the userService should
+                // return when getUsers() is called
+                given(lobbyRepository.findByCode(Mockito.anyString())).willReturn(lobby);
+                given(lobbyService.joinLobby(Mockito.anyString(), Mockito.any())).willReturn(false);
+        
+                // when
+                MockHttpServletRequestBuilder postRequest = post("lobbies/1/players")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(asJsonString(userPostDTO));
+        
+                // then
+                mockMvc.perform(postRequest).andExpect(status().isForbidden());
+            }
+
+
+            
+
+        @Test
         public void givenLobbies_whenLeaveLobby_thenReturnJsonArray() throws Exception {
                 // given
                 Lobby lobby = new Lobby();
@@ -396,7 +441,38 @@ public class LobbyControllerTest {
             }
 
 
-        
+        @Test
+        public void givenLobbies_whenUpdateLobby_thenReturnStatusOk() throws Exception {
+                // given
+                LobbyPutDTO lobbyPutDTO = new LobbyPutDTO();
+                // set the necessary attributes for lobbyPutDTO, e.g.,
+                lobbyPutDTO.setIsPublic(true);
+                lobbyPutDTO.setMaxPlayers(8);
+                lobbyPutDTO.setMaxRounds(10);
+                lobbyPutDTO.setMemeChangeLimit(3);
+                lobbyPutDTO.setSuperLikeLimit(1);
+                lobbyPutDTO.setSuperDislikeLimit(1);
+                lobbyPutDTO.setTimeRoundLimit(120);
+                lobbyPutDTO.setTimeVoteLimit(60);
+            
+                User user = new User();
+                user.setId(1L);
+                user.setName("example");
+                user.setToken("123");
+            
+                doNothing().when(lobbyService).updateLobby(Mockito.anyString(), Mockito.any(), Mockito.any());
+            
+                // when
+                MockHttpServletRequestBuilder putRequest = put("/lobbies/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(lobbyPutDTO));
+            
+                // then
+                mockMvc.perform(putRequest).andExpect(status().isOk());
+            }
+
+
+            
 
         /**
          * Helper Method to convert userPostDTO into a JSON string such that the input
