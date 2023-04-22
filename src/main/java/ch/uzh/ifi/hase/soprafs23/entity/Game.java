@@ -1,9 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "GAME")
@@ -11,20 +14,34 @@ public class Game implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private String id;
 
-    @Column(nullable = false)
-    @ElementCollection
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Template> templates;
 
     @Column(nullable = false)
-    @ElementCollection
-    private List<Meme> submitedMemes;
+    private GameSetting gameSetting;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Round> rounds;
 
     @Column(nullable = false)
-    // @OneToOne
-    private Long lobbyId;
+    private Integer currentRound;
+
+    @Column(nullable = false)
+    private GameState state;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Player> players;
+
+    @Column(nullable = false)
+    private LocalDateTime startedAt;
+
+    public String getId() {
+        return id;
+    }
 
     public void setTemplates(List<Template> templates) {
         this.templates = templates;
@@ -35,22 +52,72 @@ public class Game implements Serializable {
     }
 
     public Template getTemplate() {
-        return templates.remove(0);
+        // get a random template from the list
+        return templates.get((int) (Math.random() * templates.size()));
     }
 
-    public void setSubmitedMemes(List<Meme> submitedMemes) {
-        this.submitedMemes = submitedMemes;
+    public Template getTemplateById(String id) {
+        for (Template template : templates) {
+            if (template.getId().equals(id)) {
+                return template;
+            }
+        }
+        throw new IllegalArgumentException("Template with id " + id + " not found");
     }
 
-    public List<Meme> getSubmitedMemes() {
-        return submitedMemes;
+    public void setGameSetting(GameSetting gameSetting) {
+        this.gameSetting = gameSetting;
     }
 
-    public void setLobbyId(Long lobbyId) {
-        this.lobbyId = lobbyId;
+    public GameSetting getGameSetting() {
+        return gameSetting;
     }
 
-    public Long getLobbyId() {
-        return lobbyId;
+    public void setRounds(List<Round> rounds) {
+        this.rounds = rounds;
+    }
+
+    public List<Round> getRounds() {
+        return rounds;
+    }
+
+    public Round getRound() {
+        return rounds.get(currentRound - 1);
+    }
+
+    public Round setRound(Round round) {
+        return rounds.set(currentRound - 1, round);
+    }
+
+    public void setCurrentRound(Integer currentRound) {
+        this.currentRound = currentRound;
+    }
+
+    public Integer getCurrentRound() {
+        return currentRound;
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
+    }
+
+    public GameState getState() {
+        return state;
+    }
+
+    public void setPlayers(List<Player> players) {
+        this.players = players;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+    public void setStartedAt(LocalDateTime startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    public LocalDateTime getStartedAt() {
+        return startedAt;
     }
 }

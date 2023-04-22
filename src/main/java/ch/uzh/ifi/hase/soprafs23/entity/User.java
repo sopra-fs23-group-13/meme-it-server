@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -20,23 +23,24 @@ public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // ! this caused the problem when the User entity was @embeddable (now its an
-  // entity so should be ok)
+  // TODO: change to use uuid
+  // @Id
+  // @GeneratedValue(generator = "UUID")
+  // @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  // private UUID id;
   @Id
-  @GeneratedValue
-  private Long id;
+  @GeneratedValue(generator = "UUID")
+  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+  private String id;
 
   @Column(nullable = false)
   private String name;
 
-  @Column(nullable = false)
-  private String uuid;
-
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -46,14 +50,6 @@ public class User implements Serializable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getUuid() {
-    return uuid;
-  }
-
-  public void setUuid(String token) {
-    this.uuid = token;
   }
 
   @Override

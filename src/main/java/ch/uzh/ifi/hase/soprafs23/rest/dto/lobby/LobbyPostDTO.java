@@ -1,7 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
-import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
-
 public class LobbyPostDTO {
 
     private String name;
@@ -11,8 +9,8 @@ public class LobbyPostDTO {
     private Integer memeChangeLimit;
     private Integer superLikeLimit;
     private Integer superDislikeLimit;
-    private Integer timeRoundLimit;
-    private Integer timeVoteLimit;
+    private Integer roundDuration;
+    private Integer ratingDuration;
 
     public String getName() {
         return name;
@@ -70,20 +68,20 @@ public class LobbyPostDTO {
         this.superDislikeLimit = superDislikeLimit;
     }
 
-    public Integer getTimeRoundLimit() {
-        return timeRoundLimit;
+    public Integer getRoundDuration() {
+        return roundDuration;
     }
 
-    public void setTimeRoundLimit(Integer timeRoundLimit) {
-        this.timeRoundLimit = timeRoundLimit;
+    public void setRoundDuration(Integer timeRoundLimit) {
+        this.roundDuration = timeRoundLimit;
     }
 
-    public Integer getTimeVoteLimit() {
-        return timeVoteLimit;
+    public Integer getRatingDuration() {
+        return ratingDuration;
     }
 
-    public void setTimeVoteLimit(Integer timeVoteLimit) {
-        this.timeVoteLimit = timeVoteLimit;
+    public void setRatingDuration(Integer timeVoteLimit) {
+        this.ratingDuration = timeVoteLimit;
     }
 
 }

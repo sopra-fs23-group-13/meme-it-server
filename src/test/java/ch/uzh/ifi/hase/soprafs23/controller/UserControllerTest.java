@@ -42,9 +42,7 @@ public class UserControllerTest {
     public void createUser_newUser() throws Exception {
         // given
         User user = new User();
-        user.setId(1L);
         user.setName("Test User");
-        user.setUuid("1");
 
         UserPostDTO userPostDTO = new UserPostDTO();
         userPostDTO.setName("Test User");
@@ -59,8 +57,7 @@ public class UserControllerTest {
         // then
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name", is(user.getName())))
-                .andExpect(jsonPath("$.token", is(user.getUuid())));
+                .andExpect(jsonPath("$.name", is(user.getName())));
     }
 
     /**
