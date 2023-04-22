@@ -63,6 +63,45 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.token", is(user.getUuid())));
     }
 
+
+
+    @Test
+    public void createUser_invalidUser() throws Exception {
+        // given
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setName(""); // empty name
+
+        given(userService.createUser(Mockito.any())).willThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "User name is invalid"));
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isBadRequest());
+    }
+
+
+    @Test
+    public void createUser_serviceLayerException() throws Exception {
+        // given
+        UserPostDTO userPostDTO = new UserPostDTO();
+        userPostDTO.setName("Test User");
+
+        given(userService.createUser(Mockito.any())).willThrow(new RuntimeException("Unexpected error"));
+
+        // when/then -> do the request + validate the result
+        MockHttpServletRequestBuilder postRequest = post("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(userPostDTO));
+
+        // then
+        mockMvc.perform(postRequest)
+                .andExpect(status().isInternalServerError());
+    }
+
     /**
      * Helper Method to convert userPostDTO into a JSON string such that the input
      * can be processed
