@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -48,6 +49,9 @@ public class Lobby implements Serializable {
     // ! no "@Column(nullable = false)" for foreign keys!
     @OneToMany
     private List<Message> messages;
+
+    @Column(nullable = true)
+    private Date startTime;
 
     @Column(nullable = false)
     private boolean isJoinable;
@@ -173,4 +177,11 @@ public class Lobby implements Serializable {
 
     }
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 }

@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
+import java.util.Date;
 import java.util.List;
 
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
@@ -20,6 +21,8 @@ public class LobbyGetDTO {
     private List<UserGetDTO> players;
 
     private List<Message> messages;
+
+    private Date startTime;
 
     public Long getId() {
         return id;
@@ -77,4 +80,11 @@ public class LobbyGetDTO {
         this.messages = messages;
     }
 
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
 }

@@ -146,4 +146,15 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
     }
 
+    @PutMapping("/lobbies/{lobbyCode}/sync")
+    @ResponseStatus(HttpStatus.OK)
+    public LobbyGetDTO synchronizeLobbyToStart(@PathVariable String lobbyCode) {
+        SecurityContextHolder.getContext().getAuthentication();
+
+        Lobby lobby = lobbyService.synchronizeLobbyToStartGame(lobbyCode);
+
+        // return lobby
+        return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(lobby);
+    }
+
 }

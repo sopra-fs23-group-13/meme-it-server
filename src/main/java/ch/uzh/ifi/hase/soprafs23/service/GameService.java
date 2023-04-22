@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
+
 @Service
 @Transactional
 public class GameService {
@@ -29,7 +31,7 @@ public class GameService {
 
     public Game createGame(Long lobbyId) {
         Game newGame = new Game();
-
+        // TODO: set lobby is joinable to false
         // set templates
         newGame.setTemplates(templateService.getTemplates());
         // set lobby

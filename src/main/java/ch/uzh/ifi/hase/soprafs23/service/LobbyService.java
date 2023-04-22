@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -194,6 +195,21 @@ public class LobbyService {
         lobbyRepository.flush();
 
         return lobby;
+    }
+
+    public Lobby synchronizeLobbyToStartGame(String lobbyCode){
+        Lobby l = getLobbyByCode(lobbyCode);
+        Calendar calendar = Calendar.getInstance();
+
+        // Add time to sync with all players
+        calendar.add(Calendar.SECOND, 15);
+        l.setStartTime(calendar.getTime());
+
+        //disable joining
+        l.setIsJoinable(false);
+        lobbyRepository.save(l);
+        lobbyRepository.flush();
+        return l;
     }
 
 }
