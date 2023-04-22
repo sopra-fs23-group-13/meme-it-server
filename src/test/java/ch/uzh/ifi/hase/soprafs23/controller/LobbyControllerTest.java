@@ -66,7 +66,7 @@ public class LobbyControllerTest {
         public void givenLobbies_whenGetLobbies_thenReturnJsonArray() throws Exception {
                 // given
 
-                User user = new User();
+                User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
                 user.setUuid("1");
 
@@ -92,8 +92,8 @@ public class LobbyControllerTest {
 
                 List<Lobby> allLobbies = Collections.singletonList(lobby);
 
-                // this mocks the UserService -> we define above what the userService should
-                // return when getUsers() is called
+                // this mocks the lobbyService -> we define above what the lobbyService should
+                // return when getLobbies() is called
                 given(lobbyService.getLobbies()).willReturn(allLobbies);
 
                 // when
@@ -128,12 +128,9 @@ public class LobbyControllerTest {
         @Test
         public void createLobby_validInput_userCreated() throws Exception {
                 // given
-                User user = new User();
+                User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
                 user.setUuid("1");
-
-                UserPostDTO userPostDTO = new UserPostDTO();
-                userPostDTO.setName("owner name");
 
                 Lobby lobby = new Lobby();
 
@@ -200,7 +197,7 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenGetLobby_thenReturnJsonArray() throws Exception {
                 // given
-                User user = new User();
+                User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
                 user.setUuid("1");
 
@@ -224,8 +221,8 @@ public class LobbyControllerTest {
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(true);
 
-                // this mocks the UserService -> we define above what the userService should
-                // return when getUsers() is called
+                // this mocks the lobbyService -> we define above what the lobbyService should
+                // return when getLobbies() is called
                 given(lobbyService.getLobbyByCode(Mockito.any())).willReturn(lobby);
 
                 // when
@@ -258,6 +255,12 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenJoinLobby_thenReturnJsonArray() throws Exception {
                 // given
+
+                //creates owner of the lobby, needed to create the Lobby instance
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
 
                 LobbySetting lobbySetting = new LobbySetting(
@@ -271,25 +274,25 @@ public class LobbyControllerTest {
                                 7);
                 lobby.setId(1L);
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(true);
 
-                User userPostDTO = new User();
-                userPostDTO.setId(1L);
+                //creates another User object representing the user who wants to join the lobby
+                User userPostDTO = new User(); 
+                userPostDTO.setId(2L);
                 userPostDTO.setName("example");
-                userPostDTO.setToken("123");
 
-                // this mocks the UserService -> we define above what the userService should
-                // return when getUsers() is called
+                // this mocks the lobbyService -> we define above what the lobbyService should
+                // return when getLobbies() is called
                 given(lobbyRepository.findByCode(Mockito.anyString())).willReturn(lobby);
                 given(lobbyService.joinLobby(Mockito.anyString(), Mockito.any())).willReturn(true);
 
                 // when
-                MockHttpServletRequestBuilder postRequest = post("lobbies/1/players")
+                MockHttpServletRequestBuilder postRequest = post("lobbies/1/players") //1 meaning lobby with id=1
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(asJsonString(userPostDTO));
 
@@ -303,6 +306,12 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenJoinLobbyFails_thenReturnForbidden() throws Exception {
                 // given
+
+                //creates owner of the lobby, needed to create the Lobby instance
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
         
                 LobbySetting lobbySetting = new LobbySetting(
@@ -316,17 +325,17 @@ public class LobbyControllerTest {
                                 7);
                 lobby.setId(1L);
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(false);  //false, Lobby not joinable
-        
+
+                //creates another User object representing the user who wants to join the lobby
                 User userPostDTO = new User();
-                userPostDTO.setId(1L);
+                userPostDTO.setId(2L);
                 userPostDTO.setName("example");
-                userPostDTO.setToken("123");
         
                 // this mocks the UserService -> we define above what the userService should
                 // return when getUsers() is called
@@ -348,6 +357,12 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenLeaveLobby_thenReturnJsonArray() throws Exception {
                 // given
+
+                //creates owner of the lobby, needed to create the Lobby instance
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
 
                 LobbySetting lobbySetting = new LobbySetting(
@@ -361,17 +376,17 @@ public class LobbyControllerTest {
                                 7);
                 lobby.setId(1L);
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(true);
 
+                //creates another User object representing the user who wants to leave the lobby
                 User userPostDTO = new User();
-                userPostDTO.setId(1L);
+                userPostDTO.setId(2L);
                 userPostDTO.setName("example");
-                userPostDTO.setToken("123");
 
                 // this mocks the UserService -> we define above what the userService should
                 // return when getUsers() is called
@@ -393,6 +408,12 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenKickLobby_thenReturnUpdatedLobby() throws Exception {
                 // given
+
+                //creates owner of the lobby, needed to create the Lobby instance
+                User user = new User();
+                user.setName("owner name");
+                user.setUuid("1");
+
                 Lobby lobby = new Lobby();
             
                 LobbySetting lobbySetting = new LobbySetting(
@@ -406,22 +427,17 @@ public class LobbyControllerTest {
                                 7);
                 lobby.setId(1L);
                 lobby.setName("lobby name");
-                lobby.setOwner("owner name");
+                lobby.setOwner(user);
                 lobby.setLobbySetting(lobbySetting);
                 lobby.setPlayers(new ArrayList<User>());
                 lobby.setKickedPlayers(new ArrayList<User>());
                 lobby.setMessages(new ArrayList<Message>());
                 lobby.setIsJoinable(true);
-            
-                User user = new User();
-                user.setId(1L);
-                user.setName("example");
-                user.setToken("123");
-            
+
+                //creates another User object representing the user to be kicked from the lobby
                 User userToKick = new User();
                 userToKick.setId(2L);
                 userToKick.setName("userToKick");
-                userToKick.setToken("456");
             
                 UserPostDTO userPostDTO = UserMapper.INSTANCE.convertEntityToUserPostDTO(userToKick);
             
@@ -444,6 +460,7 @@ public class LobbyControllerTest {
         @Test
         public void givenLobbies_whenUpdateLobby_thenReturnStatusOk() throws Exception {
                 // given
+
                 LobbyPutDTO lobbyPutDTO = new LobbyPutDTO();
                 // set the necessary attributes for lobbyPutDTO, e.g.,
                 lobbyPutDTO.setIsPublic(true);
@@ -455,10 +472,6 @@ public class LobbyControllerTest {
                 lobbyPutDTO.setTimeRoundLimit(120);
                 lobbyPutDTO.setTimeVoteLimit(60);
             
-                User user = new User();
-                user.setId(1L);
-                user.setName("example");
-                user.setToken("123");
             
                 doNothing().when(lobbyService).updateLobby(Mockito.anyString(), Mockito.any(), Mockito.any());
             
@@ -472,7 +485,7 @@ public class LobbyControllerTest {
             }
 
 
-            
+
 
         /**
          * Helper Method to convert userPostDTO into a JSON string such that the input
