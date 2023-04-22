@@ -3,7 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto.user;
 public class UserGetDTO {
 
     private String name;
-    private String uuid;
+    private String id;
 
     public String getName() {
         return name;
@@ -13,11 +13,11 @@ public class UserGetDTO {
         this.name = name;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getId() {
+        return id;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setId(String uuid) {
+        this.id = uuid;
     }
 }

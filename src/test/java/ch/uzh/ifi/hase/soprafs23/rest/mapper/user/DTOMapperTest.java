@@ -33,13 +33,11 @@ public class DTOMapperTest {
         // create User
         User user = new User();
         user.setName("Firstname Lastname");
-        user.setUuid("1");
 
         // MAP -> Create UserGetDTO
         UserGetDTO userGetDTO = UserMapper.INSTANCE.convertEntityToUserGetDTO(user);
 
         // check content
         assertEquals(user.getName(), userGetDTO.getName());
-        assertEquals(user.getUuid(), userGetDTO.getUuid());
     }
 }

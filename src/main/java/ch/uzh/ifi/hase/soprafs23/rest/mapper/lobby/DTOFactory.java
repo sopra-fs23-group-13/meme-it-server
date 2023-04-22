@@ -29,8 +29,8 @@ public class DTOFactory {
                 lobbyPostDTO.getMemeChangeLimit(),
                 lobbyPostDTO.getSuperLikeLimit(),
                 lobbyPostDTO.getSuperDislikeLimit(),
-                lobbyPostDTO.getTimeRoundLimit(),
-                lobbyPostDTO.getTimeVoteLimit());
+                lobbyPostDTO.getRoundDuration(),
+                lobbyPostDTO.getRatingDuration());
 
         lobby.setName(lobbyPostDTO.getName());
         lobby.setLobbySetting(lobbySetting);
@@ -54,8 +54,8 @@ public class DTOFactory {
                 lobbyPutDTO.getMemeChangeLimit(),
                 lobbyPutDTO.getSuperLikeLimit(),
                 lobbyPutDTO.getSuperDislikeLimit(),
-                lobbyPutDTO.getTimeRoundLimit(),
-                lobbyPutDTO.getTimeVoteLimit());
+                lobbyPutDTO.getRoundDuration(),
+                lobbyPutDTO.getRatingDuration());
         lobby.setOwner(UserMapper.INSTANCE.convertUserPostDTOtoEntity(lobbyPutDTO.getOwner()));
         lobby.setName(lobbyPutDTO.getName());
         lobby.setLobbySetting(lobbySetting);

@@ -63,7 +63,6 @@ public class LobbyService {
         return newLobby;
     }
 
-
     public Lobby updateLobby(String lobbyCode, Lobby newLobby, User owner) {
         Lobby lobbyToUpdate = getLobbyByCode(lobbyCode);
 
@@ -73,51 +72,50 @@ public class LobbyService {
 
         newLobby.getLobbySetting();
         LobbySetting newSettings = newLobby.getLobbySetting();
-        //Check which values are provided so that no null values are saved
+        // Check which values are provided so that no null values are saved
 
-        //Weird checking for getIsPublic, because "if(getIsPublic == null)" throws error for some reason
-        if(newSettings.getIsPublic() == true){
+        // Weird checking for getIsPublic, because "if(getIsPublic == null)" throws
+        // error for some reason
+        if (newSettings.getIsPublic() == true) {
             newSettings.setIsPublic(true);
-        }
-        else if(newSettings.getIsPublic() == false){
+        } else if (newSettings.getIsPublic() == false) {
             newSettings.setIsPublic(false);
-        }
-        else {
+        } else {
             newSettings.setIsPublic(lobbyToUpdate.getLobbySetting().getIsPublic());
         }
 
-        if(newSettings.getMaxPlayers() == null){
+        if (newSettings.getMaxPlayers() == null) {
             newSettings.setMaxPlayers(lobbyToUpdate.getLobbySetting().getMaxPlayers());
         }
 
-        if(newSettings.getMaxRounds() == null){
+        if (newSettings.getMaxRounds() == null) {
             newSettings.setMaxRounds((lobbyToUpdate.getLobbySetting().getMaxRounds()));
         }
 
-        if(newSettings.getMemeChangeLimit() == null){
+        if (newSettings.getMemeChangeLimit() == null) {
             newSettings.setMemeChangeLimit((lobbyToUpdate.getLobbySetting().getMemeChangeLimit()));
         }
 
-        if(newSettings.getSuperLikeLimit() == null){
+        if (newSettings.getSuperLikeLimit() == null) {
             newSettings.setSuperLikeLimit((lobbyToUpdate.getLobbySetting().getSuperLikeLimit()));
         }
 
-        if(newSettings.getSuperDislikeLimit() == null){
+        if (newSettings.getSuperDislikeLimit() == null) {
             newSettings.setSuperDislikeLimit((lobbyToUpdate.getLobbySetting().getSuperDislikeLimit()));
         }
 
-        if(newSettings.getTimeRoundLimit() == null){
-            newSettings.setTimeRoundLimit((lobbyToUpdate.getLobbySetting().getTimeRoundLimit()));
+        if (newSettings.getRoundDuration() == null) {
+            newSettings.setRoundDuration((lobbyToUpdate.getLobbySetting().getRoundDuration()));
         }
 
-        if(newSettings.getTimeVoteLimit() == null){
-            newSettings.setTimeVoteLimit((lobbyToUpdate.getLobbySetting().getTimeVoteLimit()));
+        if (newSettings.getRatingDuration() == null) {
+            newSettings.setRatingDuration((lobbyToUpdate.getLobbySetting().getRatingDuration()));
         }
 
-        if(newLobby.getName() != null && !newLobby.getName().equals("")){
+        if (newLobby.getName() != null && !newLobby.getName().equals("")) {
             lobbyToUpdate.setName(newLobby.getName());
         }
-        if(newLobby.getOwner() != null){
+        if (newLobby.getOwner() != null) {
             lobbyToUpdate.setOwner(newLobby.getOwner());
         }
         lobbyToUpdate.setLobbySetting(newSettings);

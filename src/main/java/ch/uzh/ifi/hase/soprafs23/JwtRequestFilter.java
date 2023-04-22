@@ -40,7 +40,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
 
         final String uuid = header.substring(7);
-        final User user = userService.getByUuid(uuid);
+        final User user = userService.getById(uuid);
         // TODO: fix error thrown when uuid not null but invalid (internal server error:
         // java.util.NoSuchElementException: No value present\n\tat
         // java.base/java.util.Optional.get(Optional.java:143)\n\tat
