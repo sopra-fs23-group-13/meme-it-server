@@ -7,6 +7,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.Message;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserGetDTO;
 
 public class LobbyGetDTO {
+
+    private Long id;
     private String code;
 
     private String name;
@@ -18,6 +20,14 @@ public class LobbyGetDTO {
     private List<UserGetDTO> players;
 
     private List<Message> messages;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getCode() {
         return code;
