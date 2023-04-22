@@ -1,9 +1,12 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class TextBox {
     public String text;
-    public int x;
-    public int y;
+    public Integer x;
+    public Integer y;
 
     public String getText() {
         return text;
@@ -13,19 +16,19 @@ public class TextBox {
         this.text = text;
     }
 
-    public int getX() {
+    public Integer getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(Integer x) {
         this.x = x;
     }
 
-    public int getY() {
+    public Integer getY() {
         return y;
     }
 
-    public void setY(int y) {
+    public void setY(Integer y) {
         this.y = y;
     }
 }

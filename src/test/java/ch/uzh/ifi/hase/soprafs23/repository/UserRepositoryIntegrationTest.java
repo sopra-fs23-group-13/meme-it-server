@@ -22,18 +22,17 @@ public class UserRepositoryIntegrationTest {
     public void findByName_success() {
         // given
         User user = new User();
+        user.setId("1");
         user.setName("Firstname Lastname");
-        user.setUuid("1");
 
         entityManager.persist(user);
         entityManager.flush();
 
         // when
-        User found = userRepository.findByUuid(user.getUuid());
+        User found = userRepository.findById(user.getId());
 
         // then
         assertNotNull(found.getId());
         assertEquals(found.getName(), user.getName());
-        assertEquals(found.getUuid(), user.getUuid());
     }
 }

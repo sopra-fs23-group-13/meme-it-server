@@ -2,30 +2,35 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.GenericGenerator;
+
+@Entity
+@Table(name = "MEME")
 public class Meme implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(nullable = false)
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    private UUID id;
+
+    @OneToOne
     private Template template;
 
     @Column(nullable = false)
     @ElementCollection
     private List<TextBox> textBoxes;
 
-    @Column(nullable = false)
+    @OneToOne
     private User user;
 
-    public Meme() {
-    }
-
-    public Meme(Template template, List<TextBox> textBoxes, User user) {
-        this.template = template;
-        this.textBoxes = textBoxes;
-        this.user = user;
+    public UUID getId() {
+        return id;
     }
 
     public Template getTemplate() {
