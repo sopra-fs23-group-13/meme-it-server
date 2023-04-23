@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -192,6 +193,24 @@ public class LobbyService {
         lobbyRepository.flush();
 
         return lobby;
+    }
+
+    /**
+     * Sets the game id and start time of the lobby
+     * 
+     * @param lobbyCode
+     * @param gameId
+     * @param startTime
+     */
+    public void setGameStarted(String lobbyCode, String gameId, Date startTime) {
+        Lobby lobby = getLobbyByCode(lobbyCode);
+
+        lobby.setGameStartTime(startTime);
+        lobby.setGameId(gameId);
+
+        // persist changes
+        lobbyRepository.save(lobby);
+        lobbyRepository.flush();
     }
 
 }

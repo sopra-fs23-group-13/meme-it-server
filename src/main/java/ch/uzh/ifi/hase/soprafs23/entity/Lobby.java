@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -10,16 +11,6 @@ import java.util.stream.StreamSupport;
 public class Lobby implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    /** Creates default lobby */
-    // public Lobby(String name, String owner, LobbySetting lobbySetting) {
-    // this.owner = owner;
-    // this.lobbySetting = new LobbySetting();
-    // this.players = new Users();
-    // this.kickedPlayers = new Users();
-    // this.messages = new Messages();
-    // this.isJoinable = true;
-    // }
 
     @Id
     @GeneratedValue
@@ -41,16 +32,18 @@ public class Lobby implements Serializable {
     @OneToMany
     private List<User> players;
 
-    // ! no "@Column(nullable = false)" for foreign keys!
     @OneToMany
     private List<User> kickedPlayers;
 
-    // ! no "@Column(nullable = false)" for foreign keys!
     @OneToMany
     private List<Message> messages;
 
     @Column(nullable = false)
     private boolean isJoinable;
+
+    private Date gameStartTime;
+
+    private String gameId;
 
     public Long getId() {
         return id;
@@ -171,6 +164,22 @@ public class Lobby implements Serializable {
 
         return this.lobbySetting.getMaxPlayers() == totalUsers.intValue();
 
+    }
+
+    public Date getGameStartTime() {
+        return gameStartTime;
+    }
+
+    public void setGameStartTime(Date gameStartTime) {
+        this.gameStartTime = gameStartTime;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
     }
 
 }

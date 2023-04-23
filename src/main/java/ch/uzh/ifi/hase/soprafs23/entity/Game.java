@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.*;
@@ -37,7 +38,7 @@ public class Game implements Serializable {
     private List<Player> players;
 
     @Column(nullable = false)
-    private LocalDateTime startedAt;
+    private Date startedAt;
 
     public String getId() {
         return id;
@@ -113,11 +114,11 @@ public class Game implements Serializable {
         return players;
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
+    public void setStartedAt(Date startedAt) {
         this.startedAt = startedAt;
     }
 
-    public LocalDateTime getStartedAt() {
+    public Date getStartedAt() {
         return startedAt;
     }
 }
