@@ -34,8 +34,8 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private GameState state;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Player> players;
+    @OneToMany()
+    private List<User> players;
 
     @Column(nullable = false)
     private Date startedAt;
@@ -106,11 +106,11 @@ public class Game implements Serializable {
         return state;
     }
 
-    public void setPlayers(List<Player> players) {
+    public void setPlayers(List<User> players) {
         this.players = players;
     }
 
-    public List<Player> getPlayers() {
+    public List<User> getPlayers() {
         return players;
     }
 

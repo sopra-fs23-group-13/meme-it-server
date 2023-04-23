@@ -5,8 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.GameSetting;
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Meme;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.entity.PlayerState;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
@@ -82,6 +80,7 @@ public class GameService {
         gameSetting.setRoundDuration(lobby.getLobbySetting().getRoundDuration());
         gameSetting.setRatingDuration(lobby.getLobbySetting().getRatingDuration());
         gameSetting.setTemplateSwapLimit(lobby.getLobbySetting().getMemeChangeLimit());
+        gameSetting.setRoundResultDuration(20); // ! default 20 seconds
         newGame.setGameSetting(gameSetting);
 
         // set round
@@ -89,15 +88,7 @@ public class GameService {
 
         // initialise players
         List<User> users = lobby.getPlayers();
-        List<Player> players = new ArrayList<Player>(users.size());
-        for (User user : users) {
-            Player player = new Player();
-
-            player.setUser(user);
-            player.setState(PlayerState.READY);
-
-            players.add(player);
-        }
+        newGame.setPlayers(users);
 
         newGame.setStartedAt(Calendar.getInstance().getTime());
 
@@ -307,9 +298,12 @@ public class GameService {
      */
     public void exectue(String gameId) {
         while (true) {
+            // TODO: use timestamps to be able to close a round if needed or start next
+            // round as ready endpoint not used
+
             Game game = getGame(gameId);
             // get game players
-            List<Player> players = game.getPlayers();
+            List<User> players = game.getPlayers();
             // get current round
             Round round = game.getRound();
 
@@ -340,36 +334,40 @@ public class GameService {
 
             // game not finished yet
             else {
+                // TODO: check round timestamp and add up vote duration etc to see if next round
+                // should start
+
                 // check if everyone is ready for next round
-                boolean allReady = false;
-                for (Player player : players) {
-                    if (player.getState() == PlayerState.READY) {
-                        allReady = true;
-                        continue;
-                    }
-                    allReady = false;
-                    break;
-                }
-                if (allReady) {
-                    // start creation phase
-                    game.setState(GameState.CREATION);
-                    // increment round
-                    game.setCurrentRound(game.getCurrentRound() + 1);
-                    // initialize new round
-                    Round nextRound = game.getRound();
-                    nextRound.setOpen(true);
-                    nextRound.setRoundNumber(null);
-                    nextRound.setStartedAt(LocalDateTime.now());
-                    game.setRound(nextRound);
+                // boolean allReady = false;
+                // for (Player player : players) {
+                // if (player.getState() == PlayerState.READY) {
+                // allReady = true;
+                // continue;
+                // }
+                // allReady = false;
+                // break;
+                // }
+                // if (allReady) {
 
-                    // reset player state
-                    for (Player player : players) {
-                        player.setState(PlayerState.NOT_READY);
-                    }
-                    game.setPlayers(players);
+                // start creation phase
+                game.setState(GameState.CREATION);
+                // increment round
+                game.setCurrentRound(game.getCurrentRound() + 1);
+                // initialize new round
+                Round nextRound = game.getRound();
+                nextRound.setOpen(true);
+                nextRound.setRoundNumber(null);
+                nextRound.setStartedAt(LocalDateTime.now());
+                game.setRound(nextRound);
 
-                    log.info(gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
-                }
+                // reset player state
+                // for (Player player : players) {
+                // player.setState(PlayerState.NOT_READY);
+                // }
+                // game.setPlayers(players);
+
+                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
+                // }
             }
 
             // persist changes
