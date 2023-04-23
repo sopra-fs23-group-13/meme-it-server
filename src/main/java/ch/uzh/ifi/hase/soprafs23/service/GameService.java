@@ -226,23 +226,24 @@ public class GameService {
      * @param gameId
      * @param user
      */
-    public void setPlayerReady(String gameId, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+    // public void setPlayerReady(String gameId, User user) {
+    // Game game = gameRepository.findById(gameId)
+    // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game
+    // not found"));
 
-        List<Player> players = game.getPlayers();
+    // List<Player> players = game.getPlayers();
 
-        for (Player player : players) {
-            if (user.getId() == player.getUser().getId()) {
-                player.setState(PlayerState.READY);
-            }
-        }
+    // for (Player player : players) {
+    // if (user.getId() == player.getUser().getId()) {
+    // player.setState(PlayerState.READY);
+    // }
+    // }
 
-        game.setPlayers(players);
+    // game.setPlayers(players);
 
-        // perist changes
-        save(game);
-    }
+    // // perist changes
+    // save(game);
+    // }
 
     /**
      * Returns a list of ratings from the past round
