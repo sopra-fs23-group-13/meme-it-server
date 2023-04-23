@@ -23,7 +23,7 @@ public class Message implements Serializable {
     @Column(nullable = false)
     private String message;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 
     // ! no "@Column(nullable = false)" for foreign keys!
@@ -52,13 +52,5 @@ public class Message implements Serializable {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
     }
 }
