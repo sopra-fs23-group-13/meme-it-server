@@ -142,8 +142,8 @@ public class LobbyService {
     public Lobby joinLobby(String lobbyCode, User user) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        // * joinable is set if game is started
-        if (!lobby.isJoinable()) {
+        // Lobby is joinable if game hasn't started yet
+        if (lobby.getGameStartedAT() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is not joinable");
         }
 
