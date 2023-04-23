@@ -18,11 +18,7 @@ import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import org.jobrunr.scheduling.JobScheduler;
 import org.slf4j.Logger;
@@ -98,8 +94,14 @@ public class GameService {
 
             players.add(player);
         }
+        Calendar calendar = Calendar.getInstance();
+        Date currentDate = calendar.getTime();
 
-        newGame.setStartedAt(Calendar.getInstance().getTime());
+        // Add 2 seconds to the current time
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.SECOND, 5);
+
+        newGame.setStartedAt(calendar.getTime());
 
         // initialise first round
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
