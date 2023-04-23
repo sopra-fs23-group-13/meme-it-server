@@ -1,6 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.game;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
 
@@ -16,7 +16,7 @@ public class GameGetDTO {
 
     private Integer totalRounds;
 
-    private LocalDateTime startedAt;
+    private Date startedAt;
 
     public String getId() {
         return id;
@@ -66,11 +66,11 @@ public class GameGetDTO {
         this.totalRounds = totalRounds;
     }
 
-    public LocalDateTime getStartedAt() {
+    public Date getStartedAt() {
         return startedAt;
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
+    public void setStartedAt(Date startedAt) {
         this.startedAt = startedAt;
     }
 
