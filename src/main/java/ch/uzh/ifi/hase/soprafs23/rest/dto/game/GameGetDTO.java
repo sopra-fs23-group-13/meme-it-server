@@ -11,6 +11,7 @@ public class GameGetDTO {
 
     private Integer roundDuration;
     private Integer votingDuration;
+    private Integer roundResultDuration;
 
     private Integer currentRound;
 
@@ -48,6 +49,14 @@ public class GameGetDTO {
 
     public void setVotingDuration(Integer votingDuration) {
         this.votingDuration = votingDuration;
+    }
+
+    public Integer getRoundResultDuration() {
+        return roundResultDuration;
+    }
+
+    public void setRoundResultDuration(Integer roundResultDuration) {
+        this.roundResultDuration = roundResultDuration;
     }
 
     public Integer getCurrentRound() {

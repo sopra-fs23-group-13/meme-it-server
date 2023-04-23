@@ -15,6 +15,7 @@ public class DTOFactory {
         gameGetDTO.setGameState(game.getState());
         gameGetDTO.setRoundDuration(game.getGameSetting().getRoundDuration());
         gameGetDTO.setVotingDuration(game.getGameSetting().getRatingDuration());
+        gameGetDTO.setRoundResultDuration(game.getGameSetting().getRoundResultDuration());
         gameGetDTO.setTotalRounds(game.getGameSetting().getMaxRounds());
         gameGetDTO.setCurrentRound(game.getCurrentRound());
         gameGetDTO.setStartedAt(game.getStartedAt());
