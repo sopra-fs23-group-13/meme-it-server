@@ -22,7 +22,7 @@ public class LobbyGetDTO {
 
     private String gameId;
 
-    private Date gameStartTime;
+    private Date gameStartedAt;
 
     public String getCode() {
         return code;
@@ -80,12 +80,12 @@ public class LobbyGetDTO {
         this.gameId = gameId;
     }
 
-    public Date getGameStartTime() {
-        return gameStartTime;
+    public Date getGameStartedAt() {
+        return gameStartedAt;
     }
 
-    public void setGameStartTime(Date gameStartTime) {
-        this.gameStartTime = gameStartTime;
+    public void setGameStartedAt(Date gameStartedAt) {
+        this.gameStartedAt = gameStartedAt;
     }
 
 }

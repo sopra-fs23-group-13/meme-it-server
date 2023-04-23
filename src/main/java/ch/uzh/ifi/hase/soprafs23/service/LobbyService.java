@@ -205,7 +205,7 @@ public class LobbyService {
     public void setGameStarted(String lobbyCode, String gameId, Date startTime) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        lobby.setGameStartTime(startTime);
+        lobby.setGameStartedAT(startTime);
         lobby.setGameId(gameId);
 
         // persist changes
