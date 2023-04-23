@@ -15,7 +15,6 @@ import ch.uzh.ifi.hase.soprafs23.utility.memeapi.IMemeApi;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -96,7 +95,7 @@ public class GameService {
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
         Round round = new Round();
         round.setOpen(true);
-        round.setStartedAt(LocalDateTime.now());
+        round.setStartedAt(Calendar.getInstance().getTime());
         round.setRoundNumber(1);
         rounds.add(0, round);
 
@@ -299,17 +298,28 @@ public class GameService {
      */
     public void exectue(String gameId) {
         while (true) {
-            // TODO: use timestamps to be able to close a round if needed or start next
-            // round as ready endpoint not used
-
             Game game = getGame(gameId);
             // get game players
             List<User> players = game.getPlayers();
             // get current round
             Round round = game.getRound();
 
-            // if equal it means everyone submited
-            if (round.getSubmitedMemes().size() == players.size()) {
+            // Calculate different phase start times
+            Long roundStart = round.getStartedAt().getTime();
+            Long ratingStart = roundStart + game.getGameSetting().getRoundDuration() * 1000;
+            Long roundResultsStart = ratingStart + game.getGameSetting().getRatingDuration() * 1000;
+            Long nextRoundStart = roundResultsStart + game.getGameSetting().getRoundResultDuration() * 1000;
+
+            // check if game is finished
+            if (game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
+                game.setState(GameState.GAME_RESULTS);
+
+                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
+
+            }
+            // check if everyone submited or creation phase is over
+            else if (round.getSubmitedMemes().size() == players.size() || game.getState() == GameState.CREATION
+                    && ratingStart <= Calendar.getInstance().getTime().getTime()) {
                 // close round
                 round.setOpen(false);
                 // start voting phase
@@ -317,38 +327,18 @@ public class GameService {
 
                 log.info(gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
             }
-
-            // if equal it means everyone rated
-            else if (round.getRatings().size() == players.size()) {
+            // check if everyone rated or rating phase is over
+            else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
+                    && roundResultsStart <= Calendar.getInstance().getTime().getTime()) {
                 // start round result phase
                 game.setState(GameState.ROUND_RESULTS);
 
                 log.info(gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
             }
-
-            // check if game is finished
-            else if (game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
-                game.setState(GameState.GAME_RESULTS);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
-            }
-
-            // game not finished yet
-            else {
-                // TODO: check round timestamp and add up vote duration etc to see if next round
-                // should start
-
-                // check if everyone is ready for next round
-                // boolean allReady = false;
-                // for (Player player : players) {
-                // if (player.getState() == PlayerState.READY) {
-                // allReady = true;
-                // continue;
-                // }
-                // allReady = false;
-                // break;
-                // }
-                // if (allReady) {
+            // game not finished yet, next round
+            // check if round_result phase is over
+            else if (game.getState() == GameState.ROUND_RESULTS
+                    && nextRoundStart <= Calendar.getInstance().getTime().getTime()) {
 
                 // start creation phase
                 game.setState(GameState.CREATION);
@@ -358,17 +348,10 @@ public class GameService {
                 Round nextRound = game.getRound();
                 nextRound.setOpen(true);
                 nextRound.setRoundNumber(null);
-                nextRound.setStartedAt(LocalDateTime.now());
+                nextRound.setStartedAt(Calendar.getInstance().getTime());
                 game.setRound(nextRound);
 
-                // reset player state
-                // for (Player player : players) {
-                // player.setState(PlayerState.NOT_READY);
-                // }
-                // game.setPlayers(players);
-
                 log.info(gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
-                // }
             }
 
             // persist changes
