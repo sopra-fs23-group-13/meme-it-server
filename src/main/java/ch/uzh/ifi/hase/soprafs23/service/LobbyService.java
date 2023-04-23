@@ -170,11 +170,22 @@ public class LobbyService {
     public void leaveLobby(String lobbyCode, User user) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        lobby.removePlayer(user);
-
+        //If lobby is empty after player leaves, delete it.
+        if(lobby.getPlayers().size() == 1){
+            lobbyRepository.delete(lobby);
+            return;
+        }
+        //If leaving player is Owner, make someone else owner
+        if(user.getId() == lobby.getOwner().getId()){
+            lobby.removePlayer(user);
+            lobby.setOwner(lobby.getPlayers().get(0));
+        }
+        else {
+            lobby.removePlayer(user);
+        }
         // persist changes
         lobbyRepository.save(lobby);
-        lobbyRepository.flush();
+        lobbyRepository.flush();;
     }
 
     public Lobby kickPlayer(String lobbyCode, User owner, User userKick) {
