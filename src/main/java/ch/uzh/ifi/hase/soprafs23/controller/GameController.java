@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Meme;
 import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Template;
@@ -30,7 +29,6 @@ import ch.uzh.ifi.hase.soprafs23.rest.mapper.meme.MemeMapper;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.rating.RatingMapper;
 import ch.uzh.ifi.hase.soprafs23.rest.mapper.template.TemplateMapper;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
-import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 
 /**
  * Game Controller
@@ -44,21 +42,17 @@ public class GameController {
 
     private final GameService gameService;
 
-    private final LobbyService lobbyService;
-
-    public GameController(GameService gameService, LobbyService lobbyService) {
+    public GameController(GameService gameService) {
         this.gameService = gameService;
-        this.lobbyService = lobbyService;
     }
 
     @PostMapping("/games/{lobbyCode}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public GameGetDTO createGame(@PathVariable String lobbyCode) {
-        // get lobby
-        Lobby lobby = lobbyService.getLobbyByCode(lobbyCode);
+
         // create game
-        Game game = gameService.createGame(lobby);
+        Game game = gameService.createGame(lobbyCode);
 
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }

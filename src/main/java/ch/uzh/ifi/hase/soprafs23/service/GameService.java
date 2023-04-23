@@ -19,6 +19,8 @@ import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -39,14 +41,18 @@ public class GameService {
 
     private final IMemeApi memeApi = new ImgflipClient();
 
+    private final LobbyService lobbyService;
+
     private final GameRepository gameRepository;
 
     private final JobScheduler jobScheduler;
 
     @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, JobScheduler jobScheduler) {
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, JobScheduler jobScheduler,
+            LobbyService lobbyService) {
         this.gameRepository = gameRepository;
         this.jobScheduler = jobScheduler;
+        this.lobbyService = lobbyService;
     }
 
     /**
@@ -55,8 +61,9 @@ public class GameService {
      * @param lobbyId
      * @return
      */
-    public Game createGame(Lobby lobby) {
+    public Game createGame(String lobbyCode) {
         Game newGame = new Game();
+        Lobby lobby = lobbyService.getLobbyByCode(lobbyCode);
 
         // set templates
         ApiResponse apiResponse = memeApi.getTemplates();
@@ -92,7 +99,7 @@ public class GameService {
             players.add(player);
         }
 
-        newGame.setStartedAt(LocalDateTime.now());
+        newGame.setStartedAt(Calendar.getInstance().getTime());
 
         // initialise first round
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
@@ -111,7 +118,7 @@ public class GameService {
         // ! Bug with the game job
         // jobScheduler.enqueue(() -> exectue(newGame.getId()));
 
-        log.info("Created new game. ID: " + newGame.getId());
+        lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
 
         return newGame;
     }
