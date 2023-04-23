@@ -186,7 +186,7 @@ public class LobbyService {
         }
         // persist changes
         lobbyRepository.save(lobby);
-        lobbyRepository.flush();;
+        lobbyRepository.flush();
     }
 
     public Lobby kickPlayer(String lobbyCode, User owner, User userKick) {
