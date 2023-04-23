@@ -170,19 +170,8 @@ public class LobbyService {
     public void leaveLobby(String lobbyCode, User user) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        //If lobby is empty after player leaves, delete it.
-        if(lobby.getPlayers().size() == 1){
-            lobbyRepository.delete(lobby);
-            return;
-        }
-        //If leaving player is Owner, make someone else owner
-        if(user.getUuid() == lobby.getOwner().getUuid()){
-            lobby.removePlayer(user);
-            lobby.setOwner(lobby.getPlayers().get(0));
-        }
-        else {
-            lobby.removePlayer(user);
-        }
+        lobby.removePlayer(user);
+
         // persist changes
         lobbyRepository.save(lobby);
         lobbyRepository.flush();
