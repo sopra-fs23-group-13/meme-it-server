@@ -11,6 +11,7 @@ public class GameSetting {
     // private Integer superDislikeLimit;
     private Integer roundDuration;
     private Integer ratingDuration;
+    private Integer roundResultDuration;
 
     public Integer getMaxRounds() {
         return maxRounds;
@@ -58,5 +59,13 @@ public class GameSetting {
 
     public void setRatingDuration(Integer ratingDuration) {
         this.ratingDuration = ratingDuration;
+    }
+
+    public Integer getRoundResultDuration() {
+        return roundResultDuration;
+    }
+
+    public void setRoundResultDuration(Integer roundResultDuration) {
+        this.roundResultDuration = roundResultDuration;
     }
 }
