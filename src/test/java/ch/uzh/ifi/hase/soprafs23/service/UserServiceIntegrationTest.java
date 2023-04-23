@@ -39,14 +39,14 @@ public class UserServiceIntegrationTest {
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setId("1");
+        // ! do not set id as its over written by userRepository
 
         // when
         User createdUser = userService.createUser(testUser);
 
         // then
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getId(), createdUser.getId());
+        // assertEquals(testUser.getId(), createdUser.getId());
         assertNotNull(createdUser.getId());
     }
 
@@ -56,22 +56,22 @@ public class UserServiceIntegrationTest {
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setId("1");
+        // ! do not set id as its over written by userRepository
         User createdUser = userService.createUser(testUser);
 
         // create second user with same username
         User testUser2 = new User();
         testUser2.setName("testName2");
-        testUser2.setId("2");
+        // ! do not set id as its over written by userRepository
         User createdUser2 = userService.createUser(testUser2);
 
         // check that an error is thrown
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getId(), createdUser.getId());
+        // assertEquals(testUser.getId(), createdUser.getId());
         assertNotNull(createdUser.getId());
 
         assertEquals(testUser2.getName(), createdUser2.getName());
-        assertEquals(testUser2.getId(), createdUser2.getId());
+        // assertEquals(testUser2.getId(), createdUser2.getId());
         assertNotNull(createdUser2.getId());
     }
 }
