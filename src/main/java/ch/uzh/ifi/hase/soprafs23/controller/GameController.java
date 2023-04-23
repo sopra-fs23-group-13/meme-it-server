@@ -149,14 +149,15 @@ public class GameController {
      * @param memeId
      * @param ratingPostDTO
      */
-    @PostMapping("/games/{gameId}/ready")
-    @ResponseStatus(HttpStatus.OK)
-    public void setPlayerReady(@PathVariable String gameId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User) authentication.getPrincipal();
+    // @PostMapping("/games/{gameId}/ready")
+    // @ResponseStatus(HttpStatus.OK)
+    // public void setPlayerReady(@PathVariable String gameId) {
+    // Authentication authentication =
+    // SecurityContextHolder.getContext().getAuthentication();
+    // User user = (User) authentication.getPrincipal();
 
-        gameService.setPlayerReady(gameId, user);
-    }
+    // gameService.setPlayerReady(gameId, user);
+    // }
 
     /**
      * Get all ratings in a round
