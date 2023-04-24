@@ -12,8 +12,8 @@ public class LobbyPutDTO {
     private Integer memeChangeLimit;
     private Integer superLikeLimit;
     private Integer superDislikeLimit;
-    private Integer timeRoundLimit;
-    private Integer timeVoteLimit;
+    private Integer roundDuration;
+    private Integer ratingDuration;
 
     public UserPostDTO getOwner() {
         return owner;
@@ -79,20 +79,20 @@ public class LobbyPutDTO {
         this.superDislikeLimit = superDislikeLimit;
     }
 
-    public Integer getTimeRoundLimit() {
-        return timeRoundLimit;
+    public Integer getRoundDuration() {
+        return roundDuration;
     }
 
-    public void setTimeRoundLimit(Integer timeRoundLimit) {
-        this.timeRoundLimit = timeRoundLimit;
+    public void setRoundDuration(Integer timeRoundLimit) {
+        this.roundDuration = timeRoundLimit;
     }
 
-    public Integer getTimeVoteLimit() {
-        return timeVoteLimit;
+    public Integer getRatingDuration() {
+        return ratingDuration;
     }
 
-    public void setTimeVoteLimit(Integer timeVoteLimit) {
-        this.timeVoteLimit = timeVoteLimit;
+    public void setRatingDuration(Integer timeVoteLimit) {
+        this.ratingDuration = timeVoteLimit;
     }
 
 }

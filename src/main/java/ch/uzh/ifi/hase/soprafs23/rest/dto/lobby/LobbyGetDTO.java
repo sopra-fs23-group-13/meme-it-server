@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.lobby;
 
+import java.util.Date;
 import java.util.List;
 
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
@@ -18,6 +19,10 @@ public class LobbyGetDTO {
     private List<UserGetDTO> players;
 
     private List<Message> messages;
+
+    private String gameId;
+
+    private Date gameStartedAT;
 
     public String getCode() {
         return code;
@@ -65,6 +70,22 @@ public class LobbyGetDTO {
 
     public void setMessages(List<Message> messages) {
         this.messages = messages;
+    }
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    public Date getGameStartedAT() {
+        return gameStartedAT;
+    }
+
+    public void setGameStartedAT(Date gameStartedAT) {
+        this.gameStartedAT = gameStartedAT;
     }
 
 }

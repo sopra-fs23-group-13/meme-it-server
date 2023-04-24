@@ -8,18 +8,14 @@ import javax.persistence.*;
 public class LobbySetting implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // @Id
-    // @GeneratedValue
-    // private Long id;
-
     private boolean isPublic;
     private Integer maxPlayers;
     private Integer maxRounds;
     private Integer memeChangeLimit;
     private Integer superLikeLimit;
     private Integer superDislikeLimit;
-    private Integer timeRoundLimit;
-    private Integer timeVoteLimit;
+    private Integer roundDuration;
+    private Integer ratingDuration;
 
     /** Default lobby settings */
     public LobbySetting() {
@@ -29,8 +25,8 @@ public class LobbySetting implements Serializable {
         this.memeChangeLimit = 3;
         this.superLikeLimit = 3;
         this.superDislikeLimit = 3;
-        this.timeRoundLimit = 120;
-        this.timeVoteLimit = 120;
+        this.roundDuration = 120;
+        this.ratingDuration = 120;
     }
 
     /** Custom lobby settings */
@@ -42,18 +38,10 @@ public class LobbySetting implements Serializable {
         this.memeChangeLimit = memeChangeLimit;
         this.superLikeLimit = superLikeLimit;
         this.superDislikeLimit = superDislikeLimit;
-        this.timeRoundLimit = timeRoundLimit;
-        this.timeVoteLimit = timeVoteLimit;
+        this.roundDuration = timeRoundLimit;
+        this.ratingDuration = timeVoteLimit;
 
     }
-
-    // public Long getId() {
-    // return id;
-    // }
-
-    // public void setId(Long id) {
-    // this.id = id;
-    // }
 
     public boolean getIsPublic() {
         return isPublic;
@@ -67,7 +55,7 @@ public class LobbySetting implements Serializable {
         return maxPlayers;
     }
 
-    public Integer setMaxPlayers(int maxPlayers) {
+    public Integer setMaxPlayers(Integer maxPlayers) {
         return this.maxPlayers = maxPlayers;
     }
 
@@ -75,7 +63,7 @@ public class LobbySetting implements Serializable {
         return maxRounds;
     }
 
-    public Integer setMaxRounds(int maxRounds) {
+    public Integer setMaxRounds(Integer maxRounds) {
         return this.maxRounds = maxRounds;
     }
 
@@ -83,7 +71,7 @@ public class LobbySetting implements Serializable {
         return memeChangeLimit;
     }
 
-    public Integer setMemeChangeLimit(int memeChangeLimit) {
+    public Integer setMemeChangeLimit(Integer memeChangeLimit) {
         return this.memeChangeLimit = memeChangeLimit;
     }
 
@@ -91,7 +79,7 @@ public class LobbySetting implements Serializable {
         return superLikeLimit;
     }
 
-    public Integer setSuperLikeLimit(int superLikeLimit) {
+    public Integer setSuperLikeLimit(Integer superLikeLimit) {
         return this.superLikeLimit = superLikeLimit;
     }
 
@@ -99,24 +87,24 @@ public class LobbySetting implements Serializable {
         return superDislikeLimit;
     }
 
-    public Integer setSuperDislikeLimit(int superDislikeLimit) {
+    public Integer setSuperDislikeLimit(Integer superDislikeLimit) {
         return this.superDislikeLimit = superDislikeLimit;
     }
 
-    public Integer getTimeRoundLimit() {
-        return timeRoundLimit;
+    public Integer getRoundDuration() {
+        return roundDuration;
     }
 
-    public Integer setTimeRoundLimit(int timeRoundLimit) {
-        return this.timeRoundLimit = timeRoundLimit;
+    public Integer setRoundDuration(Integer timeRoundLimit) {
+        return this.roundDuration = timeRoundLimit;
     }
 
-    public Integer getTimeVoteLimit() {
-        return timeVoteLimit;
+    public Integer getRatingDuration() {
+        return ratingDuration;
     }
 
-    public Integer setTimeVoteLimit(int timeVoteLimit) {
-        return this.timeVoteLimit = timeVoteLimit;
+    public Integer setRatingDuration(Integer timeVoteLimit) {
+        return this.ratingDuration = timeVoteLimit;
     }
 
 }

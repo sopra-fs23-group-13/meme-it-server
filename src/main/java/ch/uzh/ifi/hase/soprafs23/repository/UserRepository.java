@@ -7,5 +7,5 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {
-    User findByUuid(String uuid);
+    User findById(String uuid);
 }

@@ -35,43 +35,43 @@ public class UserServiceIntegrationTest {
     @Test
     public void createUser_validInputs_success() {
         // given
-        assertNull(userRepository.findByUuid("1"));
+        assertNull(userRepository.findById("1"));
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setUuid("1");
+        // ! do not set id as its over written by userRepository
 
         // when
         User createdUser = userService.createUser(testUser);
 
         // then
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getUuid(), createdUser.getUuid());
-        assertNotNull(createdUser.getUuid());
+        // assertEquals(testUser.getId(), createdUser.getId());
+        assertNotNull(createdUser.getId());
     }
 
     @Test
     public void createUser_duplicateUsername_success() {
-        assertNull(userRepository.findByUuid("1"));
+        assertNull(userRepository.findById("1"));
 
         User testUser = new User();
         testUser.setName("testName");
-        testUser.setUuid("1");
+        // ! do not set id as its over written by userRepository
         User createdUser = userService.createUser(testUser);
 
         // create second user with same username
         User testUser2 = new User();
         testUser2.setName("testName2");
-        testUser2.setUuid("2");
+        // ! do not set id as its over written by userRepository
         User createdUser2 = userService.createUser(testUser2);
 
         // check that an error is thrown
         assertEquals(testUser.getName(), createdUser.getName());
-        assertEquals(testUser.getUuid(), createdUser.getUuid());
-        assertNotNull(createdUser.getUuid());
+        // assertEquals(testUser.getId(), createdUser.getId());
+        assertNotNull(createdUser.getId());
 
         assertEquals(testUser2.getName(), createdUser2.getName());
-        assertEquals(testUser2.getUuid(), createdUser2.getUuid());
-        assertNotNull(createdUser2.getUuid());
+        // assertEquals(testUser2.getId(), createdUser2.getId());
+        assertNotNull(createdUser2.getId());
     }
 }

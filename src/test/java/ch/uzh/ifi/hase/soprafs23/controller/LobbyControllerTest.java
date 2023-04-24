@@ -22,7 +22,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -77,7 +76,6 @@ public class LobbyControllerTest {
 
                 User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
-                user.setUuid("1");
 
                 Lobby lobby = new Lobby();
 
@@ -129,9 +127,9 @@ public class LobbyControllerTest {
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
                                 .andExpect(
                                                 jsonPath("$[0].lobbySetting.timeRoundLimit",
-                                                                is(lobby.getLobbySetting().getTimeRoundLimit())))
+                                                                is(lobby.getLobbySetting().getRoundDuration())))
                                 .andExpect(jsonPath("$[0].lobbySetting.timeVoteLimit",
-                                                is(lobby.getLobbySetting().getTimeVoteLimit())));
+                                                is(lobby.getLobbySetting().getRatingDuration())));
         }
 
         @Test
@@ -139,7 +137,6 @@ public class LobbyControllerTest {
                 // given
                 User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
-                user.setUuid("1");
 
                 Lobby lobby = new Lobby();
 
@@ -169,8 +166,8 @@ public class LobbyControllerTest {
                 lobbyPostDTO.setMemeChangeLimit(3);
                 lobbyPostDTO.setSuperLikeLimit(4);
                 lobbyPostDTO.setSuperDislikeLimit(5);
-                lobbyPostDTO.setTimeRoundLimit(6);
-                lobbyPostDTO.setTimeVoteLimit(7);
+                lobbyPostDTO.setRoundDuration(6);
+                lobbyPostDTO.setRatingDuration(7);
 
                 given(lobbyService.createLobby(Mockito.any(), Mockito.any())).willReturn(lobby);
 
@@ -197,9 +194,9 @@ public class LobbyControllerTest {
                                 .andExpect(jsonPath("$.lobbySetting.superDislikeLimit",
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
                                 .andExpect(jsonPath("$.lobbySetting.timeRoundLimit",
-                                                is(lobby.getLobbySetting().getTimeRoundLimit())))
+                                                is(lobby.getLobbySetting().getRoundDuration())))
                                 .andExpect(jsonPath("$.lobbySetting.timeVoteLimit",
-                                                is(lobby.getLobbySetting().getTimeVoteLimit())));
+                                                is(lobby.getLobbySetting().getRatingDuration())));
 
         }
 
@@ -208,7 +205,6 @@ public class LobbyControllerTest {
                 // given
                 User user = new User(); //creates owner of the lobby
                 user.setName("owner name");
-                user.setUuid("1");
 
                 Lobby lobby = new Lobby();
 
@@ -254,9 +250,9 @@ public class LobbyControllerTest {
                                 .andExpect(jsonPath("$.lobbySetting.superDislikeLimit",
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
                                 .andExpect(jsonPath("$.lobbySetting.timeRoundLimit",
-                                                is(lobby.getLobbySetting().getTimeRoundLimit())))
+                                                is(lobby.getLobbySetting().getRoundDuration())))
                                 .andExpect(jsonPath("$.lobbySetting.timeVoteLimit",
-                                                is(lobby.getLobbySetting().getTimeVoteLimit())));
+                                                is(lobby.getLobbySetting().getRatingDuration())));
 
         }
 
