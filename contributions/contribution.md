@@ -21,8 +21,7 @@ This file serves as a log of individual contributions made by each team member t
 | 04/04/2023-04/17/2023 | Daniel Lutziger |[User Story 20](https://github.com/sopra-fs23-group-13/meme-it-client/issues/20), [User Story 14](https://github.com/sopra-fs23-group-13/meme-it-client/issues/14)| Added some game mechanics (e.g. added text boxes to the game and removing them again) and refactored some bugs. Changed the current game flow which was already implemented but not correctly. |
 |04/04/2023-04/17/2023 | Henrik Nordgren | [Dev task 90](https://github.com/sopra-fs23-group-13/meme-it-server/issues/90) [Dev task 91](https://github.com/sopra-fs23-group-13/meme-it-server/issues/91) | GameController, Service and DTOs scaffolded meaning we an quickly proceed with the remaining game logic. |
 | 04/04/2023-04/17/2023 | Marc Schurr | [Dev Task 19](https://github.com/sopra-fs23-group-13/meme-it-client/issues/19), [User Story 43](https://github.com/sopra-fs23-group-13/meme-it-client/issues/43)|I have implemented a leaderboard in the frontend which displays the current score and ranking after each game round. The first three places were specially highlighted. I also implemented the function that the user can change the display of the font (color, size..).|
-
-| 18/04/2023-25/17/2023 | Daniel Lutziger | []() | Implemented a proximity chat, refactored the whole frontend (e.g. redundant backend call removed, fixed bugs). Created a synchronization for the game such that players start at the same time. Restyled the theme to make it more appealing. |
+| 18/04/2023-25/17/2023 | Daniel Lutziger | [PR 66](https://github.com/sopra-fs23-group-13/meme-it-client/pull/67) | Implemented a proximity chat, refactored the whole frontend (e.g. redundant backend call removed, fixed bugs). Created a synchronization for the game such that players start at the same time. Restyled the theme to make it more appealing. |
 
 ## Weekly Update
 
