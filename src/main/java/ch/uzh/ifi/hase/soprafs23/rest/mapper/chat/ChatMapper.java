@@ -14,5 +14,6 @@ public interface ChatMapper {
     @Mapping(source = "message", target = "message")
     @Mapping(source = "user.name", target = "author")
     @Mapping(source = "createdAt", target = "time")
+    @Mapping(source = "user.id", target = "id")
     ChatGetDTO convertEntityToChatGetDTO(Message m);
 }
