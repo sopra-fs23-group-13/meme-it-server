@@ -1,14 +1,17 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
+import ch.uzh.ifi.hase.soprafs23.JwtSecurityConfig;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.UserService;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jobrunr.jobs.mappers.JobMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -29,7 +32,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // * request without actually sending them over the network.
 // * This tests if the UserController works.
 // */
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers = UserController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                JwtSecurityConfig.class
+        })
 public class UserControllerTest {
 
     @Autowired
@@ -37,6 +44,9 @@ public class UserControllerTest {
 
     @MockBean
     private UserService userService;
+
+    @MockBean
+    private JobMapper jobMapper;
 
     @Test
     public void createUser_newUser() throws Exception {

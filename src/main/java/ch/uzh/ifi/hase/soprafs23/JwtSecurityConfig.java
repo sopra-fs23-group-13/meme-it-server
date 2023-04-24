@@ -19,11 +19,9 @@ import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 @EnableWebSecurity
 public class JwtSecurityConfig {
 
-    private JwtRequestFilter jwtFilter;
-
-    @Autowired
-    public JwtSecurityConfig(@Qualifier("userRepository") UserRepository userRepository) {
-        this.jwtFilter = new JwtRequestFilter(userRepository);
+    @Bean
+    public JwtRequestFilter jwtFilter(@Qualifier("userRepository") UserRepository userRepository) {
+        return new JwtRequestFilter(userRepository);
     }
 
     @Bean
@@ -33,7 +31,7 @@ public class JwtSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain configure(final HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain configure(final HttpSecurity httpSecurity, final JwtRequestFilter jwtFilter) throws Exception {
 
         return httpSecurity.cors().and()
                 .csrf().disable()
