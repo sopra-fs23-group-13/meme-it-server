@@ -94,6 +94,7 @@ public class GameService {
 
             players.add(player);
         }
+        newGame.setPlayers(players);
         Calendar calendar = Calendar.getInstance();
         Date currentDate = calendar.getTime();
 
