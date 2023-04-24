@@ -23,11 +23,6 @@ public class User implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  // TODO: change to use uuid
-  // @Id
-  // @GeneratedValue(generator = "UUID")
-  // @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  // private UUID id;
   @Id
   @GeneratedValue(generator = "UUID")
   @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

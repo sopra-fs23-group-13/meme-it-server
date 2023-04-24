@@ -71,19 +71,6 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
     }
 
-    // @PutMapping("/lobbies/{lobbyId}")
-    // @ResponseStatus(HttpStatus.OK)
-    // @ResponseBody
-    // public void updateLobby(@PathVariable String lobbyId, @RequestBody
-    // LobbyPutDTO lobbyPutDTO) {
-    // // convert API user to internal representation
-    // LobbySetting lobbySettingInput =
-    // LobbyMapper.INSTANCE.convertLobbyPutDTOtoEntity(lobbyPutDTO);
-
-    // // update lobby
-    // lobbyService.updateLobby(lobbyId, lobbySettingInput);
-    // }
-
     @PutMapping("/lobbies/{lobbyCode}")
     @ResponseStatus(HttpStatus.OK)
     public void updateLobby(@PathVariable String lobbyCode, @RequestBody LobbyPutDTO lobbyPutDTO) {
@@ -104,8 +91,7 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(getLobby);
     }
 
-    // If the user is not in a lobby, they can join a lobby by entering the lobby
-    // code
+    // If the user is not in a lobby, they can join a lobby by entering the lobby code
     // If the code provided is incorrect an error message gets displayed
     @PostMapping("/lobbies/{lobbyCode}/players")
     @ResponseStatus(HttpStatus.OK)
