@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private GameState state;
 
-    @OneToMany()
+    @OneToMany(cascade = CascadeType.MERGE)
     private List<User> players;
 
     @Column(nullable = false)
@@ -88,6 +87,10 @@ public class Game implements Serializable {
 
     public Round setRound(Round round) {
         return rounds.set(currentRound - 1, round);
+    }
+
+    public void addRound(Round round) {
+        this.rounds.add(round);
     }
 
     public void setCurrentRound(Integer currentRound) {

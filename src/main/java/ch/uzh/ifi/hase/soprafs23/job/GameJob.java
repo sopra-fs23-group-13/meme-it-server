@@ -1,5 +1,9 @@
 package ch.uzh.ifi.hase.soprafs23.job;
 
+import java.sql.Date;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -11,10 +15,19 @@ import org.springframework.stereotype.Component;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
+import ch.uzh.ifi.hase.soprafs23.entity.Meme;
+import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
+// TODO: make testable by seperating components into smaller functions 
+
+/**
+ * Contains the code for the acutal game server
+ * 
+ * Game server updates every second
+ */
 @Component
 @Transactional
 public class GameJob {
@@ -42,51 +55,68 @@ public class GameJob {
 
             // Calculate different phase start times
             Long roundStart = round.getStartedAt().getTime();
-            Long ratingStart = roundStart + game.getGameSetting().getRoundDuration();
-            Long roundResultsStart = ratingStart + game.getGameSetting().getRatingDuration();
-            Long nextRoundStart = roundResultsStart + game.getGameSetting().getRoundResultDuration();
+            Long ratingStart = roundStart + (game.getGameSetting().getRatingDuration() * 1000);
+            Long roundResultsStart = ratingStart + (game.getGameSetting().getRoundDuration() * 1000);
+            Long nextRoundStart = roundResultsStart + (game.getGameSetting().getRoundResultDuration() * 1000);
+
+            Long timeNow = Calendar.getInstance().getTime().getTime();
+
+            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+            log.info("\nRound started at: " + format.format(new Date(roundStart)));
+            log.info("Rating started at: " + format.format(new Date(ratingStart)));
+            log.info("Round results started at: " + format.format(new Date(roundResultsStart)));
+            log.info("Next round started at: " + format.format(new Date(nextRoundStart)));
+            log.info("\n");
 
             // check if game is finished
-            if (game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
+            if (game.getState() == GameState.RATING && game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
                 game.setState(GameState.GAME_RESULTS);
                 log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
                 return;
             }
-            // check if everyone submited or creation phase is over
-            else if (round.getSubmitedMemes().size() == players.size() || game.getState() == GameState.CREATION
-                    && ratingStart <= Calendar.getInstance().getTime().getTime()) {
-                // close round
-                round.setOpen(false);
-                // start voting phase
-                game.setState(GameState.RATING);
-
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
-            }
-            // check if everyone rated or rating phase is over
-            else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
-                    && roundResultsStart <= Calendar.getInstance().getTime().getTime()) {
-                // start round result phase
-                game.setState(GameState.ROUND_RESULTS);
-
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
-            }
             // game not finished yet, next round
             // check if round_result phase is over
             else if (game.getState() == GameState.ROUND_RESULTS
-                    && nextRoundStart <= Calendar.getInstance().getTime().getTime()) {
+                    && nextRoundStart <= timeNow) {
 
                 // start creation phase
                 game.setState(GameState.CREATION);
                 // increment round
                 game.setCurrentRound(game.getCurrentRound() + 1);
                 // initialize new round
-                Round nextRound = game.getRound();
+                Round nextRound = new Round();
+                List<Meme> memes = new ArrayList<Meme>(players.size());
+                List<Rating> ratings = new ArrayList<Rating>(players.size() * (players.size() - 1));
+                nextRound.setMemes(memes);
+                nextRound.setRatings(ratings);
                 nextRound.setOpen(true);
-                nextRound.setRoundNumber(null);
+                nextRound.setRoundNumber(round.getRoundNumber() + 1);
                 nextRound.setStartedAt(Calendar.getInstance().getTime());
-                game.setRound(nextRound);
+                game.addRound(nextRound);
 
                 log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
+            }
+            // check if everyone rated or rating phase is over
+            else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
+                    && roundResultsStart <= timeNow) {
+                // start round result phase
+                game.setState(GameState.ROUND_RESULTS);
+
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
+
+            }
+            // check if everyone submited or creation phase is over
+            else if (round.getSubmitedMemes().size() == players.size() || game.getState() == GameState.CREATION
+                    && ratingStart <= timeNow) {
+                // close round
+                round.setOpen(false);
+                // start voting phase
+                game.setState(GameState.RATING);
+
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
+            } else {
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase "
+                        + game.getState().toString().toUpperCase());
             }
 
             // persist changes
@@ -100,20 +130,6 @@ public class GameJob {
             }
         }
 
-    }
-
-    private boolean isRatingPhrase(GameState state, List<User> players, Round round, Long ratingStart) {
-        return round.getSubmitedMemes().size() == players.size() || state == GameState.CREATION
-                && ratingStart <= Calendar.getInstance().getTime().getTime();
-    }
-
-    private boolean isRoundResultPshase(GameState state, List<User> players, Round round, Long roundResultsStart) {
-        return round.getRatings().size() == players.size() || state == GameState.RATING
-                && roundResultsStart <= Calendar.getInstance().getTime().getTime();
-    }
-
-    private boolean isGameResultsPhase(Game game) {
-        return game.getGameSetting().getMaxRounds() == game.getCurrentRound();
     }
 
 }
