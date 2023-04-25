@@ -52,6 +52,9 @@ public class LobbyService {
         newLobby.setCode(code);
         newLobby.setOwner(user);
 
+        // add owner as player
+        newLobby.addPlayer(user);
+
         checkIfLobbyExists(newLobby);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
