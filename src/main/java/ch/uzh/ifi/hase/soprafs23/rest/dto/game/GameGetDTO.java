@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
-import ch.uzh.ifi.hase.soprafs23.rest.dto.player.PlayerGetDTO;
+import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserGetDTO;
 
 public class GameGetDTO {
 
@@ -20,7 +20,7 @@ public class GameGetDTO {
     private Integer totalRounds;
 
     private Date startedAt;
-    private List<PlayerGetDTO> players;
+    private List<UserGetDTO> players;
 
     public String getId() {
         return id;
@@ -86,11 +86,11 @@ public class GameGetDTO {
         this.startedAt = startedAt;
     }
 
-    public List<PlayerGetDTO> getPlayers() {
+    public List<UserGetDTO> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<PlayerGetDTO> players) {
+    public void setPlayers(List<UserGetDTO> players) {
         this.players = players;
     }
 }
