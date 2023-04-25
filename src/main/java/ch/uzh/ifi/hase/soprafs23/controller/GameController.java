@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.jobrunr.scheduling.JobScheduler;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,13 +43,13 @@ public class GameController {
 
     private final GameService gameService;
 
-    private final JobScheduler jobScheduler;
+    // private final JobScheduler jobScheduler;
 
     private final GameJob gameJob;
 
-    public GameController(GameService gameService, JobScheduler jobScheduler, GameJob gameJob) {
+    public GameController(GameService gameService/* , JobScheduler jobScheduler */, GameJob gameJob) {
         this.gameService = gameService;
-        this.jobScheduler = jobScheduler;
+        // this.jobScheduler = jobScheduler;
         this.gameJob = gameJob;
     }
 
