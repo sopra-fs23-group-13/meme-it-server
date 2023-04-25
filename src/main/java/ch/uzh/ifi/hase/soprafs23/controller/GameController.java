@@ -64,7 +64,9 @@ public class GameController {
 
         // start game job
         // * game job takes care of updating game state
-        jobScheduler.enqueue(() -> gameJob.exectue(game.getId()));
+        Thread thread = new Thread(() -> gameJob.exectue(game.getId()));
+        thread.start();
+        // jobScheduler.enqueue(() -> gameJob.exectue(game.getId()));
 
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
