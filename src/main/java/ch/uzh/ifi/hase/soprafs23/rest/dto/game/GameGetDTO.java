@@ -19,6 +19,7 @@ public class GameGetDTO {
 
     private Integer totalRounds;
 
+    private Date roundStartedAt;
     private Date startedAt;
     private List<UserGetDTO> players;
 
@@ -76,6 +77,14 @@ public class GameGetDTO {
 
     public void setTotalRounds(Integer totalRounds) {
         this.totalRounds = totalRounds;
+    }
+
+    public Date getRoundStartedAt() {
+        return roundStartedAt;
+    }
+
+    public void setRoundStartedAt(Date roundStartedAt) {
+        this.roundStartedAt = roundStartedAt;
     }
 
     public Date getStartedAt() {

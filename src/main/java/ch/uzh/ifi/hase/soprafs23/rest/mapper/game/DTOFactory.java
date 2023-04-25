@@ -25,7 +25,9 @@ public class DTOFactory {
         gameGetDTO.setRoundResultDuration(game.getGameSetting().getRoundResultDuration());
         gameGetDTO.setTotalRounds(game.getGameSetting().getMaxRounds());
         gameGetDTO.setCurrentRound(game.getCurrentRound());
+        gameGetDTO.setRoundStartedAt(game.getRound().getStartedAt());
         gameGetDTO.setStartedAt(game.getStartedAt());
+
         List<UserGetDTO> playerDTOs = new ArrayList<>();
         for (User player : game.getPlayers()) {
             playerDTOs.add(UserMapper.INSTANCE.convertEntityToUserGetDTO(player));
