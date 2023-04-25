@@ -21,9 +21,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-import org.jobrunr.scheduling.JobScheduler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+// import org.slf4j.Logger;
+// import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -34,7 +33,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class GameService {
-    private final Logger log = LoggerFactory.getLogger(LobbyService.class);
+    // private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final IMemeApi memeApi = new ImgflipClient();
 
@@ -83,7 +82,17 @@ public class GameService {
 
         // initialise players
         List<User> users = lobby.getPlayers();
-        newGame.setPlayers(users);
+        // shitty fix but other wise error is thrown:
+        // org.hibernate.HibernateException: Found shared references to a collection
+        // ! this currently duplicates the users in the db
+        List<User> players = new ArrayList<User>(users.size());
+        for (var user : users) {
+            User player = new User();
+            player.setId(user.getId());
+            player.setName(user.getName());
+            players.add(player);
+        }
+        newGame.setPlayers(players);
 
         // Add 2 seconds to the current time
         Calendar calendar = Calendar.getInstance();
@@ -91,18 +100,20 @@ public class GameService {
 
         newGame.setStartedAt(calendar.getTime());
 
-        // initialise first round
+        // initialise rounds array
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
+        // initialise first round
         Round round = new Round();
         round.setOpen(true);
-        round.setStartedAt(Calendar.getInstance().getTime());
         round.setRoundNumber(1);
-        rounds.add(0, round);
+        round.setStartedAt(calendar.getTime()); // round starts same time as game
+        rounds.add(round);
 
         newGame.setRounds(rounds);
 
         save(newGame);
 
+        // inform lobby that game has started
         lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
 
         return newGame;
