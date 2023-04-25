@@ -23,6 +23,12 @@ public class Meme implements Serializable {
     private Template template;
 
     @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    private int fontSize;
+
+    @Column(nullable = false)
     @ElementCollection
     private List<TextBox> textBoxes;
 
@@ -39,6 +45,22 @@ public class Meme implements Serializable {
 
     public void setTemplate(Template template) {
         this.template = template;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public int getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
     }
 
     public List<TextBox> getTextBoxes() {
