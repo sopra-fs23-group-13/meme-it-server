@@ -41,7 +41,7 @@ public class Lobby implements Serializable {
     @Column(nullable = false)
     private boolean isJoinable;
 
-    private Date gameStartedAT;
+    private Date gameStartedAt;
 
     private String gameId;
 
@@ -166,12 +166,12 @@ public class Lobby implements Serializable {
 
     }
 
-    public Date getGameStartedAT() {
-        return gameStartedAT;
+    public Date getGameStartedAt() {
+        return gameStartedAt;
     }
 
-    public void setGameStartedAT(Date gameStartedAt) {
-        this.gameStartedAT = gameStartedAt;
+    public void setGameStartedAt(Date gameStartedAt) {
+        this.gameStartedAt = gameStartedAt;
     }
 
     public String getGameId() {
