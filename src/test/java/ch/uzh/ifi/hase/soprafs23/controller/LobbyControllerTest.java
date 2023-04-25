@@ -1,24 +1,27 @@
 package ch.uzh.ifi.hase.soprafs23.controller;
 
-import ch.uzh.ifi.hase.soprafs23.JwtRequestFilter;
+import ch.uzh.ifi.hase.soprafs23.security.JwtSecurityConfig;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 import ch.uzh.ifi.hase.soprafs23.entity.Message;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.user.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs23.service.LobbyService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.jobrunr.jobs.mappers.JobMapper;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,7 +44,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // * request without actually sending them over the network.
 // * This tests if the LobbyController works.
 // */
-@WebMvcTest(LobbyController.class)
+@WebMvcTest(controllers = LobbyController.class,
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                JwtSecurityConfig.class
+        })
 public class LobbyControllerTest {
 
         @Autowired
@@ -49,6 +56,9 @@ public class LobbyControllerTest {
 
         @MockBean
         private LobbyService lobbyService;
+
+        @MockBean
+        private JobMapper jobMapper;
 
         @Test
         public void givenLobbies_whenGetLobbies_thenReturnJsonArray() throws Exception {
@@ -90,7 +100,7 @@ public class LobbyControllerTest {
                 mockMvc.perform(getRequest).andExpect(status().isOk())
                                 .andExpect(jsonPath("$", hasSize(1)))
                                 .andExpect(jsonPath("$[0].name", is(lobby.getName())))
-                                .andExpect(jsonPath("$[0].owner", is(lobby.getOwner())))
+                                .andExpect(jsonPath("$[0].owner.name", is(lobby.getOwner().getName())))
                                 .andExpect(jsonPath("$[0].lobbySetting.isPublic",
                                                 is(lobby.getLobbySetting().getIsPublic())))
                                 .andExpect(jsonPath("$[0].lobbySetting.maxPlayers",
@@ -106,9 +116,9 @@ public class LobbyControllerTest {
                                 .andExpect(jsonPath("$[0].lobbySetting.superDislikeLimit",
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
                                 .andExpect(
-                                                jsonPath("$[0].lobbySetting.timeRoundLimit",
+                                                jsonPath("$[0].lobbySetting.roundDuration",
                                                                 is(lobby.getLobbySetting().getRoundDuration())))
-                                .andExpect(jsonPath("$[0].lobbySetting.timeVoteLimit",
+                                .andExpect(jsonPath("$[0].lobbySetting.ratingDuration",
                                                 is(lobby.getLobbySetting().getRatingDuration())));
         }
 
@@ -154,6 +164,8 @@ public class LobbyControllerTest {
 
                 given(lobbyService.createLobby(Mockito.any(), Mockito.any())).willReturn(lobby);
 
+                givenUserIsAuthenticated(user);
+
                 // when/then -> do the request + validate the result
                 MockHttpServletRequestBuilder postRequest = post("/lobbies")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +175,7 @@ public class LobbyControllerTest {
                 mockMvc.perform(postRequest)
                                 .andExpect(status().isCreated())
                                 .andExpect(jsonPath("$.name", is(lobby.getName())))
-                                .andExpect(jsonPath("$.owner", is(lobby.getOwner())))
+                                .andExpect(jsonPath("$.owner.name", is(lobby.getOwner().getName())))
                                 .andExpect(jsonPath("$.lobbySetting.isPublic",
                                                 is(lobby.getLobbySetting().getIsPublic())))
                                 .andExpect(jsonPath("$.lobbySetting.maxPlayers",
@@ -176,15 +188,22 @@ public class LobbyControllerTest {
                                                 is(lobby.getLobbySetting().getSuperLikeLimit())))
                                 .andExpect(jsonPath("$.lobbySetting.superDislikeLimit",
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
-                                .andExpect(jsonPath("$.lobbySetting.timeRoundLimit",
+                                .andExpect(jsonPath("$.lobbySetting.roundDuration",
                                                 is(lobby.getLobbySetting().getRoundDuration())))
-                                .andExpect(jsonPath("$.lobbySetting.timeVoteLimit",
+                                .andExpect(jsonPath("$.lobbySetting.ratingDuration",
                                                 is(lobby.getLobbySetting().getRatingDuration())));
 
         }
 
-        @Test
-        public void givenLobbies_whenGetLobby_thenReturnJsonArray() throws Exception {
+    private static void givenUserIsAuthenticated(User user) {
+        Authentication authentication = Mockito.mock(Authentication.class);
+        Mockito.when(authentication.getPrincipal()).thenReturn(user);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+    }
+
+    @Test public void givenLobbies_whenGetLobby_thenReturnJsonArray() throws Exception {
                 // given
                 User user = new User();
                 user.setName("owner name");
@@ -219,7 +238,7 @@ public class LobbyControllerTest {
                 // then
                 mockMvc.perform(getRequest).andExpect(status().isOk())
                                 .andExpect(jsonPath("$.name", is(lobby.getName())))
-                                .andExpect(jsonPath("$.owner", is(lobby.getOwner())))
+                                .andExpect(jsonPath("$.owner.name", is(lobby.getOwner().getName())))
                                 .andExpect(jsonPath("$.lobbySetting.isPublic",
                                                 is(lobby.getLobbySetting().getIsPublic())))
                                 .andExpect(jsonPath("$.lobbySetting.maxPlayers",
@@ -232,9 +251,9 @@ public class LobbyControllerTest {
                                                 is(lobby.getLobbySetting().getSuperLikeLimit())))
                                 .andExpect(jsonPath("$.lobbySetting.superDislikeLimit",
                                                 is(lobby.getLobbySetting().getSuperDislikeLimit())))
-                                .andExpect(jsonPath("$.lobbySetting.timeRoundLimit",
+                                .andExpect(jsonPath("$.lobbySetting.roundDuration",
                                                 is(lobby.getLobbySetting().getRoundDuration())))
-                                .andExpect(jsonPath("$.lobbySetting.timeVoteLimit",
+                                .andExpect(jsonPath("$.lobbySetting.ratingDuration",
                                                 is(lobby.getLobbySetting().getRatingDuration())));
 
         }

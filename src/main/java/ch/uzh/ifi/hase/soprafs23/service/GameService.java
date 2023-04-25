@@ -89,7 +89,11 @@ public class GameService {
         List<User> users = lobby.getPlayers();
         newGame.setPlayers(users);
 
-        newGame.setStartedAt(Calendar.getInstance().getTime());
+        // Add 2 seconds to the current time
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 5);
+
+        newGame.setStartedAt(calendar.getTime());
 
         // initialise first round
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());

@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.rest.dto.chat;
 import java.time.LocalDateTime;
 
 public class ChatGetDTO {
+    private String id;
     private String author;
     private String message;
     private LocalDateTime time;
@@ -29,5 +30,13 @@ public class ChatGetDTO {
 
     public void setTime(LocalDateTime time) {
         this.time = time;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -1,4 +1,3 @@
-
 package ch.uzh.ifi.hase.soprafs23.controller;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
