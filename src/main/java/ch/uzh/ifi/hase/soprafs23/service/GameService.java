@@ -42,13 +42,9 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    private final JobScheduler jobScheduler;
-
-    @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, JobScheduler jobScheduler,
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
             LobbyService lobbyService) {
         this.gameRepository = gameRepository;
-        this.jobScheduler = jobScheduler;
         this.lobbyService = lobbyService;
     }
 
@@ -106,11 +102,6 @@ public class GameService {
         newGame.setRounds(rounds);
 
         save(newGame);
-
-        // start game job
-        // * game job takes care of updating game state
-        // ! Bug with the game job
-        // jobScheduler.enqueue(() -> exectue(newGame.getId()));
 
         lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
 
@@ -294,80 +285,4 @@ public class GameService {
         gameRepository.flush();
     }
 
-    /**
-     * Executes the job which will manage the state throughout the lifetime of the
-     * game
-     * 
-     * @param gameId
-     */
-    public void exectue(String gameId) {
-        while (true) {
-            Game game = getGame(gameId);
-            // get game players
-            List<User> players = game.getPlayers();
-            // get current round
-            Round round = game.getRound();
-
-            // Calculate different phase start times
-            Long roundStart = round.getStartedAt().getTime();
-            Long ratingStart = roundStart + game.getGameSetting().getRoundDuration() * 1000;
-            Long roundResultsStart = ratingStart + game.getGameSetting().getRatingDuration() * 1000;
-            Long nextRoundStart = roundResultsStart + game.getGameSetting().getRoundResultDuration() * 1000;
-
-            // check if game is finished
-            if (game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
-                game.setState(GameState.GAME_RESULTS);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
-
-            }
-            // check if everyone submited or creation phase is over
-            else if (round.getSubmitedMemes().size() == players.size() || game.getState() == GameState.CREATION
-                    && ratingStart <= Calendar.getInstance().getTime().getTime()) {
-                // close round
-                round.setOpen(false);
-                // start voting phase
-                game.setState(GameState.RATING);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
-            }
-            // check if everyone rated or rating phase is over
-            else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
-                    && roundResultsStart <= Calendar.getInstance().getTime().getTime()) {
-                // start round result phase
-                game.setState(GameState.ROUND_RESULTS);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
-            }
-            // game not finished yet, next round
-            // check if round_result phase is over
-            else if (game.getState() == GameState.ROUND_RESULTS
-                    && nextRoundStart <= Calendar.getInstance().getTime().getTime()) {
-
-                // start creation phase
-                game.setState(GameState.CREATION);
-                // increment round
-                game.setCurrentRound(game.getCurrentRound() + 1);
-                // initialize new round
-                Round nextRound = game.getRound();
-                nextRound.setOpen(true);
-                nextRound.setRoundNumber(null);
-                nextRound.setStartedAt(Calendar.getInstance().getTime());
-                game.setRound(nextRound);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
-            }
-
-            // persist changes
-            save(game);
-
-            // sleep for 1 second
-            try {
-                Thread.sleep(1_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 }

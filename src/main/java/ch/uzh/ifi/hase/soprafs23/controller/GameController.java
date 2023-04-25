@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.jobrunr.scheduling.JobScheduler;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,6 +19,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.Meme;
 import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Template;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
+import ch.uzh.ifi.hase.soprafs23.job.GameJob;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.game.GameGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.meme.MemeGetDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.meme.MemePostDTO;
@@ -42,8 +44,14 @@ public class GameController {
 
     private final GameService gameService;
 
-    public GameController(GameService gameService) {
+    private final JobScheduler jobScheduler;
+
+    private final GameJob gameJob;
+
+    public GameController(GameService gameService, JobScheduler jobScheduler, GameJob gameJob) {
         this.gameService = gameService;
+        this.jobScheduler = jobScheduler;
+        this.gameJob = gameJob;
     }
 
     @PostMapping("/games/{lobbyCode}")
@@ -53,6 +61,10 @@ public class GameController {
 
         // create game
         Game game = gameService.createGame(lobbyCode);
+
+        // start game job
+        // * game job takes care of updating game state
+        jobScheduler.enqueue(() -> gameJob.exectue(game.getId()));
 
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
