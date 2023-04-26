@@ -2,6 +2,7 @@ package ch.uzh.ifi.hase.soprafs23.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.StreamSupport;
@@ -104,6 +105,14 @@ public class Lobby implements Serializable {
     }
 
     public void addPlayer(User player) {
+        if (this.players == null) {
+            this.players = new ArrayList<User>();
+        }
+
+        if (this.kickedPlayers == null) {
+            this.kickedPlayers = new ArrayList<User>();
+        }
+
         // check if player is already in lobby
         if (containsUser(this.players, player)) {
             throw new IllegalArgumentException("Player is already in the lobby");
