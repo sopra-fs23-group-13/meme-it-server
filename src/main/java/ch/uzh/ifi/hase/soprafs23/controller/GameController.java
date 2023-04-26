@@ -9,8 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-// import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
-
 import org.springframework.web.bind.annotation.*;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
@@ -65,9 +63,6 @@ public class GameController {
         // * game job takes care of updating game state
         Thread thread = new Thread(() -> gameJob.run(game.getId()));
         thread.start();
-
-        // gameJob.run(game.getId());
-        // jobScheduler.enqueue(() -> gameJob.exectue(game.getId()));
 
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }

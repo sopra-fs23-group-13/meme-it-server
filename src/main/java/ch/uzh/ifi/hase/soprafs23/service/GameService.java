@@ -138,18 +138,9 @@ public class GameService {
      * @return
      */
     public Game getGame(String gameId) {
-        log.info("\n\nGETTING GAME FROM DB");
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        Session session = entityManager.unwrap(Session.class);
-        Game game = (Game) session.get(Game.class, gameId);
-        if (game == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
-        }
-
-        System.out.println("Game id: " + game.getId());
-        System.out.println("Game state: " + game.getState());
-        System.out.println("Game round number: " + game.getCurrentRound());
-        System.out.println("\n\n");
         return game;
     }
 

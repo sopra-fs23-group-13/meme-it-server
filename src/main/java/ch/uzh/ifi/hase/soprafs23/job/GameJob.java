@@ -1,20 +1,13 @@
 package ch.uzh.ifi.hase.soprafs23.job;
 
-import java.sql.Date;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
@@ -23,7 +16,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.Meme;
 import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
-import ch.uzh.ifi.hase.soprafs23.service.GameService;
 
 // TODO: make testable by seperating components into smaller functions 
 
@@ -33,17 +25,16 @@ import ch.uzh.ifi.hase.soprafs23.service.GameService;
  * Game server updates every second
  */
 @Service
-@Transactional
+
+// @Transactional
+// ! this wraps the method in a transaction and only commits that transaction
+// ! once method exists. Thus it cant be used in a while (true) loop for the job
 public class GameJob {
-    private final Logger log = LoggerFactory.getLogger(GameJob.class);
 
-    private final GameService gameService;
+    @Autowired
+    private SessionFactory sessionFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    public GameJob(GameService gameService) {
-        this.gameService = gameService;
+    public GameJob() {
     }
 
     /**
@@ -55,15 +46,16 @@ public class GameJob {
      *                                  are null
      */
     public void run(String gameId) throws IllegalArgumentException {
-        // Session session = entityManager.unwrap(Session.class);
-
+        Session session = sessionFactory.openSession();
         while (true) {
-            // Game game = (Game) session.get(Game.class, gameId);
+            // start transaction
+            Transaction transaction = session.beginTransaction();
 
-            // if (game == null || game.getId() == null || game.getId().isEmpty()) {
-            // throw new IllegalArgumentException("Game not found");
-            // }
-            Game game = gameService.getGame(gameId);
+            // get game
+            Game game = (Game) session.get(Game.class, gameId);
+            if (game == null || game.getId() == null || game.getId().isEmpty()) {
+                throw new IllegalArgumentException("Game not found");
+            }
 
             // get game players
             List<User> players = game.getPlayers();
@@ -78,24 +70,28 @@ public class GameJob {
 
             Long timeNow = Calendar.getInstance().getTime().getTime();
 
-            System.out.println("Game id: " + game.getId());
-            System.out.println("Game state: " + game.getState());
-            System.out.println("Game round number: " + game.getCurrentRound());
-            System.out.println("\n\n");
+            // System.out.println("Game id: " + game.getId());
+            // System.out.println("Game state: " + game.getState());
+            // System.out.println("Game round number: " + game.getCurrentRound());
+            // System.out.println("\n\n");
 
-            Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            System.out.println("\nRound started at: " + format.format(new Date(roundStart)));
-            System.out.println("Rating started at: " + format.format(new Date(ratingStart)));
-            System.out.println("Round results started at: " + format.format(new Date(roundResultsStart)));
-            System.out.println("Next round started at: " + format.format(new Date(nextRoundStart)));
-            System.out.println("\n");
+            // Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
+            // System.out.println("\nRound started at: " + format.format(new
+            // Date(roundStart)));
+            // System.out.println("Rating started at: " + format.format(new
+            // Date(ratingStart)));
+            // System.out.println("Round results started at: " + format.format(new
+            // Date(roundResultsStart)));
+            // System.out.println("Next round started at: " + format.format(new
+            // Date(nextRoundStart)));
+            // System.out.println("\n");
 
             // check if game is finished
             if (game.getState() == GameState.RATING && game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
                 game.setState(GameState.GAME_RESULTS);
 
                 // persist changes
-                gameService.save(game);
+                session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
                 return;
@@ -121,7 +117,7 @@ public class GameJob {
                 game.addRound(nextRound);
 
                 // persist changes
-                gameService.save(game);
+                session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
             }
@@ -132,7 +128,7 @@ public class GameJob {
                 game.setState(GameState.ROUND_RESULTS);
 
                 // persist changes
-                gameService.save(game);
+                session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
 
@@ -146,7 +142,7 @@ public class GameJob {
                 game.setState(GameState.RATING);
 
                 // persist changes
-                gameService.save(game);
+                session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
             } /*
@@ -160,6 +156,8 @@ public class GameJob {
                * }
                */
 
+            transaction.commit();
+            // session.refresh(game);
             // // persist changes
             // gameService.save(game);
 
