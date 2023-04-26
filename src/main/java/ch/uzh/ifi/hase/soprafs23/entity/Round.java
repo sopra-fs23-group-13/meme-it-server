@@ -1,8 +1,8 @@
 package ch.uzh.ifi.hase.soprafs23.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ public class Round implements Serializable {
     private boolean isOpen;
 
     @Column(nullable = false)
-    private LocalDateTime startedAt;
+    private Date startedAt;
 
     public Long getId() {
         return id;
@@ -99,11 +99,11 @@ public class Round implements Serializable {
         isOpen = open;
     }
 
-    public LocalDateTime getStartedAt() {
+    public Date getStartedAt() {
         return startedAt;
     }
 
-    public void setStartedAt(LocalDateTime startedAt) {
+    public void setStartedAt(Date startedAt) {
         this.startedAt = startedAt;
     }
 

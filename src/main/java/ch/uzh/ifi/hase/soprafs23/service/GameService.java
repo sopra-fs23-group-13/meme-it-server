@@ -5,8 +5,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.GameSetting;
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Meme;
-import ch.uzh.ifi.hase.soprafs23.entity.Player;
-import ch.uzh.ifi.hase.soprafs23.entity.PlayerState;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Rating;
 import ch.uzh.ifi.hase.soprafs23.entity.Round;
@@ -17,10 +15,16 @@ import ch.uzh.ifi.hase.soprafs23.utility.memeapi.IMemeApi;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
 
-import org.jobrunr.scheduling.JobScheduler;
+import java.util.List;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +37,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class GameService {
-    private final Logger log = LoggerFactory.getLogger(LobbyService.class);
+    private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final IMemeApi memeApi = new ImgflipClient();
 
@@ -41,13 +45,12 @@ public class GameService {
 
     private final GameRepository gameRepository;
 
-    private final JobScheduler jobScheduler;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Autowired
-    public GameService(@Qualifier("gameRepository") GameRepository gameRepository, JobScheduler jobScheduler,
+    public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
             LobbyService lobbyService) {
         this.gameRepository = gameRepository;
-        this.jobScheduler = jobScheduler;
         this.lobbyService = lobbyService;
     }
 
@@ -78,6 +81,7 @@ public class GameService {
         gameSetting.setRoundDuration(lobby.getLobbySetting().getRoundDuration());
         gameSetting.setRatingDuration(lobby.getLobbySetting().getRatingDuration());
         gameSetting.setTemplateSwapLimit(lobby.getLobbySetting().getMemeChangeLimit());
+        gameSetting.setRoundResultDuration(20); // ! default 20 seconds
         newGame.setGameSetting(gameSetting);
 
         // set round
@@ -85,42 +89,43 @@ public class GameService {
 
         // initialise players
         List<User> users = lobby.getPlayers();
-        List<Player> players = new ArrayList<Player>(users.size());
-        for (User user : users) {
-            Player player = new Player();
-
-            player.setUser(user);
-            player.setState(PlayerState.READY);
-
+        // shitty fix but other wise error is thrown:
+        // org.hibernate.HibernateException: Found shared references to a collection
+        // ! this currently duplicates the users in the db
+        List<User> players = new ArrayList<User>(users.size());
+        for (var user : users) {
+            User player = new User();
+            player.setId(user.getId());
+            player.setName(user.getName());
             players.add(player);
         }
         newGame.setPlayers(players);
-        Calendar calendar = Calendar.getInstance();
-        Date currentDate = calendar.getTime();
 
         // Add 2 seconds to the current time
-        calendar.setTime(currentDate);
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 5);
-
         newGame.setStartedAt(calendar.getTime());
 
-        // initialise first round
+        // initialise rounds array
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
+        newGame.setRounds(rounds);
+
+        // initialise first round
         Round round = new Round();
         round.setOpen(true);
-        round.setStartedAt(LocalDateTime.now());
         round.setRoundNumber(1);
-        rounds.add(0, round);
+        round.setStartedAt(calendar.getTime()); // round starts same time as game
+        newGame.addRound(round);
 
-        newGame.setRounds(rounds);
+        System.out.println("CREATING GAME IN DB");
+        System.out.println("Game id: " + newGame.getId());
+        System.out.println("Game state: " + newGame.getState());
+        System.out.println("Game round number: " + newGame.getCurrentRound());
+        System.out.println("\n\n");
 
         save(newGame);
 
-        // start game job
-        // * game job takes care of updating game state
-        // ! Bug with the game job
-        // jobScheduler.enqueue(() -> exectue(newGame.getId()));
-
+        // inform lobby that game has started
         lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
 
         return newGame;
@@ -233,30 +238,6 @@ public class GameService {
     }
 
     /**
-     * Sets a player state to ready, meaning they are ready to start the next round
-     * 
-     * @param gameId
-     * @param user
-     */
-    public void setPlayerReady(String gameId, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
-
-        List<Player> players = game.getPlayers();
-
-        for (Player player : players) {
-            if (user.getId() == player.getUser().getId()) {
-                player.setState(PlayerState.READY);
-            }
-        }
-
-        game.setPlayers(players);
-
-        // perist changes
-        save(game);
-    }
-
-    /**
      * Returns a list of ratings from the past round
      * 
      * @param gameId
@@ -302,89 +283,4 @@ public class GameService {
         gameRepository.flush();
     }
 
-    /**
-     * Executes the job which will manage the state throughout the lifetime of the
-     * game
-     * 
-     * @param gameId
-     */
-    public void exectue(String gameId) {
-        while (true) {
-            Game game = getGame(gameId);
-            // get game players
-            List<Player> players = game.getPlayers();
-            // get current round
-            Round round = game.getRound();
-
-            // if equal it means everyone submited
-            if (round.getSubmitedMemes().size() == players.size()) {
-                // close round
-                round.setOpen(false);
-                // start voting phase
-                game.setState(GameState.RATING);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
-            }
-
-            // if equal it means everyone rated
-            else if (round.getRatings().size() == players.size()) {
-                // start round result phase
-                game.setState(GameState.ROUND_RESULTS);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
-            }
-
-            // check if game is finished
-            else if (game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
-                game.setState(GameState.GAME_RESULTS);
-
-                log.info(gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
-            }
-
-            // game not finished yet
-            else {
-                // check if everyone is ready for next round
-                boolean allReady = false;
-                for (Player player : players) {
-                    if (player.getState() == PlayerState.READY) {
-                        allReady = true;
-                        continue;
-                    }
-                    allReady = false;
-                    break;
-                }
-                if (allReady) {
-                    // start creation phase
-                    game.setState(GameState.CREATION);
-                    // increment round
-                    game.setCurrentRound(game.getCurrentRound() + 1);
-                    // initialize new round
-                    Round nextRound = game.getRound();
-                    nextRound.setOpen(true);
-                    nextRound.setRoundNumber(null);
-                    nextRound.setStartedAt(LocalDateTime.now());
-                    game.setRound(nextRound);
-
-                    // reset player state
-                    for (Player player : players) {
-                        player.setState(PlayerState.NOT_READY);
-                    }
-                    game.setPlayers(players);
-
-                    log.info(gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
-                }
-            }
-
-            // persist changes
-            save(game);
-
-            // sleep for 1 second
-            try {
-                Thread.sleep(1_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 }

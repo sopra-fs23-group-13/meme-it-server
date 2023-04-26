@@ -52,6 +52,9 @@ public class LobbyService {
         newLobby.setCode(code);
         newLobby.setOwner(user);
 
+        // add owner as player
+        newLobby.addPlayer(user);
+
         checkIfLobbyExists(newLobby);
         // saves the given entity but data is only persisted in the database once
         // flush() is called
@@ -143,7 +146,7 @@ public class LobbyService {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
         // Lobby is joinable if game hasn't started yet
-        if (lobby.getGameStartedAT() != null) {
+        if (lobby.getGameStartedAt() != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is not joinable");
         }
 
@@ -171,17 +174,16 @@ public class LobbyService {
     public void leaveLobby(String lobbyCode, User user) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        //If lobby is empty after player leaves, delete it.
-        if(lobby.getPlayers().size() == 1){
+        // If lobby is empty after player leaves, delete it.
+        if (lobby.getPlayers().size() == 1) {
             lobbyRepository.delete(lobby);
             return;
         }
-        //If leaving player is Owner, make someone else owner
-        if(user.getId() == lobby.getOwner().getId()){
+        // If leaving player is Owner, make someone else owner
+        if (user.getId() == lobby.getOwner().getId()) {
             lobby.removePlayer(user);
             lobby.setOwner(lobby.getPlayers().get(0));
-        }
-        else {
+        } else {
             lobby.removePlayer(user);
         }
         // persist changes
@@ -216,7 +218,7 @@ public class LobbyService {
     public void setGameStarted(String lobbyCode, String gameId, Date startTime) {
         Lobby lobby = getLobbyByCode(lobbyCode);
 
-        lobby.setGameStartedAT(startTime);
+        lobby.setGameStartedAt(startTime);
         lobby.setGameId(gameId);
 
         // persist changes
