@@ -147,7 +147,7 @@ public class LobbyService {
 
         // Lobby is joinable if game hasn't started yet
         if (lobby.getGameStartedAt() != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Lobby is not joinable");
+            throw new ResponseStatusException(HttpStatus.LOCKED, "Lobby is not joinable");
         }
 
         if (lobby.isFull()) {
