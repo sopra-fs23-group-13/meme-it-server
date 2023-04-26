@@ -41,13 +41,10 @@ public class GameController {
 
     private final GameService gameService;
 
-    // private final JobScheduler jobScheduler;
-
     private final GameJob gameJob;
 
-    public GameController(GameService gameService/* , JobScheduler jobScheduler */, GameJob gameJob) {
+    public GameController(GameService gameService, GameJob gameJob) {
         this.gameService = gameService;
-        // this.jobScheduler = jobScheduler;
         this.gameJob = gameJob;
     }
 

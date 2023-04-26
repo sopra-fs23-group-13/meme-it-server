@@ -4,16 +4,13 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.jobrunr.scheduling.JobScheduler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,8 +21,7 @@ import org.mockito.MockitoAnnotations;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
-import ch.uzh.ifi.hase.soprafs23.entity.Rating;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
+
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 
@@ -38,9 +34,6 @@ public class GameServiceTest {
 
     @Mock
     private LobbyRepository lobbyRepository;
-
-    @Mock
-    private JobScheduler jobScheduler;
 
     @InjectMocks
     private GameService gameService;
@@ -79,17 +72,16 @@ public class GameServiceTest {
             e.printStackTrace();
         }
 
-        // when -> any object is being save in the lobbyRepository -> return the dummy testGame
+        // when -> any object is being save in the lobbyRepository -> return the dummy
+        // testGame
         Mockito.when(gameRepository.save(any())).thenReturn(testGame);
 
     }
-    
 
     @Test
     public void createGame_validInputs_success() {
         // given
         String testLobbyCode = "testLobbyCode";
-        
 
         Mockito.when(lobbyService.getLobbyByCode(testLobbyCode)).thenReturn(testLobby);
 
@@ -104,7 +96,6 @@ public class GameServiceTest {
         verify(gameRepository, times(1)).save(any());
         verify(lobbyService, times(1)).getLobbyByCode(testLobbyCode);
     }
-
 
     @Test
     public void getGame_validGameId_success() {
