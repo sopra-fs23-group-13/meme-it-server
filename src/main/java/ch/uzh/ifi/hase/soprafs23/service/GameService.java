@@ -21,8 +21,12 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
+import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -33,13 +37,16 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class GameService {
-    // private final Logger log = LoggerFactory.getLogger(GameService.class);
+    private final Logger log = LoggerFactory.getLogger(GameService.class);
 
     private final IMemeApi memeApi = new ImgflipClient();
 
     private final LobbyService lobbyService;
 
     private final GameRepository gameRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
             LobbyService lobbyService) {
@@ -97,19 +104,24 @@ public class GameService {
         // Add 2 seconds to the current time
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 5);
-
         newGame.setStartedAt(calendar.getTime());
 
         // initialise rounds array
         List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
+        newGame.setRounds(rounds);
+
         // initialise first round
         Round round = new Round();
         round.setOpen(true);
         round.setRoundNumber(1);
         round.setStartedAt(calendar.getTime()); // round starts same time as game
-        rounds.add(round);
+        newGame.addRound(round);
 
-        newGame.setRounds(rounds);
+        System.out.println("CREATING GAME IN DB");
+        System.out.println("Game id: " + newGame.getId());
+        System.out.println("Game state: " + newGame.getState());
+        System.out.println("Game round number: " + newGame.getCurrentRound());
+        System.out.println("\n\n");
 
         save(newGame);
 
@@ -126,9 +138,18 @@ public class GameService {
      * @return
      */
     public Game getGame(String gameId) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        log.info("\n\nGETTING GAME FROM DB");
 
+        Session session = entityManager.unwrap(Session.class);
+        Game game = (Game) session.get(Game.class, gameId);
+        if (game == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found");
+        }
+
+        System.out.println("Game id: " + game.getId());
+        System.out.println("Game state: " + game.getState());
+        System.out.println("Game round number: " + game.getCurrentRound());
+        System.out.println("\n\n");
         return game;
     }
 
@@ -224,31 +245,6 @@ public class GameService {
         // perist changes
         save(game);
     }
-
-    /**
-     * Sets a player state to ready, meaning they are ready to start the next round
-     * 
-     * @param gameId
-     * @param user
-     */
-    // public void setPlayerReady(String gameId, User user) {
-    // Game game = gameRepository.findById(gameId)
-    // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game
-    // not found"));
-
-    // List<Player> players = game.getPlayers();
-
-    // for (Player player : players) {
-    // if (user.getId() == player.getUser().getId()) {
-    // player.setState(PlayerState.READY);
-    // }
-    // }
-
-    // game.setPlayers(players);
-
-    // // perist changes
-    // save(game);
-    // }
 
     /**
      * Returns a list of ratings from the past round

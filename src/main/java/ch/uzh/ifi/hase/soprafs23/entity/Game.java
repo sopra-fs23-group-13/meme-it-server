@@ -33,7 +33,7 @@ public class Game implements Serializable {
     @Column(nullable = false)
     private GameState state;
 
-    @OneToMany(cascade = CascadeType.MERGE)
+    @OneToMany(cascade = CascadeType.REFRESH)
     private List<User> players;
 
     @Column(nullable = false)

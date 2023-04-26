@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+// * NOTE: using entity & table instead of embeddable did not solve the game state not updating
 @Embeddable
 public class GameSetting implements Serializable {
     private static final long serialVersionUID = 1L;

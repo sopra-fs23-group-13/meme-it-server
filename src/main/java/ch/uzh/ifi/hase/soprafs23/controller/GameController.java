@@ -63,12 +63,21 @@ public class GameController {
 
         // start game job
         // * game job takes care of updating game state
-        Thread thread = new Thread(() -> gameJob.exectue(game.getId()));
+        Thread thread = new Thread(() -> gameJob.run(game.getId()));
         thread.start();
+
+        // gameJob.run(game.getId());
         // jobScheduler.enqueue(() -> gameJob.exectue(game.getId()));
 
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
+
+    // ! doesnt return updated state
+    // i have tried
+    // - use @Async instead of Thread() to run job
+    // - increase timer of job to run every 2 - 5 seconds instead of 1 sec
+    // - Run job directly with gameRepo
+    //
 
     /**
      * Gets the current game state
@@ -154,23 +163,6 @@ public class GameController {
         Rating rating = RatingMapper.INSTANCE.convertRatingPostDTOtoEntity(ratingPostDTO);
         gameService.createRating(gameId, memeId, rating, user);
     }
-
-    /**
-     * Sets a player as ready for next round
-     * 
-     * @param gameId
-     * @param memeId
-     * @param ratingPostDTO
-     */
-    // @PostMapping("/games/{gameId}/ready")
-    // @ResponseStatus(HttpStatus.OK)
-    // public void setPlayerReady(@PathVariable String gameId) {
-    // Authentication authentication =
-    // SecurityContextHolder.getContext().getAuthentication();
-    // User user = (User) authentication.getPrincipal();
-
-    // gameService.setPlayerReady(gameId, user);
-    // }
 
     /**
      * Get all ratings in a round

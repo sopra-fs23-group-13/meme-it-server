@@ -7,11 +7,15 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
@@ -28,12 +32,15 @@ import ch.uzh.ifi.hase.soprafs23.service.GameService;
  * 
  * Game server updates every second
  */
-@Component
+@Service
 @Transactional
 public class GameJob {
     private final Logger log = LoggerFactory.getLogger(GameJob.class);
 
     private final GameService gameService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public GameJob(GameService gameService) {
         this.gameService = gameService;
@@ -44,10 +51,20 @@ public class GameJob {
      * game
      * 
      * @param gameId
+     * @throws IllegalArgumentException if game is not found or certain attributes
+     *                                  are null
      */
-    public void exectue(String gameId) {
+    public void run(String gameId) throws IllegalArgumentException {
+        // Session session = entityManager.unwrap(Session.class);
+
         while (true) {
+            // Game game = (Game) session.get(Game.class, gameId);
+
+            // if (game == null || game.getId() == null || game.getId().isEmpty()) {
+            // throw new IllegalArgumentException("Game not found");
+            // }
             Game game = gameService.getGame(gameId);
+
             // get game players
             List<User> players = game.getPlayers();
             // get current round
@@ -61,17 +78,26 @@ public class GameJob {
 
             Long timeNow = Calendar.getInstance().getTime().getTime();
 
+            System.out.println("Game id: " + game.getId());
+            System.out.println("Game state: " + game.getState());
+            System.out.println("Game round number: " + game.getCurrentRound());
+            System.out.println("\n\n");
+
             Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            log.info("\nRound started at: " + format.format(new Date(roundStart)));
-            log.info("Rating started at: " + format.format(new Date(ratingStart)));
-            log.info("Round results started at: " + format.format(new Date(roundResultsStart)));
-            log.info("Next round started at: " + format.format(new Date(nextRoundStart)));
-            log.info("\n");
+            System.out.println("\nRound started at: " + format.format(new Date(roundStart)));
+            System.out.println("Rating started at: " + format.format(new Date(ratingStart)));
+            System.out.println("Round results started at: " + format.format(new Date(roundResultsStart)));
+            System.out.println("Next round started at: " + format.format(new Date(nextRoundStart)));
+            System.out.println("\n");
 
             // check if game is finished
             if (game.getState() == GameState.RATING && game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
                 game.setState(GameState.GAME_RESULTS);
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
+
+                // persist changes
+                gameService.save(game);
+
+                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
                 return;
             }
             // game not finished yet, next round
@@ -94,7 +120,10 @@ public class GameJob {
                 nextRound.setStartedAt(Calendar.getInstance().getTime());
                 game.addRound(nextRound);
 
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
+                // persist changes
+                gameService.save(game);
+
+                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
             }
             // check if everyone rated or rating phase is over
             else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
@@ -102,7 +131,10 @@ public class GameJob {
                 // start round result phase
                 game.setState(GameState.ROUND_RESULTS);
 
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
+                // persist changes
+                gameService.save(game);
+
+                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
 
             }
             // check if everyone submited or creation phase is over
@@ -113,14 +145,23 @@ public class GameJob {
                 // start voting phase
                 game.setState(GameState.RATING);
 
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
-            } else {
-                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase "
-                        + game.getState().toString().toUpperCase());
-            }
+                // persist changes
+                gameService.save(game);
 
-            // persist changes
-            gameService.save(game);
+                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
+            } /*
+               * else {
+               * System.out.println("game in progress");
+               * // System.out.println("GameId: " + gameId + " - Round " +
+               * game.getCurrentRound() + "
+               * Phase
+               * // "
+               * // + game.getState().toString().toUpperCase());
+               * }
+               */
+
+            // // persist changes
+            // gameService.save(game);
 
             // sleep for 1 second
             try {
