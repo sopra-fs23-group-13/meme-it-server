@@ -4,12 +4,14 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,7 +23,10 @@ import org.mockito.MockitoAnnotations;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
-
+import ch.uzh.ifi.hase.soprafs23.entity.Meme;
+import ch.uzh.ifi.hase.soprafs23.entity.Rating;
+import ch.uzh.ifi.hase.soprafs23.entity.Template;
+import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 
@@ -50,6 +55,13 @@ public class GameServiceTest {
 
         // given
         testGame = new Game();
+
+        // Initialize templates and currentRound for the testGame
+        ArrayList<Template> templates = new ArrayList<>();
+        Template template = new Template();
+        templates.add(template);
+        testGame.setTemplates(templates);
+        testGame.setCurrentRound(1);
 
         testLobby = new Lobby();
         testLobby.setCode("123");
@@ -108,5 +120,94 @@ public class GameServiceTest {
         assertEquals(testGame, fetchedGame);
         verify(gameRepository, times(1)).findById(testGame.getId());
     }
+
+    @Test
+    public void getTemplate_validGameId_success() {
+        when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+        User testUser = new User();
+        testUser.setName("TestUser");
+
+        // when
+        Template fetchedTemplate = gameService.getTemplate(testGame.getId(), testUser);
+
+        // then
+        assertNotNull(fetchedTemplate);
+        verify(gameRepository, times(1)).findById(testGame.getId());
+    }
+
+
+    // @Test
+    // public void createMeme_validInputs_success() {
+    //     when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+    //     User testUser = new User();
+    //     testUser.setName("TestUser");
+
+    //     String testTemplateId = "testTemplateId";
+    //     Meme testMeme = new Meme();
+
+    //     // when
+    //     gameService.createMeme(testGame.getId(), testTemplateId, testMeme, testUser);
+
+    //     // then
+    //     verify(gameRepository, times(1)).findById(testGame.getId());
+    //     verify(gameRepository, times(1)).save(any());
+    // }
+
+
+    // @Test
+    // public void getMemes_validGameId_success() {
+    //     when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+    //     // when
+    //     List<Meme> fetchedMemes = gameService.getMemes(testGame.getId());
+
+    //     // then
+    //     assertNotNull(fetchedMemes);
+    //     verify(gameRepository, times(1)).findById(testGame.getId());
+    // }
+
+    // @Test
+    // public void createRating_validInputs_success() {
+    //     when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+    //     User testUser = new User();
+    //     testUser.setName("TestUser");
+
+    //     UUID testMemeId = UUID.randomUUID();
+    //     Rating testRating = new Rating();
+
+    //     // when
+    //     gameService.createRating(testGame.getId(), testMemeId, testRating, testUser);
+
+    //     // then
+    //     verify(gameRepository, times(1)).findById(testGame.getId());
+    //     verify(gameRepository, times(1)).save(any());
+    // }
+
+    // @Test
+    // public void getRatingsFromRound_validGameId_success() {
+    //     when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+    //     // when
+    //     List<Rating> fetchedRatings = gameService.getRatingsFromRound(testGame.getId());
+
+    //     // then
+    //     assertNotNull(fetchedRatings);
+    //     verify(gameRepository, times(1)).findById(testGame.getId());
+    // }
+
+    // @Test
+    // public void getAllRatings_validGameId_success() {
+    //     when(gameRepository.findById(testGame.getId())).thenReturn(java.util.Optional.ofNullable(testGame));
+
+    //     // when
+    //     List<Rating> fetchedAllRatings = gameService.getAllRatings(testGame.getId());
+
+    //     // then
+    //     assertNotNull(fetchedAllRatings);
+    //     verify(gameRepository, times(1)).findById(testGame.getId());
+    // }
 
 }
