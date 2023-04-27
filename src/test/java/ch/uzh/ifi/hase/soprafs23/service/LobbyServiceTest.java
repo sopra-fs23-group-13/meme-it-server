@@ -129,11 +129,12 @@ public class LobbyServiceTest {
     @Test
     public void leaveLobby_validInputs_success() {
         User leavingUser = new User();
-       // leavingUser.setId(2L);
+        leavingUser.setId("ID");
         leavingUser.setName("leavingUser");
         lobby.setPlayers(new ArrayList<>());
         lobby.setKickedPlayers(new ArrayList<>());
         lobby.addPlayer(leavingUser);
+        lobby.setOwner(leavingUser);
 
         Mockito.when(lobbyRepository.findByCode(Mockito.anyString())).thenReturn(lobby);
         Mockito.doNothing().when(lobbyRepository).delete(Mockito.any());
