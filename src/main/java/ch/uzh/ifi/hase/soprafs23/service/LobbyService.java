@@ -173,22 +173,33 @@ public class LobbyService {
 
     public void leaveLobby(String lobbyCode, User user) {
         Lobby lobby = getLobbyByCode(lobbyCode);
-
-        // If lobby is empty after player leaves, delete it.
-        if (lobby.getPlayers().size() == 1) {
-            lobbyRepository.delete(lobby);
-            return;
+        //"Bad" solution, but lobby.getPlayers().contains(user) doesn't work and this does
+        boolean found = false;
+        for(int i = 0; i < lobby.getPlayers().size(); i++) {
+            if(lobby.getPlayers().get(i).getId().equals(user.getId())) {
+                found = true;
+            }
         }
-        // If leaving player is Owner, make someone else owner
-        if (user.getId() == lobby.getOwner().getId()) {
-            lobby.removePlayer(user);
-            lobby.setOwner(lobby.getPlayers().get(0));
-        } else {
-            lobby.removePlayer(user);
+        if(!lobby.getPlayers().isEmpty() && found){
+            //If player is owner
+            if(lobby.getOwner().getId().equals(user.getId()) && lobby.getPlayers().size() > 1){
+                lobby.removePlayer(user);
+                lobby.setOwner(lobby.getPlayers().get(0));
+            }
+            else if(lobby.getPlayers().size() == 1){
+                lobbyRepository.delete(lobby);
+                return;
+            }
+            //For other players
+            else {
+                lobby.removePlayer(user);
+            }
+            lobbyRepository.save(lobby);
+            lobbyRepository.flush();
         }
-        // persist changes
-        lobbyRepository.save(lobby);
-        lobbyRepository.flush();
+        else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not in this lobby.");
+        }
     }
 
     public Lobby kickPlayer(String lobbyCode, User owner, User userKick) {
