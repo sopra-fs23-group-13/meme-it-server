@@ -88,10 +88,14 @@ public class GameJob {
 
             // check if game is finished
             if (game.getState() == GameState.RATING && game.getGameSetting().getMaxRounds() == game.getCurrentRound()) {
+
+                // set game state
                 game.setState(GameState.GAME_RESULTS);
 
                 // persist changes
                 session.save(game);
+                // close session
+                session.close();
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
                 return;
