@@ -70,7 +70,7 @@ public class Round implements Serializable {
         memes.add(meme);
     }
 
-    public Meme getMemeById(UUID id) {
+    public Meme getMemeById(String id) {
         for (Meme meme : memes) {
             if (meme.getId().equals(id)) {
                 return meme;

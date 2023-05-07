@@ -147,7 +147,7 @@ public class GameController {
      */
     @PostMapping("/games/{gameId}/rating/{memeId}")
     @ResponseStatus(HttpStatus.OK)
-    public void createRating(@PathVariable String gameId, @PathVariable UUID memeId,
+    public void createRating(@PathVariable String gameId, @PathVariable String memeId,
             @RequestBody RatingPostDTO ratingPostDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();

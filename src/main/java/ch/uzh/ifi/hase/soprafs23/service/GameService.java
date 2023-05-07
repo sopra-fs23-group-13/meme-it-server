@@ -226,7 +226,7 @@ public class GameService {
      * @param rating
      * @param user
      */
-    public void createRating(String gameId, UUID memeId, Rating rating, User user) {
+    public void createRating(String gameId, String memeId, Rating rating, User user) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
