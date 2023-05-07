@@ -132,7 +132,7 @@ public class GameController {
 
         List<MemeGetDTO> memeGetDTOs = new ArrayList<>();
         for (Meme meme : memes) {
-            memeGetDTOs.add(MemeMapper.INSTANCE.convertEntityToGetDTO(meme));
+            memeGetDTOs.add(MemeMapper.INSTANCE.convertEntityToMemeGetDTO(meme));
         }
 
         return memeGetDTOs;

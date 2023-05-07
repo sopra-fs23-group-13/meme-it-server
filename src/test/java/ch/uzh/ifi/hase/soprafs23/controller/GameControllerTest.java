@@ -94,8 +94,8 @@ public class GameControllerTest {
         MemePostDTO memePostDTO = new MemePostDTO();
         TextBox textBox = new TextBox();
         textBox.setText("Caption");
-        textBox.setX(10);
-        textBox.setY(20);
+        textBox.setXRate(10);
+        textBox.setYRate(20);
         memePostDTO.setTextBoxes(Collections.singletonList(textBox));
         memePostDTO.setColor("color");
         memePostDTO.setCurrentRound(1);

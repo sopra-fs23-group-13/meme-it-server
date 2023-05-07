@@ -37,8 +37,11 @@ public class JwtSecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/users").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.GET , "/lobbies").permitAll()
                 .anyRequest().authenticated().and()
+                .headers().frameOptions().sameOrigin() // allow H2 console to be embedded in iframe
+                .and()
                 .sessionManagement().sessionCreationPolicy(
                         SessionCreationPolicy.STATELESS)
                 .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
