@@ -176,9 +176,9 @@ public class GameService {
         Round round = game.getRound();
 
         // check if round still open
-        if (!round.isOpen()) {
+        /*TODO: if (!round.isOpen()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round is not open");
-        }
+        }*/
 
         // set user chosen template
         Template template = game.getTemplateById(templateId);
