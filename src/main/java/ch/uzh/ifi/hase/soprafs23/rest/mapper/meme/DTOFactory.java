@@ -16,6 +16,9 @@ public class DTOFactory implements MemeMapper{
 
         memeGetDTO.setId(meme.getId());
         memeGetDTO.setImageUrl(meme.getTemplate().getImageUrl());
+        memeGetDTO.setColor(meme.getColor());
+        memeGetDTO.setFontSize(meme.getFontSize());
+        memeGetDTO.setUser(meme.getUser());
         List<TextBox> textBoxes = new ArrayList<>();
         for (TextBox t : meme.getTextBoxes()) {
             TextBox textBox = new TextBox();
