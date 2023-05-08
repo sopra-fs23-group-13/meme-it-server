@@ -132,7 +132,7 @@ public class GameController {
 
         List<MemeGetDTO> memeGetDTOs = new ArrayList<>();
         for (Meme meme : memes) {
-            memeGetDTOs.add(MemeMapper.INSTANCE.convertEntityToGetDTO(meme));
+            memeGetDTOs.add(MemeMapper.INSTANCE.convertEntityToMemeGetDTO(meme));
         }
 
         return memeGetDTOs;
@@ -147,7 +147,7 @@ public class GameController {
      */
     @PostMapping("/games/{gameId}/rating/{memeId}")
     @ResponseStatus(HttpStatus.OK)
-    public void createRating(@PathVariable String gameId, @PathVariable UUID memeId,
+    public void createRating(@PathVariable String gameId, @PathVariable String memeId,
             @RequestBody RatingPostDTO ratingPostDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();

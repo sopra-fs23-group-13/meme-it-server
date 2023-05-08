@@ -1,16 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.service;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Game;
-import ch.uzh.ifi.hase.soprafs23.entity.GameSetting;
-import ch.uzh.ifi.hase.soprafs23.entity.GameState;
-import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-import ch.uzh.ifi.hase.soprafs23.entity.Meme;
+import ch.uzh.ifi.hase.soprafs23.entity.*;
 
-import ch.uzh.ifi.hase.soprafs23.entity.Rating;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
-import ch.uzh.ifi.hase.soprafs23.entity.Template;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.MemeRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.TextBoxRepository;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.IMemeApi;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
@@ -44,13 +38,17 @@ public class GameService {
     private final LobbyService lobbyService;
 
     private final GameRepository gameRepository;
+    private final MemeRepository memeRepository;
+    private final TextBoxRepository textBoxRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-            LobbyService lobbyService) {
+            LobbyService lobbyService, MemeRepository memeRepository, TextBoxRepository textBoxRepository) {
         this.gameRepository = gameRepository;
+        this.memeRepository = memeRepository;
+        this.textBoxRepository = textBoxRepository;
         this.lobbyService = lobbyService;
     }
 
@@ -172,13 +170,15 @@ public class GameService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
         meme.setUser(user);
-
+        for (TextBox t : meme.getTextBoxes()) {
+            t.setMeme(meme);
+        }
         Round round = game.getRound();
 
         // check if round still open
-        if (!round.isOpen()) {
+        /*TODO: if (!round.isOpen()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round is not open");
-        }
+        }*/
 
         // set user chosen template
         Template template = game.getTemplateById(templateId);
@@ -186,22 +186,36 @@ public class GameService {
 
         // add meme to the round
         round.addMeme(meme);
-
+        meme.setRound(round);
         // update round
         game.setRound(round);
-
+        memeRepository.save(meme);
         // perist changes
         save(game);
 
     }
 
     public List<Meme> getMemes(String gameId) {
-        Game game = gameRepository.findById(gameId)
+        Game game = gameRepository.findByIdWithRounds(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
         Round round = game.getRound();
+        List<Meme> memes = findMemesByRoundId(round.getId());
 
-        return round.getMemes();
+        for (Meme meme : memes) {
+            List<TextBox> textBoxes = findTextBoxesByMemeId(meme.getId());
+            meme.setTextBoxes(textBoxes);
+        }
+
+        return memes;
+    }
+
+    public List<Meme> findMemesByRoundId(Long roundId) {
+        return memeRepository.findAllByRound_Id(roundId);
+    }
+
+    public List<TextBox> findTextBoxesByMemeId(String memeId) {
+        return textBoxRepository.findAllByMeme_Id(memeId);
     }
 
     /**
@@ -212,7 +226,7 @@ public class GameService {
      * @param rating
      * @param user
      */
-    public void createRating(String gameId, UUID memeId, Rating rating, User user) {
+    public void createRating(String gameId, String memeId, Rating rating, User user) {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 

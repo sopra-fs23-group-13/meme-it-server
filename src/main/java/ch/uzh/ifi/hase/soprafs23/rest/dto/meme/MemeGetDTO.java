@@ -8,7 +8,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 public class MemeGetDTO {
 
-    private UUID id;
+    private String id;
 
     private String imageUrl;
 
@@ -16,11 +16,11 @@ public class MemeGetDTO {
 
     // private User user;
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID uuid) {
+    public void setId(String uuid) {
         this.id = uuid;
     }
 

@@ -25,6 +25,7 @@ public class Game implements Serializable {
     private GameSetting gameSetting;
 
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "game_id")
     private List<Round> rounds;
 
     @Column(nullable = false)

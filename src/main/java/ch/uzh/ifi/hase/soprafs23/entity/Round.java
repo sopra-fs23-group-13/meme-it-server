@@ -14,10 +14,10 @@ public class Round implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL)
     private List<Meme> memes;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -70,7 +70,7 @@ public class Round implements Serializable {
         memes.add(meme);
     }
 
-    public Meme getMemeById(UUID id) {
+    public Meme getMemeById(String id) {
         for (Meme meme : memes) {
             if (meme.getId().equals(id)) {
                 return meme;
