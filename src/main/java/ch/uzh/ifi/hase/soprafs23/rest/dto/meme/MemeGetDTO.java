@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.meme;
 
+import java.awt.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +15,10 @@ public class MemeGetDTO {
 
     private List<TextBox> textBoxes;
 
-    // private User user;
+    private int fontSize;
+    private String color;
+
+    private User user;
 
     public String getId() {
         return id;
@@ -40,12 +44,27 @@ public class MemeGetDTO {
         this.textBoxes = textBoxes;
     }
 
-    // public User getUser() {
-    // return user;
-    // }
+    public int getFontSize() {
+        return fontSize;
+    }
 
-    // public void setUser(User user) {
-    // this.user = user;
-    // }
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+    }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
