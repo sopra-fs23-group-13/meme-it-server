@@ -101,7 +101,6 @@ public class GameService {
 
         // Add 2 seconds to the current time
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 5);
         newGame.setStartedAt(calendar.getTime());
 
         // initialise rounds array
