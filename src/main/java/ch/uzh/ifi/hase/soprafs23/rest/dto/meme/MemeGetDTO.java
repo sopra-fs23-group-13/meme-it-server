@@ -17,6 +17,7 @@ public class MemeGetDTO {
 
     private int fontSize;
     private String color;
+    private String backgroundColor;
 
     private User user;
 
@@ -66,5 +67,13 @@ public class MemeGetDTO {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }

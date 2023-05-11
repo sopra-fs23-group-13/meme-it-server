@@ -38,6 +38,9 @@ public class Meme implements Serializable {
     @OneToOne
     private User user;
 
+    @Column(nullable = false)
+    private String backgroundColor;
+
     public String getId() {
         return id;
     }
@@ -88,5 +91,13 @@ public class Meme implements Serializable {
 
     public void setRound(Round round) {
         this.round = round;
+    }
+
+    public String getBackgroundColor() {
+        return backgroundColor;
+    }
+
+    public void setBackgroundColor(String backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 }
