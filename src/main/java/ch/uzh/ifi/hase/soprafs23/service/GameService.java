@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs23.entity.*;
 import ch.uzh.ifi.hase.soprafs23.repository.GameRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.MemeRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.TextBoxRepository;
+import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.IMemeApi;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient;
 import ch.uzh.ifi.hase.soprafs23.utility.memeapi.ImgflipClient.ApiResponse;
@@ -40,16 +41,18 @@ public class GameService {
     private final GameRepository gameRepository;
     private final MemeRepository memeRepository;
     private final TextBoxRepository textBoxRepository;
+    private final UserRepository userRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-            LobbyService lobbyService, MemeRepository memeRepository, TextBoxRepository textBoxRepository) {
+            LobbyService lobbyService, MemeRepository memeRepository, TextBoxRepository textBoxRepository, UserRepository userRepository) {
         this.gameRepository = gameRepository;
         this.memeRepository = memeRepository;
         this.textBoxRepository = textBoxRepository;
         this.lobbyService = lobbyService;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -155,6 +158,24 @@ public class GameService {
         // TODO: update user has gotten template
 
         return game.getTemplate();
+    }
+
+    /**
+     *
+     * @param gameId
+     * @param user
+     * @return
+     */
+    public Template swapTemplate(String gameId, User user) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+
+        if(user.getExecutedSwaps() < game.getGameSetting().getTemplateSwapLimit()){
+            user.setExecutedSwaps(user.getExecutedSwaps()+1);
+            userRepository.save(user);
+            return game.getTemplate();
+        }
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Swap Limit already reached");
     }
 
     /**
