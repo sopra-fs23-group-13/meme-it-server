@@ -19,6 +19,7 @@ public class DTOFactory implements MemeMapper{
         memeGetDTO.setColor(meme.getColor());
         memeGetDTO.setFontSize(meme.getFontSize());
         memeGetDTO.setUser(meme.getUser());
+        memeGetDTO.setBackgroundColor(meme.getBackgroundColor());
         List<TextBox> textBoxes = new ArrayList<>();
         for (TextBox t : meme.getTextBoxes()) {
             TextBox textBox = new TextBox();
@@ -37,6 +38,7 @@ public class DTOFactory implements MemeMapper{
         Meme m = new Meme();
         m.setColor(memePostDTO.getColor());
         m.setFontSize(memePostDTO.getFontSize());
+        m.setBackgroundColor(memePostDTO.getBackgroundColor());
         ArrayList<TextBox> tb = new ArrayList<>();
         for (TextBox t : memePostDTO.getTextBoxes()) {
             TextBox textBox = new TextBox();
