@@ -101,6 +101,18 @@ public class GameController {
         return TemplateMapper.INSTANCE.convertEntityToGetDTO(template);
     }
 
+    @PutMapping("/games/{gameId}/template")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TemplateGetDTO swapTemplate(@PathVariable String gameId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        Template template = gameService.swapTemplate(gameId, user);
+
+        return TemplateMapper.INSTANCE.convertEntityToGetDTO(template);
+    }
+
     /**
      * Submits a meme to the game
      * 

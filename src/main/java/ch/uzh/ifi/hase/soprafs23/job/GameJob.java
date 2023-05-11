@@ -64,8 +64,8 @@ public class GameJob {
 
             // Calculate different phase start times
             Long roundStart = round.getStartedAt().getTime();
-            Long ratingStart = roundStart + (game.getGameSetting().getRatingDuration() * 1000);
-            Long roundResultsStart = ratingStart + (game.getGameSetting().getRoundDuration() * 1000);
+            Long ratingStart = roundStart + (game.getGameSetting().getRoundDuration() * 1000);
+            Long roundResultsStart = ratingStart + (game.getGameSetting().getRatingDuration() * 1000);
             Long nextRoundStart = roundResultsStart + (game.getGameSetting().getRoundResultDuration() * 1000);
 
             Long timeNow = Calendar.getInstance().getTime().getTime();
