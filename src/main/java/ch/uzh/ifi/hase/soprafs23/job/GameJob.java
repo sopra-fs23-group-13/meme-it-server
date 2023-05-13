@@ -52,7 +52,9 @@ public class GameJob {
      */
     public void run(String gameId) throws IllegalArgumentException {
         Session session = sessionFactory.openSession();
-        while (true) {
+
+        boolean gameRunning = true;
+        while (gameRunning) {
             // start transaction
             Transaction transaction = session.beginTransaction();
 
@@ -98,13 +100,13 @@ public class GameJob {
                 // set game state
                 game.setState(GameState.GAME_RESULTS);
 
-                // persist changes
+                // save changes
                 session.save(game);
-                // close session
-                session.close();
+
+                gameRunning = false;
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
-                return;
+
             }
             // game not finished yet, next round
             // check if round_result phase is over
@@ -137,7 +139,7 @@ public class GameJob {
                 // start round result phase
                 game.setState(GameState.ROUND_RESULTS);
 
-                // persist changes
+                // save changes
                 session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
@@ -151,25 +153,14 @@ public class GameJob {
                 // start voting phase
                 game.setState(GameState.RATING);
 
-                // persist changes
+                // save changes
                 session.save(game);
 
                 System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
-            } /*
-               * else {
-               * System.out.println("game in progress");
-               * // System.out.println("GameId: " + gameId + " - Round " +
-               * game.getCurrentRound() + "
-               * Phase
-               * // "
-               * // + game.getState().toString().toUpperCase());
-               * }
-               */
+            }
 
+            // persist changes by commiting transaction
             transaction.commit();
-            // session.refresh(game);
-            // // persist changes
-            // gameService.save(game);
 
             // sleep for 1 second
             try {
@@ -179,6 +170,9 @@ public class GameJob {
                 Thread.currentThread().interrupt();
             }
         }
+
+        // close session
+        session.close();
 
     }
 
