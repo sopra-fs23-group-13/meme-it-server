@@ -123,7 +123,10 @@ public class GameService {
         // inform lobby that game has started
         lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
 
+        // TODO: figure out way to delete lobby
+
         return newGame;
+
     }
 
     /**
