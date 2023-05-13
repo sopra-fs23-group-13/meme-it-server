@@ -14,12 +14,13 @@ import ch.uzh.ifi.hase.soprafs23.entity.Template;
 
 public class ImgflipClient implements IMemeApi {
 
-    private static final String ENDPOINT = "https://api.imgflip.com/get_memes";
+    private static final String ENDPOINT = "https://api.imgflip.com";
 
     public ApiResponse getTemplates() {
 
+        Scanner scanner = null;
         try {
-            URL url = new URL(ENDPOINT);
+            URL url = new URL(ENDPOINT + "/get_memes");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.connect();
@@ -29,7 +30,7 @@ public class ImgflipClient implements IMemeApi {
                 throw new RuntimeException("Failed with HTTP error code: " + responseCode);
             }
 
-            Scanner scanner = new Scanner(url.openStream());
+            scanner = new Scanner(url.openStream());
             String response = scanner.useDelimiter("\\A").next();
 
             ObjectMapper mapper = new ObjectMapper();
@@ -41,6 +42,9 @@ public class ImgflipClient implements IMemeApi {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (scanner != null)
+                scanner.close();
         }
 
         return null;
