@@ -8,6 +8,8 @@ import java.util.concurrent.ExecutionException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,8 @@ import ch.uzh.ifi.hase.soprafs23.entity.User;
 // ! this wraps the method in a transaction and only commits that transaction
 // ! once method exists. Thus it cant be used in a while (true) loop for the job
 public class GameJob {
+
+    private final Logger log = LoggerFactory.getLogger(GameJob.class);
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -171,7 +175,7 @@ public class GameJob {
             try {
                 Thread.sleep(1_000);
             } catch (InterruptedException ie) {
-                ie.printStackTrace();
+                log.error("GameJob was interrupted", ie);
                 Thread.currentThread().interrupt();
             }
         }

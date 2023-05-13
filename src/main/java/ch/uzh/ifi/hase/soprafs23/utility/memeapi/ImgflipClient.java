@@ -7,12 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Template;
 
 public class ImgflipClient implements IMemeApi {
+    private final Logger log = LoggerFactory.getLogger(ImgflipClient.class);
 
     private static final String ENDPOINT = "https://api.imgflip.com";
 
@@ -41,7 +45,7 @@ public class ImgflipClient implements IMemeApi {
             return apiResponse;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error(e.toString());
         } finally {
             if (scanner != null)
                 scanner.close();
