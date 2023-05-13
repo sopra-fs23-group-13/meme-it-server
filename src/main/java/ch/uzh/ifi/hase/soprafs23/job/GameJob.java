@@ -3,6 +3,7 @@ package ch.uzh.ifi.hase.soprafs23.job;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -168,8 +169,9 @@ public class GameJob {
             // sleep for 1 second
             try {
                 Thread.sleep(1_000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
 
