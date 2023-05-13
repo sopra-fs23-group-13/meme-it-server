@@ -175,7 +175,7 @@ public class GameController {
      * @param memeId
      * @return
      */
-    @GetMapping("/games/{gameId}/rating")
+    @GetMapping("/games/{gameId}/results/round")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<RatingGetDTO> getRoundRatings(@PathVariable String gameId) {
@@ -196,7 +196,7 @@ public class GameController {
      * @param memeId
      * @return
      */
-    @GetMapping("/games/{gameId}/winner")
+    @GetMapping("/games/{gameId}/results/game")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<RatingGetDTO> getWinners(@PathVariable String gameId) {
