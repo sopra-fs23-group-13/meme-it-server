@@ -47,7 +47,8 @@ public class GameService {
     private EntityManager entityManager;
 
     public GameService(@Qualifier("gameRepository") GameRepository gameRepository,
-            LobbyService lobbyService, MemeRepository memeRepository, TextBoxRepository textBoxRepository, UserRepository userRepository) {
+            LobbyService lobbyService, MemeRepository memeRepository, TextBoxRepository textBoxRepository,
+            UserRepository userRepository) {
         this.gameRepository = gameRepository;
         this.memeRepository = memeRepository;
         this.textBoxRepository = textBoxRepository;
@@ -117,12 +118,6 @@ public class GameService {
         round.setStartedAt(calendar.getTime()); // round starts same time as game
         newGame.addRound(round);
 
-        System.out.println("CREATING GAME IN DB");
-        System.out.println("Game id: " + newGame.getId());
-        System.out.println("Game state: " + newGame.getState());
-        System.out.println("Game round number: " + newGame.getCurrentRound());
-        System.out.println("\n\n");
-
         save(newGame);
 
         // inform lobby that game has started
@@ -170,8 +165,8 @@ public class GameService {
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        if(user.getExecutedSwaps() < game.getGameSetting().getTemplateSwapLimit()){
-            user.setExecutedSwaps(user.getExecutedSwaps()+1);
+        if (user.getExecutedSwaps() < game.getGameSetting().getTemplateSwapLimit()) {
+            user.setExecutedSwaps(user.getExecutedSwaps() + 1);
             userRepository.save(user);
             return game.getTemplate();
         }
@@ -196,9 +191,12 @@ public class GameService {
         Round round = game.getRound();
 
         // check if round still open
-        /*TODO: if (!round.isOpen()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Round is not open");
-        }*/
+        /*
+         * TODO: if (!round.isOpen()) {
+         * throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+         * "Round is not open");
+         * }
+         */
 
         // set user chosen template
         Template template = game.getTemplateById(templateId);
