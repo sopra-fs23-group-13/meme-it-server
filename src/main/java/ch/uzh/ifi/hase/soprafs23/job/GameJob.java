@@ -95,7 +95,8 @@ public class GameJob {
 
             // check if game is finished
             if (game.getState() == GameState.RATING
-                    && game.getGameSetting().getMaxRounds().equals(game.getCurrentRound())) {
+                    && game.getGameSetting().getMaxRounds().equals(game.getCurrentRound())
+                    && roundResultsStart <= timeNow) {
 
                 // set game state
                 game.setState(GameState.GAME_RESULTS);
