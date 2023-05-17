@@ -8,7 +8,6 @@ import ch.uzh.ifi.hase.soprafs23.utility.NameGenerator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -37,7 +36,6 @@ public class LobbyService {
 
     private final NameGenerator nameGenerator = new NameGenerator();
 
-    @Autowired
     public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
         // this.usersRepository = usersRepository;
