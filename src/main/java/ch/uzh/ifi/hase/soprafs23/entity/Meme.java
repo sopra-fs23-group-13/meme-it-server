@@ -19,8 +19,8 @@ public class Meme implements Serializable {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    @OneToOne
-    private Template template;
+    @Column(nullable = false)
+    private String imageUrl;
 
     @Column(nullable = false)
     private String color;
@@ -45,12 +45,20 @@ public class Meme implements Serializable {
         return id;
     }
 
-    public Template getTemplate() {
-        return template;
+    // public Template getTemplate() {
+    // return template;
+    // }
+
+    // public void setTemplate(Template template) {
+    // this.template = template;
+    // }
+
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setTemplate(Template template) {
-        this.template = template;
+    public void setImageUrl(String image) {
+        this.imageUrl = image;
     }
 
     public String getColor() {

@@ -203,7 +203,7 @@ public class GameService {
 
         // set user chosen template
         Template template = game.getTemplateById(templateId);
-        meme.setTemplate(template);
+        meme.setImageUrl(template.getImageUrl());
 
         // add meme to the round
         round.addMeme(meme);
