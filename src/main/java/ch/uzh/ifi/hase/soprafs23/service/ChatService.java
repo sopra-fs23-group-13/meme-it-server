@@ -8,7 +8,6 @@ import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.chat.ChatPostDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,6 @@ public class ChatService {
     private final LobbyRepository lobbyRepository;
     private final ChatRepository chatRepository;
 
-    @Autowired
     public ChatService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository,
             @Qualifier("chatRepository") ChatRepository chatRepository,
             @Qualifier("userRepository") UserRepository userRepository) {
