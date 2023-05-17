@@ -1,7 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper.meme;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Meme;
@@ -13,7 +12,6 @@ public interface MemeMapper {
     MemeMapper INSTANCE = Mappers.getMapper(MemeMapper.class);
 
     Meme convertMemePostDTOtoEntity(MemePostDTO memePostDTO);
-
 
     MemeGetDTO convertEntityToMemeGetDTO(Meme meme);
 

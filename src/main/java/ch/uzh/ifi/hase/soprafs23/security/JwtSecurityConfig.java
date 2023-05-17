@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs23.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,14 +30,15 @@ public class JwtSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain configure(final HttpSecurity httpSecurity, final JwtRequestFilter jwtFilter) throws Exception {
+    public SecurityFilterChain configure(final HttpSecurity httpSecurity, final JwtRequestFilter jwtFilter)
+            throws Exception {
 
         return httpSecurity.cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/users").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers(HttpMethod.GET , "/lobbies").permitAll()
+                .antMatchers(HttpMethod.GET, "/lobbies").permitAll()
                 .anyRequest().authenticated().and()
                 .headers().frameOptions().sameOrigin() // allow H2 console to be embedded in iframe
                 .and()

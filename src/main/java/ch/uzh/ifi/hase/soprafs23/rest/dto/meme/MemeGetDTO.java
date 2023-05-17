@@ -1,8 +1,6 @@
 package ch.uzh.ifi.hase.soprafs23.rest.dto.meme;
 
-import java.awt.*;
 import java.util.List;
-import java.util.UUID;
 
 import ch.uzh.ifi.hase.soprafs23.entity.TextBox;
 import ch.uzh.ifi.hase.soprafs23.entity.User;
