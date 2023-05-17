@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs23.job;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

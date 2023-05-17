@@ -4,7 +4,6 @@ import ch.uzh.ifi.hase.soprafs23.entity.TextBox;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public interface TextBoxRepository extends JpaRepository<TextBox, Long> {
     List<TextBox> findAllByMeme_Id(String uuid);

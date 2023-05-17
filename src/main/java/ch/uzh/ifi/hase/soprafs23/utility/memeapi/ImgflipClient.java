@@ -3,7 +3,6 @@ package ch.uzh.ifi.hase.soprafs23.utility.memeapi;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,8 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import ch.uzh.ifi.hase.soprafs23.entity.Template;
 
 public class ImgflipClient implements IMemeApi {
     private final Logger log = LoggerFactory.getLogger(ImgflipClient.class);

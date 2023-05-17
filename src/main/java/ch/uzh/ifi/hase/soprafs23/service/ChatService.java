@@ -2,7 +2,6 @@ package ch.uzh.ifi.hase.soprafs23.service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
 import ch.uzh.ifi.hase.soprafs23.entity.Message;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
 import ch.uzh.ifi.hase.soprafs23.repository.ChatRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.LobbyRepository;
 import ch.uzh.ifi.hase.soprafs23.repository.UserRepository;
@@ -25,13 +24,15 @@ public class ChatService {
     private final UserRepository userRepository;
     private final LobbyRepository lobbyRepository;
     private final ChatRepository chatRepository;
+
     @Autowired
-    public ChatService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository, @Qualifier("chatRepository") ChatRepository chatRepository, @Qualifier("userRepository") UserRepository userRepository) {
+    public ChatService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository,
+            @Qualifier("chatRepository") ChatRepository chatRepository,
+            @Qualifier("userRepository") UserRepository userRepository) {
         this.lobbyRepository = lobbyRepository;
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
     }
-
 
     public List<Message> getProximityChatMessages(String lobbyCode) {
         return lobbyRepository.findByCode(lobbyCode).getMessages();
