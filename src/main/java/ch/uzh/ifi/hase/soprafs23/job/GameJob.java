@@ -35,10 +35,11 @@ public class GameJob {
 
     private final Logger log = LoggerFactory.getLogger(GameJob.class);
 
-    @Autowired
+    // @Autowired
     private SessionFactory sessionFactory;
 
-    public GameJob() {
+    public GameJob(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**

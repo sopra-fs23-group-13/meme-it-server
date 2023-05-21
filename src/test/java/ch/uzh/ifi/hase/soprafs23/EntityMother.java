@@ -88,8 +88,9 @@ public class EntityMother {
     public static GameSetting defaultGameSetting() {
         GameSetting gs = new GameSetting();
         gs.setRatingDuration(1);
+        gs.setRoundDuration(5);
         gs.setMaxRounds(1);
-        gs.setRatingDuration(10);
+        gs.setRatingDuration(5);
         gs.setRoundResultDuration(5);
         gs.setTemplateSwapLimit(5);
         return gs;
