@@ -82,8 +82,9 @@ class GameJobTest {
         } catch (Exception e) {
             fail("Could not set id field");
         }
-        game.setState(GameState.RATING);
         game.setCurrentRound(game.getGameSetting().getMaxRounds());
+
+        assertEquals(GameState.CREATION, game.getState());
 
         when(session.get(Game.class, gameId)).thenReturn(game);
 
