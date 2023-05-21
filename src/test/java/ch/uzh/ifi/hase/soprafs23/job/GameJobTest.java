@@ -87,8 +87,8 @@ class GameJobTest {
 
         // Assert
         assertEquals(GameState.GAME_RESULTS, game.getState());
-        verify(transaction, times(3)).commit();
-        verify(session, times(2)).save(game);
+        verify(transaction, times(14)).commit();
+        verify(session, times(5)).save(game);
         verify(session).delete(game);
         verify(session).close();
     }
