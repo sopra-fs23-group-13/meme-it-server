@@ -101,7 +101,7 @@ public class GameServiceTest {
     @Test
     public void getGame_validGameId_success() {
         String gameId = "gameId";
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         Game actual = gameService.getGame(gameId);
@@ -124,7 +124,7 @@ public class GameServiceTest {
     @Test
     public void getTemplate_validGameId_success() {
         String gameId = "gameId";
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         Template actual = gameService.getTemplate(gameId, defaultUser());
@@ -149,7 +149,7 @@ public class GameServiceTest {
         String gameId = "gameId";
         User user = defaultUser();
         user.setExecutedSwaps(100);
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         Throwable t = catchThrowable(() -> gameService.swapTemplate(gameId, user));
@@ -164,7 +164,7 @@ public class GameServiceTest {
         String gameId = "gameId";
         User user = defaultUser();
         user.setExecutedSwaps(0);
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         Template template = gameService.swapTemplate(gameId, user);
@@ -182,7 +182,7 @@ public class GameServiceTest {
         String gameId = "gameId";
         String templateId = "templateId";
 
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         Meme meme = defaultMeme(UUID.randomUUID());
 
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
@@ -212,7 +212,7 @@ public class GameServiceTest {
     @Test
     public void getMemes_validGameId_success() {
         String gameId = "gameId";
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         Meme meme = defaultMeme(UUID.randomUUID());
         TextBox textBox = defaulTextBox();
         when(gameRepository.findByIdWithRounds(gameId)).thenReturn(Optional.of(game));
@@ -255,7 +255,7 @@ public class GameServiceTest {
     public void createRating_unknownMemeId_failure() {
         String gameId = "gameId";
         String unknownMemeId = UUID.randomUUID().toString();
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         Throwable t = catchThrowable(
@@ -270,8 +270,8 @@ public class GameServiceTest {
     public void createRating_validMemeId_success() {
         String gameId = "gameId";
         UUID memeId = UUID.randomUUID();
-        Game game = buildFullGame(new Date(), "templateId");
-        Round round = openRound(new Date());
+        Game game = buildFullGame(new Date(), "templateId", 1);
+        Round round = openRound(new Date(), 1);
         round.setMemes(List.of(defaultMeme(memeId)));
         game.setRounds(Arrays.asList(round));
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
@@ -297,7 +297,7 @@ public class GameServiceTest {
     @Test
     public void getRatingsFromRound_validGameId_success() {
         String gameId = "gameId";
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         List<Rating> ratingsFromRound = gameService.getRatingsFromRound(gameId);
@@ -320,7 +320,7 @@ public class GameServiceTest {
     @Test
     public void getAllRatings_validGameId_success() {
         String gameId = "gameId";
-        Game game = buildFullGame(new Date(), "templateId");
+        Game game = buildFullGame(new Date(), "templateId", 1);
         when(gameRepository.findById(gameId)).thenReturn(Optional.of(game));
 
         List<Rating> allRatings = gameService.getRatingsFromRound(gameId);

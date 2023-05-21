@@ -58,8 +58,9 @@ public class EntityMother {
         return t;
     }
 
-    public static Round openRound(Date date) {
+    public static Round openRound(Date date, int number) {
         Round r = new Round();
+        r.setRoundNumber(number);
         r.setOpen(true);
         r.setMemes(new ArrayList<>());
         r.setRatings(new ArrayList<>());
@@ -67,13 +68,7 @@ public class EntityMother {
         return r;
     }
 
-    public static Round closedRound(Date date) {
-        Round r = openRound(date);
-        r.setOpen(false);
-        return r;
-    }
-
-    public static Game buildFullGame(Date date, String templateId) {
+    public static Game buildFullGame(Date date, String templateId, int roundNumber) {
         Game g = new Game();
         g.setState(GameState.CREATION);
         g.setCurrentRound(1);
@@ -81,7 +76,22 @@ public class EntityMother {
         g.setGameSetting(defaultGameSetting());
         g.setPlayers(List.of(defaultUser()));
         g.setTemplates(List.of(defaultTemplate(templateId)));
-        g.setRounds(Arrays.asList(openRound(date)));
+
+        List<Round> rounds = new ArrayList<>(roundNumber);
+        for (int i = 0; i < roundNumber; i++) {
+            if (i == 0) {
+                rounds.add(openRound(date, i + 1));
+            } else {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(rounds.get(i - 1).getStartedAt());
+                calendar.add(Calendar.SECOND, g.getGameSetting().getRoundDuration());
+                calendar.add(Calendar.SECOND, g.getGameSetting().getRatingDuration());
+                calendar.add(Calendar.SECOND, g.getGameSetting().getRoundResultDuration());
+
+                rounds.add(openRound(calendar.getTime(), i + 1));
+            }
+        }
+        g.setRounds(rounds);
         return g;
     }
 
@@ -89,7 +99,7 @@ public class EntityMother {
         GameSetting gs = new GameSetting();
         gs.setRatingDuration(1);
         gs.setRoundDuration(5);
-        gs.setMaxRounds(1);
+        gs.setMaxRounds(2);
         gs.setRatingDuration(5);
         gs.setRoundResultDuration(5);
         gs.setTemplateSwapLimit(5);

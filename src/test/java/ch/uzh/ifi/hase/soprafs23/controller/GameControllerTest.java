@@ -72,7 +72,7 @@ public class GameControllerTest {
         @Test
         public void givenLobbyCode_whenCreateGame_thenReturnCreatedGame() throws Exception {
                 String lobbyCode = "testCode";
-                Game game = buildFullGame(DATE, "templateId");
+                Game game = buildFullGame(DATE, "templateId", 1);
 
                 when(gameService.createGame(lobbyCode)).thenReturn(game);
 
@@ -85,7 +85,7 @@ public class GameControllerTest {
         @Test
         public void givenGameId_whenGetGame_thenReturnGame() throws Exception {
                 String gameId = UUID.randomUUID().toString();
-                Game game = buildFullGame(DATE, "templateId");
+                Game game = buildFullGame(DATE, "templateId", 1);
 
                 when(gameService.getGame(gameId)).thenReturn(game);
 
