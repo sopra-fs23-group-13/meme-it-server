@@ -65,10 +65,10 @@ class GameJobTest {
     }
 
     @Test
-    void testRun_GameFinished() {
+    void testRun_GameFinished_1round() {
         // Arrange
         String gameId = "valid-game-id";
-        Game game = EntityMother.buildFullGame(DATE, "templateId");
+        Game game = EntityMother.buildFullGame(DATE, "templateId", 1);
 
         try {
             Field idField = Game.class.getDeclaredField("id");
@@ -77,7 +77,6 @@ class GameJobTest {
         } catch (Exception e) {
             fail("Could not set id field");
         }
-        game.setCurrentRound(game.getGameSetting().getMaxRounds());
 
         assertEquals(GameState.CREATION, game.getState());
 
@@ -94,6 +93,32 @@ class GameJobTest {
         verify(session).close();
     }
 
-    // TODO: add tests that verify each state transition (kinda hard to do)
+    @Test
+    void testRun_GameFinished_2rounds() {
+        // Arrange
+        String gameId = "valid-game-id";
+        Game game = EntityMother.buildFullGame(DATE, "templateId", 2);
 
+        try {
+            Field idField = Game.class.getDeclaredField("id");
+            idField.setAccessible(true); // Make the private field accessible
+            idField.set(game, gameId);
+        } catch (Exception e) {
+            fail("Could not set id field");
+        }
+
+        assertEquals(GameState.CREATION, game.getState());
+
+        when(session.get(Game.class, gameId)).thenReturn(game);
+
+        // Act
+        gameJob.run(gameId);
+
+        // Assert
+        assertEquals(GameState.GAME_RESULTS, game.getState());
+        verify(transaction, times(6)).commit();
+        verify(session, times(5)).save(game);
+        verify(session).delete(game);
+        verify(session).close();
+    }
 }

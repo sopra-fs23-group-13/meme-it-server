@@ -72,7 +72,7 @@ public class GameControllerTest {
         @Test
         public void givenLobbyCode_whenCreateGame_thenReturnCreatedGame() throws Exception {
                 String lobbyCode = "testCode";
-                Game game = buildFullGame(DATE, "templateId");
+                Game game = buildFullGame(DATE, "templateId", 1);
 
                 when(gameService.createGame(lobbyCode)).thenReturn(game);
 
@@ -85,7 +85,7 @@ public class GameControllerTest {
         @Test
         public void givenGameId_whenGetGame_thenReturnGame() throws Exception {
                 String gameId = UUID.randomUUID().toString();
-                Game game = buildFullGame(DATE, "templateId");
+                Game game = buildFullGame(DATE, "templateId", 1);
 
                 when(gameService.getGame(gameId)).thenReturn(game);
 
@@ -132,7 +132,6 @@ public class GameControllerTest {
                 String templateId = UUID.randomUUID().toString();
                 User user = defaultUser();
                 Meme meme = defaultMeme(UUID.randomUUID());
-                meme.setTemplate(null);
                 meme.setUser(null);
 
                 givenUserIsAuthenticated(user);
@@ -161,7 +160,6 @@ public class GameControllerTest {
                                 .andExpect(status().isCreated()) // TODO: is this correct? Should it not be "OK"
                                 .andExpectAll(jsonPath("$", hasSize(1)),
                                                 jsonPath("$[0].id", is(meme.getId().toString())),
-                                                jsonPath("$[0].imageUrl", is(meme.getTemplate().getImageUrl())),
                                                 jsonPath("$[0].textBoxes", hasSize(1)),
                                                 jsonPath("$[0].textBoxes[0].text",
                                                                 is(meme.getTextBoxes().get(0).getText())));
