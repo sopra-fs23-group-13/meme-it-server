@@ -15,6 +15,8 @@ public class TextBox {
     private String text;
     private Integer xRate;
     private Integer yRate;
+    private Integer width;
+    private Integer height;
     @ManyToOne
     @JsonIgnore
     private Meme meme;
@@ -59,5 +61,21 @@ public class TextBox {
 
     public void setMeme(Meme meme) {
         this.meme = meme;
+    }
+
+    public Integer getWidth() {
+        return width;
+    }
+
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }
