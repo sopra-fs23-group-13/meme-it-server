@@ -38,7 +38,7 @@ public class EntityMother {
         Meme m = new Meme();
         setPrivateFieldValue(m, "id", memeId.toString());
         m.setUser(defaultUser());
-        m.setTemplate(defaultTemplate("templateId"));
+        //m.setTemplate(defaultTemplate("templateId"));
         m.setColor("color");
         m.setFontSize(2);
         m.setTextBoxes(List.of(defaulTextBox()));
