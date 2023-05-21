@@ -5,10 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -22,8 +19,6 @@ import org.slf4j.Logger;
 import ch.uzh.ifi.hase.soprafs23.EntityMother;
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
 import ch.uzh.ifi.hase.soprafs23.entity.GameState;
-import ch.uzh.ifi.hase.soprafs23.entity.Round;
-import ch.uzh.ifi.hase.soprafs23.entity.User;
 
 /**
  * Tests for the GameJob class
@@ -94,7 +89,7 @@ class GameJobTest {
         // Assert
         assertEquals(GameState.GAME_RESULTS, game.getState());
         verify(transaction, times(3)).commit();
-        verify(session).save(game);
+        verify(session, times(2)).save(game);
         verify(session).delete(game);
         verify(session).close();
     }
