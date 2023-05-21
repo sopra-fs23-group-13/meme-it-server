@@ -207,7 +207,7 @@ public class GameService {
 
         // set user chosen template
         Template template = game.getTemplateById(templateId);
-        meme.setTemplate(template);
+        meme.setImageUrl(template.getImageUrl());
 
         // add meme to the round
         round.addMeme(meme);
@@ -256,13 +256,19 @@ public class GameService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
         // TODO: check user actually part of game
-        // TODO: check user has not already rated meme
         // TODO: user is not meme owner
 
         Round round = game.getRound();
         Meme meme = round.getMemeById(memeId);
         if (meme == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meme not found");
+        }
+
+        List<Rating> ratings = round.getRatings();
+        for (Rating r : ratings) {
+            if (r.getMeme().getId().equals(memeId) && r.getUser().getId().equals(user.getId())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already rated meme");
+            }
         }
 
         rating.setUser(user);

@@ -9,13 +9,13 @@ import org.mapstruct.ObjectFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DTOFactory implements MemeMapper{
+public class DTOFactory implements MemeMapper {
     @ObjectFactory
     public MemeGetDTO convertEntityToMemeGetDTO(Meme meme) {
         MemeGetDTO memeGetDTO = new MemeGetDTO();
 
         memeGetDTO.setId(meme.getId());
-        memeGetDTO.setImageUrl(meme.getTemplate().getImageUrl());
+        memeGetDTO.setImageUrl(meme.getImageUrl());
         memeGetDTO.setColor(meme.getColor());
         memeGetDTO.setFontSize(meme.getFontSize());
         memeGetDTO.setUser(meme.getUser());
@@ -36,7 +36,7 @@ public class DTOFactory implements MemeMapper{
     }
 
     @ObjectFactory
-    public Meme convertMemePostDTOtoEntity(MemePostDTO memePostDTO){
+    public Meme convertMemePostDTOtoEntity(MemePostDTO memePostDTO) {
         Meme m = new Meme();
         m.setColor(memePostDTO.getColor());
         m.setFontSize(memePostDTO.getFontSize());
