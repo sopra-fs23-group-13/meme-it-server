@@ -26,6 +26,8 @@ public class DTOFactory implements MemeMapper{
             textBox.setText(t.getText());
             textBox.setxRate(t.getxRate());
             textBox.setyRate(t.getyRate());
+            textBox.setHeight(t.getHeight());
+            textBox.setWidth(t.getWidth());
             textBoxes.add(textBox);
         }
         memeGetDTO.setTextBoxes(textBoxes);
@@ -45,6 +47,8 @@ public class DTOFactory implements MemeMapper{
             textBox.setText(t.getText());
             textBox.setxRate(t.getxRate());
             textBox.setyRate(t.getyRate());
+            textBox.setHeight(t.getHeight());
+            textBox.setWidth(t.getWidth());
             textBox.setMeme(m); // Set the meme reference in TextBox
             tb.add(textBox);
         }
