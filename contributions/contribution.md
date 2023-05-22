@@ -44,7 +44,8 @@ This file serves as a log of individual contributions made by each team member t
 | 10/05/2023-16/05/2023 | Linda Weber | [Dev Task 107](https://github.com/sopra-fs23-group-13/meme-it-client/issues/107), [Documentation 171](https://github.com/sopra-fs23-group-13/meme-it-server/issues/171) | Worked on a small improvements for the front-end and adjusted the Readme documentation for the backe-end. |
 | 10/05/2023-16/05/2023 | Pablo Tanner | [Dev Task 143](https://github.com/sopra-fs23-group-13/meme-it-client/issues/143) [Dev Task 95](https://github.com/sopra-fs23-group-13/meme-it-client/issues/95) [Dev Task 99](https://github.com/sopra-fs23-group-13/meme-it-client/issues/99)| Finished the final leaderboard so that the leaderboard view is fully implemented, built the leaderboards into the gameflow so that the game is fully working now. Started doing some polishing and fixing for the leaderboard since some smaller things are still missing/buggy.|
 | 10/05/2023-16/05/2023 | Henrik Nordgren | [Dev Task 162](https://github.com/sopra-fs23-group-13/meme-it-server/issues/162) [Dev Task 172](https://github.com/sopra-fs23-group-13/meme-it-server/issues/172) [Dev Task 153](https://github.com/sopra-fs23-group-13/meme-it-server/issues/153) [Dev Task 152](https://github.com/sopra-fs23-group-13/meme-it-server/issues/152) | I fixed varius bugs this week. |
-
+| Sprint 2 | Week 7 | 17/05/2023 | 23/05/2023 |
+| 17/05/2023-23/05/2023 | Daniel Lutziger | [Issue 148](https://github.com/sopra-fs23-group-13/meme-it-client/pull/150/files), [Textbox adjustments](https://github.com/sopra-fs23-group-13/meme-it-client/pull/153/commits/d834727fd3aed2346baa3774802e555b4ba9a47a) [Backend Adjustments for Textboxes](https://github.com/sopra-fs23-group-13/meme-it-server/pull/187/files) | Various bug fixes and adjustments |
 
 ## Weekly Update
 
