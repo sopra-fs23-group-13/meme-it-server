@@ -46,6 +46,7 @@ This file serves as a log of individual contributions made by each team member t
 | 10/05/2023-16/05/2023 | Henrik Nordgren | [Dev Task 162](https://github.com/sopra-fs23-group-13/meme-it-server/issues/162) [Dev Task 172](https://github.com/sopra-fs23-group-13/meme-it-server/issues/172) [Dev Task 153](https://github.com/sopra-fs23-group-13/meme-it-server/issues/153) [Dev Task 152](https://github.com/sopra-fs23-group-13/meme-it-server/issues/152) | I fixed varius bugs this week. |
 | Sprint 2 | Week 7 | 17/05/2023 | 23/05/2023 |
 | 17/05/2023-23/05/2023 | Daniel Lutziger | [Issue 138](https://github.com/sopra-fs23-group-13/meme-it-client/pull/162/files), [Issue 148](https://github.com/sopra-fs23-group-13/meme-it-client/pull/150/files), [Textbox adjustments](https://github.com/sopra-fs23-group-13/meme-it-client/pull/153/commits/d834727fd3aed2346baa3774802e555b4ba9a47a) [Backend Adjustments for Textboxes](https://github.com/sopra-fs23-group-13/meme-it-server/pull/187/files) | Various bug fixes and adjustments |
+| 17/05/2023-23/05/2023 | Pablo Tanner | [Dev Task 143](https://github.com/sopra-fs23-group-13/meme-it-client/issues/143) [Dev Task 149](https://github.com/sopra-fs23-group-13/meme-it-client/issues/149) [Bug 186](https://github.com/sopra-fs23-group-13/meme-it-server/issues/186)| Bugfixing, adjustments (to new textboxes) and improvements to leaderboards|
 
 ## Weekly Update
 
