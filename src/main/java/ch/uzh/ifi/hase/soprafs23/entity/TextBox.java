@@ -17,6 +17,7 @@ public class TextBox {
     private Integer yRate;
     private Integer width;
     private Integer height;
+    private Integer fontSize;
     @ManyToOne
     @JsonIgnore
     private Meme meme;
@@ -77,5 +78,13 @@ public class TextBox {
 
     public void setHeight(Integer height) {
         this.height = height;
+    }
+
+    public Integer getFontSize() {
+        return fontSize;
+    }
+
+    public void setFontSize(Integer fontSize) {
+        this.fontSize = fontSize;
     }
 }
