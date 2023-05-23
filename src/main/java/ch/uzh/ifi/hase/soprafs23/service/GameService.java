@@ -39,6 +39,8 @@ public class GameService {
     private final TextBoxRepository textBoxRepository;
     private final UserRepository userRepository;
 
+    private Object lock = new Object();
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -67,70 +69,71 @@ public class GameService {
      * @return
      */
     public Game createGame(String lobbyCode) {
-        Game newGame = new Game();
-        Lobby lobby = lobbyService.getLobbyByCode(lobbyCode);
+        synchronized (lock) {
+            Game newGame = new Game();
+            Lobby lobby = lobbyService.getLobbyByCode(lobbyCode);
 
-        // set templates
-        ApiResponse apiResponse = memeApi.getTemplates();
-        List<Template> templates = new ArrayList<Template>(apiResponse.data.memes.size());
-        for (var meme : apiResponse.data.memes) {
-            Template template = new Template();
-            template.setImageUrl(meme.url);
-            templates.add(template);
+            // set templates
+            ApiResponse apiResponse = memeApi.getTemplates();
+            List<Template> templates = new ArrayList<Template>(apiResponse.data.memes.size());
+            for (var meme : apiResponse.data.memes) {
+                Template template = new Template();
+                template.setImageUrl(meme.url);
+                templates.add(template);
+            }
+            newGame.setTemplates(templates);
+            newGame.setState(GameState.CREATION);
+
+            // set game settings
+            GameSetting gameSetting = new GameSetting();
+            gameSetting.setMaxRounds(lobby.getLobbySetting().getMaxRounds());
+            gameSetting.setRoundDuration(lobby.getLobbySetting().getRoundDuration());
+            gameSetting.setRatingDuration(lobby.getLobbySetting().getRatingDuration());
+            gameSetting.setTemplateSwapLimit(lobby.getLobbySetting().getMemeChangeLimit());
+            gameSetting.setRoundResultDuration(20); // ! default 20 seconds
+            newGame.setGameSetting(gameSetting);
+
+            // set round
+            newGame.setCurrentRound(1);
+
+            // initialise players
+            List<User> users = lobby.getPlayers();
+            // shitty fix but other wise error is thrown:
+            // org.hibernate.HibernateException: Found shared references to a collection
+            // ! this currently duplicates the users in the db
+            List<User> players = new ArrayList<User>(users.size());
+            for (var user : users) {
+                User player = new User();
+                player.setId(user.getId());
+                player.setName(user.getName());
+                players.add(player);
+            }
+            newGame.setPlayers(players);
+
+            // Add 2 seconds to the current time
+            Calendar calendar = Calendar.getInstance();
+            newGame.setStartedAt(calendar.getTime());
+
+            // initialise rounds array
+            List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
+            newGame.setRounds(rounds);
+
+            // initialise first round
+            Round round = new Round();
+            round.setOpen(true);
+            round.setRoundNumber(1);
+            round.setStartedAt(calendar.getTime()); // round starts same time as game
+            newGame.addRound(round);
+
+            save(newGame);
+
+            // inform lobby that game has started
+            lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
+
+            // TODO: figure out way to delete lobby
+
+            return newGame;
         }
-        newGame.setTemplates(templates);
-        newGame.setState(GameState.CREATION);
-
-        // set game settings
-        GameSetting gameSetting = new GameSetting();
-        gameSetting.setMaxRounds(lobby.getLobbySetting().getMaxRounds());
-        gameSetting.setRoundDuration(lobby.getLobbySetting().getRoundDuration());
-        gameSetting.setRatingDuration(lobby.getLobbySetting().getRatingDuration());
-        gameSetting.setTemplateSwapLimit(lobby.getLobbySetting().getMemeChangeLimit());
-        gameSetting.setRoundResultDuration(20); // ! default 20 seconds
-        newGame.setGameSetting(gameSetting);
-
-        // set round
-        newGame.setCurrentRound(1);
-
-        // initialise players
-        List<User> users = lobby.getPlayers();
-        // shitty fix but other wise error is thrown:
-        // org.hibernate.HibernateException: Found shared references to a collection
-        // ! this currently duplicates the users in the db
-        List<User> players = new ArrayList<User>(users.size());
-        for (var user : users) {
-            User player = new User();
-            player.setId(user.getId());
-            player.setName(user.getName());
-            players.add(player);
-        }
-        newGame.setPlayers(players);
-
-        // Add 2 seconds to the current time
-        Calendar calendar = Calendar.getInstance();
-        newGame.setStartedAt(calendar.getTime());
-
-        // initialise rounds array
-        List<Round> rounds = new ArrayList<Round>(lobby.getLobbySetting().getMaxRounds());
-        newGame.setRounds(rounds);
-
-        // initialise first round
-        Round round = new Round();
-        round.setOpen(true);
-        round.setRoundNumber(1);
-        round.setStartedAt(calendar.getTime()); // round starts same time as game
-        newGame.addRound(round);
-
-        save(newGame);
-
-        // inform lobby that game has started
-        lobbyService.setGameStarted(lobbyCode, newGame.getId(), newGame.getStartedAt());
-
-        // TODO: figure out way to delete lobby
-
-        return newGame;
-
     }
 
     /**
@@ -140,10 +143,12 @@ public class GameService {
      * @return
      */
     public Game getGame(String gameId) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        return game;
+            return game;
+        }
     }
 
     /**
@@ -153,13 +158,15 @@ public class GameService {
      * @return
      */
     public Template getTemplate(String gameId, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        // TODO: check user has can get more templates depending on lobby rules
-        // TODO: update user has gotten template
+            // TODO: check user has can get more templates depending on lobby rules
+            // TODO: update user has gotten template
 
-        return game.getTemplate();
+            return game.getTemplate();
+        }
     }
 
     /**
@@ -169,15 +176,17 @@ public class GameService {
      * @return
      */
     public Template swapTemplate(String gameId, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        if (user.getExecutedSwaps() < game.getGameSetting().getTemplateSwapLimit()) {
-            user.setExecutedSwaps(user.getExecutedSwaps() + 1);
-            userRepository.save(user);
-            return game.getTemplate();
+            if (user.getExecutedSwaps() < game.getGameSetting().getTemplateSwapLimit()) {
+                user.setExecutedSwaps(user.getExecutedSwaps() + 1);
+                userRepository.save(user);
+                return game.getTemplate();
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Swap Limit already reached");
         }
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Swap Limit already reached");
     }
 
     /**
@@ -188,51 +197,55 @@ public class GameService {
      * @param user
      */
     public void createMeme(String gameId, String templateId, Meme meme, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        meme.setUser(user);
-        for (TextBox t : meme.getTextBoxes()) {
-            t.setMeme(meme);
+            meme.setUser(user);
+            for (TextBox t : meme.getTextBoxes()) {
+                t.setMeme(meme);
+            }
+            Round round = game.getRound();
+
+            // check if round still open
+            /*
+             * TODO: if (!round.isOpen()) {
+             * throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+             * "Round is not open");
+             * }
+             */
+
+            // set user chosen template
+            Template template = game.getTemplateById(templateId);
+            meme.setImageUrl(template.getImageUrl());
+
+            // add meme to the round
+            round.addMeme(meme);
+            meme.setRound(round);
+            // update round
+            game.setRound(round);
+            memeRepository.save(meme);
+            // perist changes
+            save(game);
         }
-        Round round = game.getRound();
-
-        // check if round still open
-        /*
-         * TODO: if (!round.isOpen()) {
-         * throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-         * "Round is not open");
-         * }
-         */
-
-        // set user chosen template
-        Template template = game.getTemplateById(templateId);
-        meme.setImageUrl(template.getImageUrl());
-
-        // add meme to the round
-        round.addMeme(meme);
-        meme.setRound(round);
-        // update round
-        game.setRound(round);
-        memeRepository.save(meme);
-        // perist changes
-        save(game);
 
     }
 
     public List<Meme> getMemes(String gameId) {
-        Game game = gameRepository.findByIdWithRounds(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findByIdWithRounds(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        Round round = game.getRound();
-        List<Meme> memes = findMemesByRoundId(round.getId());
+            Round round = game.getRound();
+            List<Meme> memes = findMemesByRoundId(round.getId());
 
-        for (Meme meme : memes) {
-            List<TextBox> textBoxes = findTextBoxesByMemeId(meme.getId());
-            meme.setTextBoxes(textBoxes);
+            for (Meme meme : memes) {
+                List<TextBox> textBoxes = findTextBoxesByMemeId(meme.getId());
+                meme.setTextBoxes(textBoxes);
+            }
+
+            return memes;
         }
-
-        return memes;
     }
 
     public List<Meme> findMemesByRoundId(Long roundId) {
@@ -252,34 +265,36 @@ public class GameService {
      * @param user
      */
     public void createRating(String gameId, String memeId, Rating rating, User user) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        // TODO: check user actually part of game
-        // TODO: user is not meme owner
+            // TODO: check user actually part of game
+            // TODO: user is not meme owner
 
-        Round round = game.getRound();
-        Meme meme = round.getMemeById(memeId);
-        if (meme == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meme not found");
-        }
-
-        List<Rating> ratings = round.getRatings();
-        for (Rating r : ratings) {
-            if (r.getMeme().getId().equals(memeId) && r.getUser().getId().equals(user.getId())) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already rated meme");
+            Round round = game.getRound();
+            Meme meme = round.getMemeById(memeId);
+            if (meme == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Meme not found");
             }
+
+            List<Rating> ratings = round.getRatings();
+            for (Rating r : ratings) {
+                if (r.getMeme().getId().equals(memeId) && r.getUser().getId().equals(user.getId())) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User has already rated meme");
+                }
+            }
+
+            rating.setUser(user);
+            rating.setMeme(meme);
+            round.addRating(rating);
+
+            // update round
+            game.setRound(round);
+
+            // perist changes
+            save(game);
         }
-
-        rating.setUser(user);
-        rating.setMeme(meme);
-        round.addRating(rating);
-
-        // update round
-        game.setRound(round);
-
-        // perist changes
-        save(game);
     }
 
     /**
@@ -289,13 +304,15 @@ public class GameService {
      * @return
      */
     public List<Rating> getRatingsFromRound(String gameId) {
-        // Return a list of players, their score and the meme of the round
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            // Return a list of players, their score and the meme of the round
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        Round round = game.getRound();
+            Round round = game.getRound();
 
-        return round.getRatings();
+            return round.getRatings();
+        }
     }
 
     /**
@@ -305,17 +322,19 @@ public class GameService {
      * @return
      */
     public List<Rating> getAllRatings(String gameId) {
-        Game game = gameRepository.findById(gameId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
+        synchronized (lock) {
+            Game game = gameRepository.findById(gameId)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
-        List<Round> rounds = game.getRounds();
+            List<Round> rounds = game.getRounds();
 
-        List<Rating> allRatings = new ArrayList<Rating>();
+            List<Rating> allRatings = new ArrayList<Rating>();
 
-        for (Round round : rounds) {
-            allRatings.addAll(round.getRatings());
+            for (Round round : rounds) {
+                allRatings.addAll(round.getRatings());
+            }
+            return allRatings;
         }
-        return allRatings;
     }
 
     /**
