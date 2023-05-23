@@ -130,7 +130,6 @@ public class GameService {
         // TODO: figure out way to delete lobby
 
         return newGame;
-
     }
 
     /**
@@ -140,6 +139,7 @@ public class GameService {
      * @return
      */
     public Game getGame(String gameId) {
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -169,6 +169,7 @@ public class GameService {
      * @return
      */
     public Template swapTemplate(String gameId, User user) {
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -178,6 +179,7 @@ public class GameService {
             return game.getTemplate();
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Swap Limit already reached");
+
     }
 
     /**
@@ -188,6 +190,7 @@ public class GameService {
      * @param user
      */
     public void createMeme(String gameId, String templateId, Meme meme, User user) {
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -221,6 +224,7 @@ public class GameService {
     }
 
     public List<Meme> getMemes(String gameId) {
+
         Game game = gameRepository.findByIdWithRounds(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -233,6 +237,7 @@ public class GameService {
         }
 
         return memes;
+
     }
 
     public List<Meme> findMemesByRoundId(Long roundId) {
@@ -252,6 +257,7 @@ public class GameService {
      * @param user
      */
     public void createRating(String gameId, String memeId, Rating rating, User user) {
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -280,6 +286,7 @@ public class GameService {
 
         // perist changes
         save(game);
+
     }
 
     /**
@@ -289,6 +296,7 @@ public class GameService {
      * @return
      */
     public List<Rating> getRatingsFromRound(String gameId) {
+
         // Return a list of players, their score and the meme of the round
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
@@ -296,6 +304,7 @@ public class GameService {
         Round round = game.getRound();
 
         return round.getRatings();
+
     }
 
     /**
@@ -305,6 +314,7 @@ public class GameService {
      * @return
      */
     public List<Rating> getAllRatings(String gameId) {
+
         Game game = gameRepository.findById(gameId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Game not found"));
 
@@ -316,6 +326,7 @@ public class GameService {
             allRatings.addAll(round.getRatings());
         }
         return allRatings;
+
     }
 
     /**
