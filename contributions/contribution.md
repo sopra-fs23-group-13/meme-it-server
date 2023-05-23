@@ -47,6 +47,7 @@ This file serves as a log of individual contributions made by each team member t
 | Sprint 2 | Week 7 | 17/05/2023 | 23/05/2023 |
 | 17/05/2023-23/05/2023 | Daniel Lutziger | [Issue 138](https://github.com/sopra-fs23-group-13/meme-it-client/pull/162/files), [Issue 148](https://github.com/sopra-fs23-group-13/meme-it-client/pull/150/files), [Textbox adjustments](https://github.com/sopra-fs23-group-13/meme-it-client/pull/153/commits/d834727fd3aed2346baa3774802e555b4ba9a47a) [Backend Adjustments for Textboxes](https://github.com/sopra-fs23-group-13/meme-it-server/pull/187/files) | Various bug fixes and adjustments |
 | 17/05/2023-23/05/2023 | Pablo Tanner | [Dev Task 143](https://github.com/sopra-fs23-group-13/meme-it-client/issues/143) [Dev Task 149](https://github.com/sopra-fs23-group-13/meme-it-client/issues/149) [Bug 186](https://github.com/sopra-fs23-group-13/meme-it-server/issues/186)| Bugfixing, adjustments (to new textboxes) and improvements to leaderboards|
+| 17/05/2023-23/05/2023 | Marc Schurr | [User issue 45](https://github.com/sopra-fs23-group-13/meme-it-client/issues/45) [Presentation](https://uzh.sharepoint.com/:p:/r/sites/asdf351/_layouts/15/doc2.aspx?action=edit&sourcedoc=%7B1b17e0e3-9b8d-4729-9143-4b96d098874b%7D&wdOrigin=TEAMS-ELECTRON.teamsSdk.openFilePreview&wdExp=TEAMS-CONTROL&web=1) | For this week I created the slides for the tutorial as well as extended the slider's functionality a bit and improved it visually. In addition, I created the presentation for M4.|
 
 ## Weekly Update
 
