@@ -77,7 +77,7 @@ public class GameService {
             ApiResponse apiResponse = memeApi.getTemplates();
             List<Template> templates = new ArrayList<Template>(apiResponse.data.memes.size());
             for (var meme : apiResponse.data.memes) {
-                if (meme.height > 800 || meme.width > 1000) {
+                if (meme.height > 800 || meme.width > 1000 || meme.width < 250) {
                     continue;
                 }
                 Template template = new Template();
