@@ -44,6 +44,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -90,6 +91,13 @@ public class GameServiceTest {
         assertThat(game.getTemplates())
                 .extracting("imageUrl")
                 .contains(apiResponse.data.memes.get(0).url);
+        assertThat(game.getTemplates())
+                .extracting("width")
+                .contains(apiResponse.data.memes.get(0).width);
+        assertThat(game.getTemplates())
+                .extracting("height")
+                .contains(apiResponse.data.memes.get(0).height);
+
         assertThat(game.getPlayers())
                 .isEqualTo(lobby.getPlayers());
         assertThat(game.getRounds()).hasSize(1);
@@ -339,6 +347,8 @@ public class GameServiceTest {
         ImgflipClient.Data data = new ImgflipClient.Data();
         ImgflipClient.Meme meme = new ImgflipClient.Meme();
         meme.url = "url";
+        meme.width = 100;
+        meme.height = 100;
         data.memes = List.of(meme);
         apiResponse.data = data;
         return apiResponse;

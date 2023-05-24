@@ -76,6 +76,8 @@ public class GameService {
         for (var meme : apiResponse.data.memes) {
             Template template = new Template();
             template.setImageUrl(meme.url);
+            template.setHeight(meme.height);
+            template.setWidth(meme.width);
             templates.add(template);
         }
         newGame.setTemplates(templates);
@@ -211,6 +213,8 @@ public class GameService {
         // set user chosen template
         Template template = game.getTemplateById(templateId);
         meme.setImageUrl(template.getImageUrl());
+        meme.setHeight(template.getHeight());
+        meme.setWidth(template.getWidth());
 
         // add meme to the round
         round.addMeme(meme);
