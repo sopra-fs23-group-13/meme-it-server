@@ -17,6 +17,9 @@ public class MemeGetDTO {
     private String color;
     private String backgroundColor;
 
+    private int width;
+    private int height;
+
     private User user;
 
     public String getId() {
@@ -57,6 +60,22 @@ public class MemeGetDTO {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 
     public User getUser() {

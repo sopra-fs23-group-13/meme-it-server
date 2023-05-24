@@ -4,6 +4,8 @@ public class TemplateGetDTO {
 
     private String id;
     private String imageUrl;
+    private int width;
+    private int height;
 
     public String getId() {
         return id;
@@ -19,5 +21,21 @@ public class TemplateGetDTO {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
     }
 }
