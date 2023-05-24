@@ -20,12 +20,16 @@ public class DTOFactory implements MemeMapper {
         memeGetDTO.setFontSize(meme.getFontSize());
         memeGetDTO.setUser(meme.getUser());
         memeGetDTO.setBackgroundColor(meme.getBackgroundColor());
+        memeGetDTO.setHeight(meme.getHeight());
+        memeGetDTO.setWidth(meme.getWidth());
+
         List<TextBox> textBoxes = new ArrayList<>();
         for (TextBox t : meme.getTextBoxes()) {
             TextBox textBox = new TextBox();
             textBox.setText(t.getText());
             textBox.setxRate(t.getxRate());
             textBox.setyRate(t.getyRate());
+            // ! these fields are always null when viewing result on postman
             textBox.setHeight(t.getHeight());
             textBox.setWidth(t.getWidth());
             textBox.setFontSize(t.getFontSize());
