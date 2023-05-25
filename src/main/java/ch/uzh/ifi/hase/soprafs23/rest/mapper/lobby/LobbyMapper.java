@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-// import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyGetDTO;
-// import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;

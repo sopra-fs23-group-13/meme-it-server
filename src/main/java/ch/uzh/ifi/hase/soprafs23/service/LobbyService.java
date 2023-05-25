@@ -32,13 +32,10 @@ public class LobbyService {
 
     private final LobbyRepository lobbyRepository;
 
-    // private final UserRepository usersRepository;
-
     private final NameGenerator nameGenerator = new NameGenerator();
 
     public LobbyService(@Qualifier("lobbyRepository") LobbyRepository lobbyRepository) {
         this.lobbyRepository = lobbyRepository;
-        // this.usersRepository = usersRepository;
     }
 
     public List<Lobby> getLobbies() {
