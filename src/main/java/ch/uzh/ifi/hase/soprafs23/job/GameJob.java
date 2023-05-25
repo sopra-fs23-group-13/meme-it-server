@@ -130,7 +130,7 @@ public class GameJob {
 
             }
             // check if everyone submited or creation phase is over
-            else if (round.getSubmitedMemes().size() == players.size() || game.getState() == GameState.CREATION
+            else if (round.getMemes().size() == players.size() || game.getState() == GameState.CREATION
                     && ratingStart <= timeNow) {
                 // close round
                 round.setOpen(false);
