@@ -77,7 +77,13 @@ You can verify that the server is running by visiting `localhost:8080` in your b
 ./gradlew test
 ```
 
-## Current test coverage per file
+## Code Quality
+
+### SonarQube
+
+To view the sonarqube reports click [here](https://sonarcloud.io/summary/overall?id=sopra-fs23-group-13_meme-it-server).
+
+### Test coverage
 
 This is the latest status of our test coverage:
 <img width="1512" alt="Screenshot 2023-05-25 at 18 29 00" src="https://github.com/sopra-fs23-group-13/meme-it-server/assets/91025733/e02ac3d5-1986-4e6a-bde4-415d347df088">
