@@ -47,64 +47,64 @@ public class LobbySetting implements Serializable {
         return isPublic;
     }
 
-    public boolean setIsPublic(boolean isPublic) {
-        return this.isPublic = isPublic;
+    public void setIsPublic(boolean isPublic) {
+        this.isPublic = isPublic;
     }
 
     public Integer getMaxPlayers() {
         return maxPlayers;
     }
 
-    public Integer setMaxPlayers(Integer maxPlayers) {
-        return this.maxPlayers = maxPlayers;
+    public void setMaxPlayers(Integer maxPlayers) {
+        this.maxPlayers = maxPlayers;
     }
 
     public Integer getMaxRounds() {
         return maxRounds;
     }
 
-    public Integer setMaxRounds(Integer maxRounds) {
-        return this.maxRounds = maxRounds;
+    public void setMaxRounds(Integer maxRounds) {
+        this.maxRounds = maxRounds;
     }
 
     public Integer getMemeChangeLimit() {
         return memeChangeLimit;
     }
 
-    public Integer setMemeChangeLimit(Integer memeChangeLimit) {
-        return this.memeChangeLimit = memeChangeLimit;
+    public void setMemeChangeLimit(Integer memeChangeLimit) {
+        this.memeChangeLimit = memeChangeLimit;
     }
 
     public Integer getSuperLikeLimit() {
         return superLikeLimit;
     }
 
-    public Integer setSuperLikeLimit(Integer superLikeLimit) {
-        return this.superLikeLimit = superLikeLimit;
+    public void setSuperLikeLimit(Integer superLikeLimit) {
+        this.superLikeLimit = superLikeLimit;
     }
 
     public Integer getSuperDislikeLimit() {
         return superDislikeLimit;
     }
 
-    public Integer setSuperDislikeLimit(Integer superDislikeLimit) {
-        return this.superDislikeLimit = superDislikeLimit;
+    public void setSuperDislikeLimit(Integer superDislikeLimit) {
+        this.superDislikeLimit = superDislikeLimit;
     }
 
     public Integer getRoundDuration() {
         return roundDuration;
     }
 
-    public Integer setRoundDuration(Integer timeRoundLimit) {
-        return this.roundDuration = timeRoundLimit;
+    public void setRoundDuration(Integer timeRoundLimit) {
+        this.roundDuration = timeRoundLimit;
     }
 
     public Integer getRatingDuration() {
         return ratingDuration;
     }
 
-    public Integer setRatingDuration(Integer timeVoteLimit) {
-        return this.ratingDuration = timeVoteLimit;
+    public void setRatingDuration(Integer timeVoteLimit) {
+        this.ratingDuration = timeVoteLimit;
     }
 
 }
