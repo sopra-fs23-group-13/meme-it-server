@@ -1,12 +1,10 @@
 package ch.uzh.ifi.hase.soprafs23.rest.mapper.lobby;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Lobby;
-// import ch.uzh.ifi.hase.soprafs23.entity.LobbySetting;
 
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPostDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyPutDTO;
 import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.LobbyGetDTO;
-// import ch.uzh.ifi.hase.soprafs23.rest.dto.lobby.PutDTO;
 
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
@@ -30,16 +28,6 @@ public interface LobbyMapper {
   Lobby convertLobbyPostDTOtoEntity(LobbyPostDTO lobbyPostDTO);
 
   Lobby convertLobbyPutDTOtoEntity(LobbyPutDTO lobbyPutDTO);
-
-  // @Mapping(source = "isPublic", target = "isPublic")
-  // @Mapping(source = "maxPlayers", target = "maxPlayers")
-  // @Mapping(source = "maxRounds", target = "maxRounds")
-  // @Mapping(source = "memeChangeLimit", target = "memeChangeLimit")
-  // @Mapping(source = "superLikeLimit", target = "superLikeLimit")
-  // @Mapping(source = "superDislikeLimit", target = "superDislikeLimit")
-  // @Mapping(source = "timeRoundLimit", target = "timeRoundLimit")
-  // @Mapping(source = "timeVoteLimit", target = "timeVoteLimit")
-  // LobbySetting convertLobbyPutDTOtoEntity(PutDTO lobbyPutDTO);
 
   LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 

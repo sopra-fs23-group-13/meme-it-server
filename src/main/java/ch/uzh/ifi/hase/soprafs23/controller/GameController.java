@@ -63,13 +63,6 @@ public class GameController {
         return GameMapper.INSTANCE.convertEntityToGameGetDTO(game);
     }
 
-    // ! doesnt return updated state
-    // i have tried
-    // - use @Async instead of Thread() to run job
-    // - increase timer of job to run every 2 - 5 seconds instead of 1 sec
-    // - Run job directly with gameRepo
-    //
-
     /**
      * Gets the current game state
      * 

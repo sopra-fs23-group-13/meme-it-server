@@ -39,6 +39,5 @@ public class UserService {
 
     public User getById(String id) {
         return userRepository.findById(id);
-        // return userRepository.findByUuid(uuid);
     }
 }

@@ -58,10 +58,6 @@ public class Round implements Serializable {
         ratings.add(rating);
     }
 
-    public void setSubmitedMemes(List<Meme> memes) {
-        this.memes = memes;
-    }
-
     public void addMeme(Meme meme) {
         if (memes == null) {
             memes = new ArrayList<Meme>();
@@ -76,10 +72,6 @@ public class Round implements Serializable {
             }
         }
         return null;
-    }
-
-    public List<Meme> getSubmitedMemes() {
-        return memes;
     }
 
     public Integer getRoundNumber() {
