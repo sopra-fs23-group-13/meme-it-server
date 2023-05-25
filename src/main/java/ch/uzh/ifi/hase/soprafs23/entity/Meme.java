@@ -50,14 +50,6 @@ public class Meme implements Serializable {
         return id;
     }
 
-    // public Template getTemplate() {
-    // return template;
-    // }
-
-    // public void setTemplate(Template template) {
-    // this.template = template;
-    // }
-
     public String getImageUrl() {
         return imageUrl;
     }

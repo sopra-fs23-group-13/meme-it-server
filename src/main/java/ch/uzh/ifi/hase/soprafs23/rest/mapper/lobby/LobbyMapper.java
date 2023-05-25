@@ -31,16 +31,6 @@ public interface LobbyMapper {
 
   Lobby convertLobbyPutDTOtoEntity(LobbyPutDTO lobbyPutDTO);
 
-  // @Mapping(source = "isPublic", target = "isPublic")
-  // @Mapping(source = "maxPlayers", target = "maxPlayers")
-  // @Mapping(source = "maxRounds", target = "maxRounds")
-  // @Mapping(source = "memeChangeLimit", target = "memeChangeLimit")
-  // @Mapping(source = "superLikeLimit", target = "superLikeLimit")
-  // @Mapping(source = "superDislikeLimit", target = "superDislikeLimit")
-  // @Mapping(source = "timeRoundLimit", target = "timeRoundLimit")
-  // @Mapping(source = "timeVoteLimit", target = "timeVoteLimit")
-  // LobbySetting convertLobbyPutDTOtoEntity(PutDTO lobbyPutDTO);
-
   LobbyGetDTO convertEntityToLobbyGetDTO(Lobby lobby);
 
 }

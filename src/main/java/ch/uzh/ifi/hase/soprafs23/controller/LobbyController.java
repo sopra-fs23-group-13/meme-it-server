@@ -68,19 +68,6 @@ public class LobbyController {
         return LobbyMapper.INSTANCE.convertEntityToLobbyGetDTO(createdLobby);
     }
 
-    // @PutMapping("/lobbies/{lobbyId}")
-    // @ResponseStatus(HttpStatus.OK)
-    // @ResponseBody
-    // public void updateLobby(@PathVariable String lobbyId, @RequestBody
-    // LobbyPutDTO lobbyPutDTO) {
-    // // convert API user to internal representation
-    // LobbySetting lobbySettingInput =
-    // LobbyMapper.INSTANCE.convertLobbyPutDTOtoEntity(lobbyPutDTO);
-
-    // // update lobby
-    // lobbyService.updateLobby(lobbyId, lobbySettingInput);
-    // }
-
     @PutMapping("/lobbies/{lobbyCode}")
     @ResponseStatus(HttpStatus.OK)
     public void updateLobby(@PathVariable String lobbyCode, @RequestBody LobbyPutDTO lobbyPutDTO) {

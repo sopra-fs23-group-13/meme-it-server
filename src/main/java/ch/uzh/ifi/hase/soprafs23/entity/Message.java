@@ -10,12 +10,6 @@ import java.io.Serializable;
 public class Message implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    // Message(String message, LocalDateTime created_at, User user) {
-    // this.message = message;
-    // this.createdAt = created_at;
-    // this.user = user;
-    // }
-
     @Id
     @GeneratedValue
     private Long id;

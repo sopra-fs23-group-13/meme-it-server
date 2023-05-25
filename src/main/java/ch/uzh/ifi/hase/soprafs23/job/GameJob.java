@@ -77,22 +77,6 @@ public class GameJob {
 
             Long timeNow = Calendar.getInstance().getTime().getTime();
 
-            // System.out.println("Game id: " + game.getId());
-            // System.out.println("Game state: " + game.getState());
-            // System.out.println("Game round number: " + game.getCurrentRound());
-            // System.out.println("\n\n");
-
-            // Format format = new SimpleDateFormat("yyyy MM dd HH:mm:ss");
-            // System.out.println("\nRound started at: " + format.format(new
-            // Date(roundStart)));
-            // System.out.println("Rating started at: " + format.format(new
-            // Date(ratingStart)));
-            // System.out.println("Round results started at: " + format.format(new
-            // Date(roundResultsStart)));
-            // System.out.println("Next round started at: " + format.format(new
-            // Date(nextRoundStart)));
-            // System.out.println("\n");
-
             // check if game is finished
             if (game.getState() == GameState.RATING
                     && game.getGameSetting().getMaxRounds().equals(game.getCurrentRound())
@@ -171,26 +155,6 @@ public class GameJob {
                 Thread.currentThread().interrupt();
             }
         }
-
-        // delete the game after 10 seconds
-        // (allows client more than enough time to get state)
-        // ! this causes error as deletes not propagated to child entities (e.g.
-        // ! cascade)
-        // try {
-        // Thread.sleep(10_000);
-        // // start transaction
-        // Transaction transaction = session.beginTransaction();
-        // // delete the game
-        // Game game = (Game) session.get(Game.class, gameId);
-        // if (game == null || game.getId() == null || game.getId().isEmpty()) {
-        // throw new IllegalArgumentException("Game not found");
-        // }
-        // session.delete(game);
-        // transaction.commit();
-        // } catch (InterruptedException ie) {
-        // log.error("Unable to delete game after delay", ie);
-        // Thread.currentThread().interrupt();
-        // }
 
         // close session
         session.close();
