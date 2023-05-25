@@ -37,6 +37,7 @@ public class JwtSecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .antMatchers("/users").permitAll()
+                .antMatchers("/").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/lobbies").permitAll()
                 .anyRequest().authenticated().and()
