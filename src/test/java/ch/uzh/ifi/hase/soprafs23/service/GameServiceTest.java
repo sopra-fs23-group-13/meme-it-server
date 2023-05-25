@@ -347,8 +347,8 @@ public class GameServiceTest {
         ImgflipClient.Data data = new ImgflipClient.Data();
         ImgflipClient.Meme meme = new ImgflipClient.Meme();
         meme.url = "url";
-        meme.width = 100;
-        meme.height = 100;
+        meme.width = 300;
+        meme.height = 300;
         data.memes = List.of(meme);
         apiResponse.data = data;
         return apiResponse;
