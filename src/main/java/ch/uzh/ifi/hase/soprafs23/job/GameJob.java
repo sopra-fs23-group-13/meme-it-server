@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import ch.uzh.ifi.hase.soprafs23.entity.Game;
@@ -90,7 +89,7 @@ public class GameJob {
 
                 gameRunning = false;
 
-                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase GAME_RESULTS");
 
             }
             // game not finished yet, next round
@@ -116,7 +115,7 @@ public class GameJob {
                 // persist changes
                 session.save(game);
 
-                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase CREATION");
             }
             // check if everyone rated or rating phase is over
             else if (round.getRatings().size() == players.size() || game.getState() == GameState.RATING
@@ -127,7 +126,7 @@ public class GameJob {
                 // save changes
                 session.save(game);
 
-                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase ROUND_RESULTS");
 
             }
             // check if everyone submited or creation phase is over
@@ -141,7 +140,7 @@ public class GameJob {
                 // save changes
                 session.save(game);
 
-                System.out.println("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
+                log.info("GameId: " + gameId + " - Round " + game.getCurrentRound() + " Phase RATING");
             }
 
             // persist changes by commiting transaction

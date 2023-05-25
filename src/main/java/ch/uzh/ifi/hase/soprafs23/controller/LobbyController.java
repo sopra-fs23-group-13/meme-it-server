@@ -41,7 +41,6 @@ public class LobbyController {
         // get all lobbies
         List<Lobby> createdLobby = lobbyService.getLobbies();
 
-        System.out.println(createdLobby);
         // convert internal representation of lobby back to API
         List<LobbyGetDTO> getDTOs = new ArrayList<LobbyGetDTO>();
         for (Lobby lobby : createdLobby) {

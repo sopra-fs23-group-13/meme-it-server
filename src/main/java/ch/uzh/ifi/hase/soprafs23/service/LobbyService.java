@@ -59,7 +59,7 @@ public class LobbyService {
         newLobby = lobbyRepository.save(newLobby);
         lobbyRepository.flush();
 
-        System.out.println("LobbyService: " + newLobby.getId());
+        log.info("LobbyService: " + newLobby.getId());
 
         log.debug("Created Information for Lobby: {}", newLobby);
         return newLobby;
