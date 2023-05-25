@@ -110,4 +110,4 @@ This project is maintained by Sopra Group 13:
 We would like to thank Mete Polat for his support and guidance during the development of this project.
 
 ## License
-Meme-It is licensed under the [Apache 2.0 License](https://github.com/sopra-fs23-group-13/meme-it-client/blob/main/LICENSE). The Apache 2.0 license grants users the freedom to use, modify, and distribute software under its terms, while offering patent protection, making it a popular choice for open-source projects such as the Apache software itself.
+Meme-It is licensed under the [Apache 2.0 License](https://github.com/sopra-fs23-group-13/meme-it-server/blob/main/LICENSE). The Apache 2.0 license grants users the freedom to use, modify, and distribute software under its terms, while offering patent protection, making it a popular choice for open-source projects such as the Apache software itself.
