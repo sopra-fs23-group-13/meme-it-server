@@ -4,6 +4,6 @@
 runtime: java17
 instance_class: F4
 
-# https://cloud.google.com/appengine/docs/flexible/reference/app-yaml?tab=java#manual-scaling
-manual_scaling:
-  instances: 1
+automatic_scaling:
+  min_instances: 1
+  max_instances: 1
