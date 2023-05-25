@@ -132,7 +132,7 @@ public class GameControllerTest {
                 String templateId = UUID.randomUUID().toString();
                 User user = defaultUser();
                 Meme meme = defaultMeme(UUID.randomUUID());
-                //meme.setTemplate(null);
+                // meme.setTemplate(null);
                 meme.setUser(null);
 
                 givenUserIsAuthenticated(user);
@@ -146,7 +146,7 @@ public class GameControllerTest {
                 verify(gameService).createMeme(eq(gameId), eq(templateId), memeArgumentCaptor.capture(), eq(user));
                 assertThat(memeArgumentCaptor.getValue())
                                 .usingRecursiveComparison()
-                                .ignoringFields("id")
+                                .ignoringFields("id", "height", "width")
                                 .isEqualTo(meme);
         }
 
@@ -161,7 +161,7 @@ public class GameControllerTest {
                                 .andExpect(status().isCreated()) // TODO: is this correct? Should it not be "OK"
                                 .andExpectAll(jsonPath("$", hasSize(1)),
                                                 jsonPath("$[0].id", is(meme.getId().toString())),
-                                                //jsonPath("$[0].imageUrl", is(meme.getTemplate().getImageUrl())),
+                                                // jsonPath("$[0].imageUrl", is(meme.getTemplate().getImageUrl())),
                                                 jsonPath("$[0].textBoxes", hasSize(1)),
                                                 jsonPath("$[0].textBoxes[0].text",
                                                                 is(meme.getTextBoxes().get(0).getText())));

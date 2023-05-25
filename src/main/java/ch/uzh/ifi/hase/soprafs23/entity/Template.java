@@ -20,6 +20,12 @@ public class Template implements Serializable {
     @Column(nullable = false)
     private String imageUrl;
 
+    @Column(nullable = false)
+    private int width;
+
+    @Column(nullable = false)
+    private int height;
+
     public String getId() {
         return id;
     }
@@ -31,4 +37,27 @@ public class Template implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        if (width < 0) {
+            throw new IllegalArgumentException("Width must be positive");
+        }
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        if (height < 0) {
+            throw new IllegalArgumentException("Height must be positive");
+        }
+        this.height = height;
+    }
+
 }

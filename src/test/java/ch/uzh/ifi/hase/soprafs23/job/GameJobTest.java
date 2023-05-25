@@ -87,9 +87,9 @@ class GameJobTest {
 
         // Assert
         assertEquals(GameState.GAME_RESULTS, game.getState());
-        verify(transaction, times(14)).commit();
+        verify(transaction, times(13)).commit();
         verify(session, times(5)).save(game);
-        verify(session).delete(game);
+        // verify(session).delete(game);
         verify(session).close();
     }
 
@@ -116,9 +116,9 @@ class GameJobTest {
 
         // Assert
         assertEquals(GameState.GAME_RESULTS, game.getState());
-        verify(transaction, times(6)).commit();
+        verify(transaction, times(5)).commit();
         verify(session, times(5)).save(game);
-        verify(session).delete(game);
+        // verify(session).delete(game);
         verify(session).close();
     }
 }

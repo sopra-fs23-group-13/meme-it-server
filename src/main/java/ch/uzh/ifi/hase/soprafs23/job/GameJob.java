@@ -174,21 +174,23 @@ public class GameJob {
 
         // delete the game after 10 seconds
         // (allows client more than enough time to get state)
-        try {
-            Thread.sleep(10_000);
-            // start transaction
-            Transaction transaction = session.beginTransaction();
-            // delete the game
-            Game game = (Game) session.get(Game.class, gameId);
-            if (game == null || game.getId() == null || game.getId().isEmpty()) {
-                throw new IllegalArgumentException("Game not found");
-            }
-            session.delete(game);
-            transaction.commit();
-        } catch (InterruptedException ie) {
-            log.error("Unable to delete game after delay", ie);
-            Thread.currentThread().interrupt();
-        }
+        // ! this causes error as deletes not propagated to child entities (e.g.
+        // ! cascade)
+        // try {
+        // Thread.sleep(10_000);
+        // // start transaction
+        // Transaction transaction = session.beginTransaction();
+        // // delete the game
+        // Game game = (Game) session.get(Game.class, gameId);
+        // if (game == null || game.getId() == null || game.getId().isEmpty()) {
+        // throw new IllegalArgumentException("Game not found");
+        // }
+        // session.delete(game);
+        // transaction.commit();
+        // } catch (InterruptedException ie) {
+        // log.error("Unable to delete game after delay", ie);
+        // Thread.currentThread().interrupt();
+        // }
 
         // close session
         session.close();

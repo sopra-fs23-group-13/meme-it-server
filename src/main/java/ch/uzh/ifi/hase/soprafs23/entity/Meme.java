@@ -34,6 +34,12 @@ public class Meme implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     private List<TextBox> textBoxes;
 
+    @Column(nullable = false)
+    private int width;
+
+    @Column(nullable = false)
+    private int height;
+
     @OneToOne
     private User user;
 
@@ -82,6 +88,28 @@ public class Meme implements Serializable {
 
     public void setTextBoxes(List<TextBox> textBoxes) {
         this.textBoxes = textBoxes;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        if (width < 0) {
+            throw new IllegalArgumentException("Width must be positive");
+        }
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        if (height < 0) {
+            throw new IllegalArgumentException("Height must be positive");
+        }
+        this.height = height;
     }
 
     public User getUser() {
