@@ -17,7 +17,7 @@ Meme-It is developed using the following main technologies:
 - [Google Cloud](https://cloud.google.com/): Used for the online deployment.
 
 ## High-level Components
-The backend of Meme-It is responsible for processing user requests and managing the application’s data. It includes a server that handles incoming requests, a database to store meme data, and an restful API that communicates with the frontend.
+The backend of Meme-It is responsible for processing user requests and managing the application’s data. It includes a server that handles incoming requests, a database to store meme data, and a restful API that communicates with the frontend.
 
 ## High-Level Components
 Meme-It comprises four main backend components:
