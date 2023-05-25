@@ -26,7 +26,6 @@ public class TextBox implements Serializable {
     @JsonIgnore
     private Meme meme;
 
-    public TextBox(){}
     public Long getId() {
         return id;
     }
@@ -34,7 +33,6 @@ public class TextBox implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getText() {
         return text;
